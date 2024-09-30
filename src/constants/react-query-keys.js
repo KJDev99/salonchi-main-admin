@@ -1,0 +1,16 @@
+export const REACT_QUERY_KEYS = {
+  READ_ORGANIZATIONS: "read-organizations",
+  GET_PRODUCT_LIST: "get-product-list",
+  GET_CATEGORY_LIST: "get-category-list",
+  GET_PRODUCT_DETAIL: "get-product-detail",
+  GET_ORDER_WAITING: "get-orders-waiting",
+  GET_ORDERS: "get-orders",
+  GET_ORDER_DETAILS: "get-order-details",
+  GET_STATISTICS: "get-statistics",
+  GET_BANNER_LIST: "get-banner-list",
+  CREATE_BANNER_LIST: "create-banner-list",
+  ADMIN_BOX_LIST: "admin-box-list",
+  ADMIN_BOX_DETAIL: "admin-box-detail",
+  CUSTOMER_LIST: "admin-customer-list",
+  EXPENSES: "admin-expenses",
+};

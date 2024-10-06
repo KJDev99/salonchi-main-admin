@@ -22,7 +22,7 @@ export const useList = () => {
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
     limit: initial_params.has("limit")
       ? Number(initial_params.get("limit"))
-      : 10,
+      : 20,
   });
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
@@ -37,6 +37,7 @@ export const useList = () => {
     queryKey: [REACT_QUERY_KEYS.GET_CATEGORY_LIST, params],
     queryFn: () => getCategory(params),
     select: (res) => {
+      console.log(res);
       return {
         count: res?.data?.count,
         data: res?.data?.results,

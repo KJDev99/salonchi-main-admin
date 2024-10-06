@@ -45,7 +45,6 @@ export const useConfirm = () => {
   );
 
   const confirm = (data) => {
-    console.log("data",data)
     const formData = new FormData();
     formData.append("name_uz", data.name_uz);
     formData.append("name_ru", data.name_ru);
@@ -54,7 +53,8 @@ export const useConfirm = () => {
     formData.append("is_active", true);
     if (data.parent !== undefined && data?.parent !== null) {
       formData.append("parent", data.parent);
-      // console.log(data);
+    } else {
+      formData.append("parent", null);
     }
     mutate(formData);
   };

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { CheckboxCustom } from "@/components/checkbox";
-import { Input } from "@/components/input";
-import { RadioCustom } from "@/components/radio";
+// import { Input } from "@/components/input";
+// import { RadioCustom } from "@/components/radio";
 import { Col, Row } from "antd";
 import { useFormContext } from "react-hook-form";
 
@@ -46,7 +46,7 @@ export default function AdditionCrud() {
           />
         </Col>
       </Row>
-      <Row>
+      {/* <Row>
         <Col span={24}>
           <h4
             style={{
@@ -94,7 +94,7 @@ export default function AdditionCrud() {
             type="number"
           />
         </Col>
-      </Row>
+      </Row> */}
     </>
   );
 }

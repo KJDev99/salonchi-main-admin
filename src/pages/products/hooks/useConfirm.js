@@ -5,7 +5,11 @@ import { formSchema, formSchemaAdd } from "../crud/form.schema";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createProducts, updateProducts } from "@/shared/modules/products";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCategorySelect, getCategorySelectProduct, getColorsSelect } from "@/shared/modules/category";
+import {
+  getCategorySelect,
+  getCategorySelectProduct,
+  getColorsSelect,
+} from "@/shared/modules/category";
 // import dayjs from "dayjs";
 import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 import { notification } from "antd";
@@ -27,7 +31,7 @@ export const useConfirm = () => {
       is_new: false,
       is_cheap: false,
       is_flow: "yes",
-      attributes: [{ key: "", value: [] }],
+      attributes: [{ name_uz: "", name_ru: "", type: "TEXT", value: [] }],
     },
   });
 
@@ -41,7 +45,7 @@ export const useConfirm = () => {
   const [boxes, setBoxes] = useState([]);
   const [box, setBox] = useState([]);
 
-  console.log("file",fileList,videoFile)
+  // console.log("file",fileList,videoFile)
   const { data: categoryList = [] } = useQuery({
     queryKey: ["get-categories-list"],
     queryFn: () => getCategorySelectProduct(),
@@ -113,6 +117,7 @@ export const useConfirm = () => {
     }
   );
   const confirm = (data) => {
+    console.log(data, "data");
     const formData = new FormData();
 
     formData.append("name_uz", data.name_uz);
@@ -131,7 +136,8 @@ export const useConfirm = () => {
     if (data?.product_color) {
       data?.product_color?.forEach((item) => formData.append("colors", item));
     }
-   if(videoFile?.lastModified !== undefined) formData.append("media", videoFile)
+    if (videoFile?.lastModified !== undefined)
+      formData.append("media", videoFile);
     if (is_stock) {
       formData.append("is_recommend", data.is_recommend);
       formData.append("is_new", data.is_new);
@@ -146,8 +152,6 @@ export const useConfirm = () => {
     mutate(formData);
     // console.log(data);
   };
-
-
 
   return {
     box,
@@ -165,6 +169,6 @@ export const useConfirm = () => {
     handleValue,
     contextHolder,
     setVideoFile,
-    videoFile
+    videoFile,
   };
 };

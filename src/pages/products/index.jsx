@@ -22,7 +22,6 @@ const Products = () => {
     selectedRowKeys,
     setSelectedRowKeys,
   } = useList();
-
   return (
     <>
       <Wrapper>

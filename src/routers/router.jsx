@@ -4,6 +4,7 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { PrivateRouter } from "./private/private";
 import WorkersTable from "@/pages/workers";
+import Leads from "@/pages/leads";
 
 const Auth = lazy(async () => await import("@/pages/auth"));
 const Products = lazy(async () => await import("@/pages/products"));
@@ -59,13 +60,8 @@ const WholesaleCustomers = lazy(
   async () => await import("@/pages/wholesale-customers")
 );
 
-const SellerAdmins = lazy(
-  async () => await import("@/pages/seller-admins")
-);
-const SellerView = lazy(
-  async () => await import("@/pages/seller-view")
-);
-
+const SellerAdmins = lazy(async () => await import("@/pages/seller-admins"));
+const SellerView = lazy(async () => await import("@/pages/seller-view"));
 
 const Ikpu = lazy(async () => await import("@/pages/ikpu"));
 
@@ -197,6 +193,10 @@ export const router = createBrowserRouter([
       {
         path: `${ROUTER.BOX}/` + ROUTER.EDIT + "/:id",
         element: <CreateBox />,
+      },
+      {
+        path: `${ROUTER.LEADS}/`,
+        element: <Leads />,
       },
       {
         path: `${ROUTER.WORKERS}/`,

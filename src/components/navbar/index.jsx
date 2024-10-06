@@ -32,7 +32,7 @@ export const Navbar = () => {
       {admin && (
         <BellContainer>
           <GoBell />
-          <div className="new-message">20</div>
+          <div className="new-message">1</div>
         </BellContainer>
       )}
 
@@ -51,14 +51,14 @@ export const Navbar = () => {
       <AccountCard>
         <div className="user-name">{updateUser?.firstname}</div>
         {updateUser === null || user?.photo === "" ? (
-          <Avatar icon={<UserOutlined style={{ fontSize: 18 }} />} />
-        ) : (
           <Image
             src={updateUser?.photo || user?.photo}
             alt="people"
             width={40}
             style={{ borderRadius: "50%" }}
           />
+        ) : (
+          <Avatar icon={<UserOutlined style={{ fontSize: 16 }} />} />
         )}
       </AccountCard>
     </Wrapper>

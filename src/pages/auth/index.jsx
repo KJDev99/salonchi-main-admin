@@ -1,12 +1,12 @@
 import { Col, Row } from "antd";
 import { Container } from "@/styles/global";
-import IconLogo from "@/assets/logo.svg";
 import { ImageWrap, RegisterWrapper } from "./style";
 import { Button } from "@/components/button";
 import { useLogin } from "./useLogin";
 import { InputPassword } from "@/components/input-password";
 import { Spinner } from "@/components/spinner";
 import { PhoneInput } from "@/components/phone-input";
+import { IconLogo } from "@/assets/logo";
 
 const Auth = () => {
   const { form, onSubmit, isLoading, contextHolder } = useLogin();
@@ -18,7 +18,8 @@ const Auth = () => {
         <Container>
           <div className="content">
             <ImageWrap>
-              <img className="icon-logo" src={IconLogo} alt="icon" />
+              {/* <img className="icon-logo" src={IconLogo} alt="icon" /> */}
+              <IconLogo width={145} height={60} />
             </ImageWrap>
             <Row gutter={[12, 12]}>
               <Col span={24}>

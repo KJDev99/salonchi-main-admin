@@ -1,6 +1,15 @@
-<svg
-      width="128"
-      height="58"
+import React from "react";
+
+interface ILogo {
+  width?: number;
+  height?: number;
+}
+
+export const IconLogo = ({ width = 142, height = 52 }: ILogo) => {
+  return (
+    <svg
+      width={width}
+      height={height}
       viewBox="0 0 142 52"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -18,3 +27,5 @@
         fill="#EA580C"
       />
     </svg>
+  );
+};

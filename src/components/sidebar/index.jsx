@@ -134,7 +134,7 @@ export const Sidebar = ({ children }) => {
               textAlign: "center",
             }}
           >
-            Xuping | Admin - @2024
+            Salonchi | Admin - @2024
           </Footer>
         </Layout>
       </Layout>

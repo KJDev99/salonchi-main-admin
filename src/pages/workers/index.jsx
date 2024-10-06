@@ -1,7 +1,7 @@
-import { CustomTable } from '@/components/table';
-import { Header, Title, Wrapper } from '@/styles/global';
-import { useList } from './useList';
-import { Pagination } from '@/components/pagination';
+import { CustomTable } from "@/components/table";
+import { Header, Title, Wrapper } from "@/styles/global";
+import { useList } from "./useList";
+import { Pagination } from "@/components/pagination";
 
 const WorkersTable = () => {
   const { columns, data, isLoading, contextHolder, count, params, setParams } =
@@ -11,7 +11,7 @@ const WorkersTable = () => {
     <>
       <Wrapper>
         <Header>
-          <Title>Ishchilar ro'yxati</Title>
+          <Title>Ishchilar ro`yxati</Title>
         </Header>
         <CustomTable columns={columns} data={data} loading={isLoading} />
         {contextHolder}

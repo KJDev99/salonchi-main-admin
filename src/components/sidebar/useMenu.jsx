@@ -1,9 +1,9 @@
 import { ReactComponent as IconCategory } from "@/assets/category.svg";
 import { ReactComponent as IconOrders } from "@/assets/orders.svg";
 import { ReactComponent as IconUser } from "@/assets/user.svg";
-import { ReactComponent as IconLogout } from "@/assets/logout.svg"; 
+import { ReactComponent as IconLogout } from "@/assets/logout.svg";
 import { ReactComponent as IconInventory } from "@/assets/inventory.svg";
-import { ReactComponent as SillerIcon } from "@/assets/siller.svg";
+// import { ReactComponent as SillerIcon } from "@/assets/siller.svg";
 import {
   FolderOutlined,
   PhoneOutlined,
@@ -32,10 +32,10 @@ export const useMenu = () => {
     getItem("Statistikalar", "admin/statistics", <IconInventory />),
     getItem("Maxsulotlar", "admin/products", <IconInventory />),
     getItem("Hodimlar", "admin/staff", <IconUser />),
-    getItem("Sotuvchi Adminlar", "admin/seller-admins", <SillerIcon />),
+    // getItem("Sotuvchi Adminlar", "admin/seller-admins", <SillerIcon />),
     getItem("Mijozlar bazasi", "admin/customer-base", <SettingFilled />),
     getItem("Harajatlar", "admin/expenses", <IconInventory />),
-    getItem("Optom mijozlar", "admin/wholesale-customers", <IconInventory />),
+    // getItem("Optom mijozlar", "admin/wholesale-customers", <IconInventory />),
     getItem("Sozlamalar", "admin/settings", <SettingFilled />),
     getItem("Chiqish", "logout", <IconLogout />),
   ];
@@ -50,6 +50,7 @@ export const useMenu = () => {
     ),
     getItem("Qayta aloqa", "admin/re-call", <PhoneOutlined />),
     getItem("Arxiv", "admin/archive", <FolderOutlined />),
+    getItem("Leadlar", "admin/leads", <TeamOutlined />),
     getItem("Ishchilar", "admin/workers", <TeamOutlined />),
     getItem("Sozlamalar", "admin/settings", <SettingFilled />),
     getItem("Chiqish", "logout", <IconLogout />),

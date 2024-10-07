@@ -1,4 +1,3 @@
-import React from "react";
 import { Error, FormGroupProvider, Label } from "@/styles/global";
 import { Controller } from "react-hook-form";
 import PropTypes from "prop-types";

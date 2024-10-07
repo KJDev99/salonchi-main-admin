@@ -10,7 +10,7 @@ export const Pagination = ({ total, params, setParams }) => {
   const location = useLocation();
 
   useEffect(() => {
-    let queryParams = "?page=" + params.page + "&limit=" + params.limit;
+    let queryParams = "?page=" + params.page;
     navigate({
       pathname: location.pathname,
       search: queryParams,
@@ -27,7 +27,7 @@ export const Pagination = ({ total, params, setParams }) => {
         onChange={(e) =>
           setParams({
             page: e,
-            limit: 10,
+            limit: 20,
           })
         }
         showSizeChanger={false}

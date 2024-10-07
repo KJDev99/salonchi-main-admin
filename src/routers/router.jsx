@@ -4,7 +4,6 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { PrivateRouter } from "./private/private";
 import WorkersTable from "@/pages/workers";
-import Leads from "@/pages/leads";
 
 const Auth = lazy(async () => await import("@/pages/auth"));
 const Products = lazy(async () => await import("@/pages/products"));
@@ -16,6 +15,9 @@ const Categories = lazy(async () => await import("@/pages/categories"));
 const Orders = lazy(async () => await import("@/pages/orders"));
 const OrderDetail = lazy(async () => await import("@/pages/orders/detail"));
 const OrdersWaiting = lazy(async () => await import("@/pages/orders-waiting"));
+const Sms = lazy(async () => await import("@/pages/sms"));
+const Leads = lazy(async () => await import("@/pages/leads"));
+const WaitingLeads = lazy(async () => await import("@/pages/waiting-leads"));
 const OrderDetailWaiting = lazy(
   async () => await import("@/pages/orders-waiting/detail")
 );
@@ -197,6 +199,14 @@ export const router = createBrowserRouter([
       {
         path: `${ROUTER.LEADS}/`,
         element: <Leads />,
+      },
+      {
+        path: `${ROUTER.WAITING_LEADS}/`,
+        element: <WaitingLeads />,
+      },
+      {
+        path: `${ROUTER.SMS}/`,
+        element: <Sms />,
       },
       {
         path: `${ROUTER.WORKERS}/`,

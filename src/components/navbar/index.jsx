@@ -38,14 +38,14 @@ export const Navbar = () => {
 
       {worker && (
         <OrdersCard>
-          buyurtmalar
-          <div className="order-count">{userInfo?.order?.count}ta</div>
+          Buyurtmalar:
+          <div className="order-count">{userInfo?.order?.count} ta</div>
         </OrdersCard>
       )}
       {worker && (
         <OrdersCard>
-          maoshi
-          <div className="order-count">{userInfo?.order?.salary} so`m</div>
+          Maoshi:
+          <div className="order-count">{userInfo?.order?.salary} so&apos;m</div>
         </OrdersCard>
       )}
       <AccountCard>

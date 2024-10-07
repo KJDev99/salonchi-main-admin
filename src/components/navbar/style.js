@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -41,11 +41,12 @@ export const OrdersCard = styled.div`
   height: 64px;
   .order-count {
     color: var(--white);
-    background: #39dd00;
+    background: #ea580c;
     height: 20px;
     display: flex;
     align-items: center;
-    padding: 0 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
   }
 `;
 export const AccountCard = styled.div`
@@ -56,7 +57,7 @@ export const AccountCard = styled.div`
   .user-name {
     font-size: 20px;
     font-weight: 400;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     @media (max-width: 400px) {
       display: none;
     }

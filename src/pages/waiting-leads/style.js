@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-export const Titles = styled.h2`
-  text-align: center;
-  margin-top: 30px;
-  font-size: 16px;
-  font-family: "Rubik", sans-serif;
-`;
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -24,7 +18,7 @@ export const TableRow = styled.tr`
 
 export const TableCell = styled.td`
   padding: 12px 15px;
-  text-align: center;
+  text-align: left;
 
   &:first-child {
     width: 50px;
@@ -51,7 +45,6 @@ export const Select = styled.select`
   padding: 5px;
   margin-left: 20px;
   font-size: 14px;
-  border-radius: 4px;
 `;
 
 export const Modal = styled.div`

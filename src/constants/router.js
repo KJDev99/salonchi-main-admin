@@ -18,6 +18,8 @@ export const ROUTER = {
   ARCHIVE: "archive",
   RE_CALL: "re-call",
   LEADS: "leads",
+  WAITING_LEADS: "waiting-leads",
+  SMS: "sms",
   SLIDER: "slider",
   WORKERS: "workers",
   BOX: "box",

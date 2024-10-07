@@ -132,7 +132,6 @@ export const useList = () => {
   );
 
   const handleDelete = (id) => {
-    console.log(id, "id");
     confirm({
       title: "Rostdan ham ushbu harajatni o'chirmoqchimisiz!",
       icon: <ExclamationCircleOutlined />,

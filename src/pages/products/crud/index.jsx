@@ -1,10 +1,16 @@
 import { Button } from "@/components/button";
 import { Footer, Header, Title, Wrapper } from "@/styles/global";
 import { useConfirm } from "../hooks/useConfirm";
-import { Col, Row, Button as AntdButton, Select } from "antd";
+import {
+  Col,
+  Row,
+  Button as AntdButton,
+  Select as AntdSelect,
+  Checkbox,
+} from "antd";
 // import Upload from "@/components/upload";
 // import { Input } from "@/components/input";
-// import { Select } from "@/components/select";
+import { Select } from "@/components/select";
 import { Spinner } from "@/components/spinner";
 import { useNavigate } from "react-router-dom";
 import { useReset } from "../hooks/useReset";
@@ -27,6 +33,7 @@ import styles from "./product.module.css";
 import { useState } from "react";
 import UploadVideo from "@/components/upload_video";
 import { VideoWrapper } from "@/components/upload_video/style";
+import { Reactquill } from "@/components/text-editor/style";
 const CreateProducts = () => {
   const navigate = useNavigate();
   const user = getUser();
@@ -36,6 +43,25 @@ const CreateProducts = () => {
   const [attributes, setAttributes] = useState([
     { type: "TEXT", name_uz: "", name_ru: "", values: [] },
   ]);
+  const [imageLabel, setImageLabel] = useState("");
+  const [imagesAtt, setImagesAtt] = useState([]);
+  const [colorLabel, setColorLabel] = useState("");
+  const [colorCode, setColorCode] = useState("");
+  const [colorsAtt, setColorsAtt] = useState([]);
+  const [name_uz, setNameUz] = useState("");
+  const [name_ru, setNameRu] = useState("");
+  const [price, setPrice] = useState();
+  const [oldPrice, setOldPrice] = useState();
+  const [description_uz, setDescriptionUz] = useState("");
+  const [description_ru, setDescriptionRu] = useState("");
+  //   "is_recommend": true,
+  // "is_new": true,
+  // "is_cheap": true,
+  const [isRecommend, setIsRecommend] = useState(false);
+  const [isNew, setIsNew] = useState(false);
+  const [isCheap, setIsCheap] = useState(false);
+  const [category, setCategory] = useState();
+  const [categoryList, setCategoryList] = useState([]);
   const {
     form,
     fields,
@@ -45,7 +71,7 @@ const CreateProducts = () => {
     fileList,
     setFileList,
     isLoading,
-    categoryList,
+    // categoryList,
     contextHolder,
     setVideoFile,
     videoFile,
@@ -55,7 +81,6 @@ const CreateProducts = () => {
     // console.log("e.target.files[0]", e.target.files[0]);
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
-
     const response = await request.post("upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -70,25 +95,31 @@ const CreateProducts = () => {
       // console.log(images);
     }
   };
+  const getCategoryList = async () => {
+    const response = await request.get("/category/list");
+    setCategoryList(response.data.results);
+  };
   const handleSubmit = async () => {
+    console.log(form.getValues());
     const data = {
-      // name_uz: form.getValues().name_uz,
-      // name_ru: form.getValues().name_ru,
-      // name_en: form.getValues().name_en,
-      // description_uz: form.getValues().description_uz,
-      // description_ru: form.getValues().description_ru,
-      // description_en: form.getValues().description_en,
-      // category: form.getValues().category,
-      // price: form.getValues().price,
-      // is_popular: form.getValues().is_popular,
+      medias: [...images, videoLink],
+      name_uz,
+      name_ru,
+      desc_uz: description_uz,
+      desc_ru: description_ru,
+      price,
+      old_price: oldPrice,
       attributes,
+      is_recommend: isRecommend,
+      is_new: isNew,
+      is_cheap: isCheap,
     };
-    console.log(fields, "fields");
-    console.log(data, "data");
+    const res = await request.post("admin/product/create", data);
+    console.log(res);
+    // console.log(data, "data");
   };
   const types = [
     { label: "TEXT", value: "TEXT" },
-    { label: "COLOR", value: "COLOR" },
     { label: "IMAGE", value: "IMAGE" },
   ];
   const { id, detailLoading } = useReset({ form, setFileList, setVideoFile });
@@ -192,7 +223,9 @@ const CreateProducts = () => {
             </Col>
             <Col span={24} lg={12}>
               <Input
-                control={form.control}
+                value={name_uz}
+                onChange={(e) => setNameUz(e.target.value)}
+                // control={form.control}
                 name="name_uz"
                 label="Mahsulot nomi (O’zbek tili)"
                 placeholder="Mahsulot nomi (O’zbek tili)"
@@ -200,7 +233,9 @@ const CreateProducts = () => {
             </Col>
             <Col span={24} lg={12}>
               <Input
-                control={form.control}
+                value={name_ru}
+                onChange={(e) => setNameRu(e.target.value)}
+                // control={form.control}
                 name="name_ru"
                 label="Mahsulot nomi (Rus tili)"
                 placeholder="Mahsulot nomi (Rus tili)"
@@ -208,7 +243,9 @@ const CreateProducts = () => {
             </Col>
             <Col span={24} lg={12}>
               <Input
-                control={form.control}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                // control={form.control}
                 name="price"
                 label="Sotilish narxi"
                 placeholder="Sotilish narxi"
@@ -217,7 +254,9 @@ const CreateProducts = () => {
             </Col>
             <Col span={24} lg={12}>
               <Input
-                control={form.control}
+                // control={form.control}
+                value={oldPrice}
+                onChange={(e) => setOldPrice(e.target.value)}
                 name="old_price"
                 label="Eski narxi"
                 placeholder="Eski narxi"
@@ -225,25 +264,30 @@ const CreateProducts = () => {
               />
             </Col>
           </Row>
-          <Row gutter={[16, 16]}>
+          <Row style={{ marginTop: 12 }} gutter={[16, 16]}>
             <Col span={24} lg={12}>
-              <TextEditorController
-                control={form.control}
-                name="desc_uz"
-                label="Descrtiption - tasnif (O’zbek)"
-                placeholder="Descrtiption - tasnif (O’zbek)"
+              <Label>Descrtiption - tasnif (O’zbek tili)</Label>
+              <Reactquill
+                value={description_uz}
+                onChange={(e) => setDescriptionUz(e)}
+                placeholder="Descrtiption - tasnif (O’zbek tili)"
+                theme="snow"
+                rows={5}
               />
             </Col>
             <Col span={24} lg={12}>
-              <TextEditorController
-                control={form.control}
-                name="desc_ru"
-                label="Descrtiption - tasnif (Rus tili)"
+              <Label>Descrtiption - tasnif (Rus tili)</Label>
+              <Reactquill
+                value={description_ru}
+                onChange={(e) => setDescriptionRu(e)}
                 placeholder="Descrtiption - tasnif (Rus tili)"
+                theme="snow"
+                rows={5}
               />
             </Col>
             <Col span={24} lg={12}>
-              <Select
+              <AntdSelect
+                style={{ width: "100%" }}
                 control={form.control}
                 name="category"
                 label="Kategoriyalar"
@@ -257,8 +301,18 @@ const CreateProducts = () => {
               <List>
                 {attributes.map((item, index) => {
                   return (
-                    <ListItem key={index}>
+                    <ListItem
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 6,
+                      }}
+                      key={index}
+                    >
+                      <Label>Attribute nomi ru</Label>
                       <Input
+                        label="Attribut nomi"
                         placeholder="Attribut nomi ru"
                         value={item?.name_ru}
                         onChange={(e) => {
@@ -266,6 +320,8 @@ const CreateProducts = () => {
                           setAttributes([...attributes]);
                         }}
                       />
+                      <Label>Attribute nomi uz</Label>
+
                       <Input
                         placeholder="Attribut nomi uz"
                         value={item?.name_uz}
@@ -296,7 +352,8 @@ const CreateProducts = () => {
                         placeholder="Attribut nomi uz"
                         label="Attribut nomi uz"
                       /> */}
-                      <Select
+                      <Label>Attribute turi</Label>
+                      <AntdSelect
                         defaultValue={item?.type}
                         style={{ width: "100%" }}
                         options={types}
@@ -305,28 +362,182 @@ const CreateProducts = () => {
                           setAttributes([...attributes]);
                         }}
                       />
-                      <Select
-                        mode="tags"
-                        style={{ width: "100%" }}
-                        onChange={(value) => {
-                          if (item.type === "TEXT") {
-                            console.log(value);
-                            const valuee = [];
-                            value.map((v) => {
-                              valuee.push({
-                                value: v,
-                                label: v,
+                      {item.type === "TEXT" && (
+                        <AntdSelect
+                          mode="tags"
+                          style={{ width: "100%" }}
+                          onChange={(value) => {
+                            if (item.type === "TEXT") {
+                              const valuee = [];
+                              value.map((v) => {
+                                valuee.push({
+                                  value: v,
+                                  title: v,
+                                });
                               });
-                            });
-                            attributes[index].values = [...valuee];
-                            setAttributes([...attributes]);
+                              attributes[index].values = [...valuee];
+                              setAttributes([...attributes]);
+                            }
+                            // const arr = [...item.values, value];
+                            // attributes[index].values = [...arr];
+                            // setAttributes([...attributes]);
+                          }}
+                          options={[]}
+                        />
+                      )}
+                      {imagesAtt.length > 0 && item.type === "IMAGE" && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 10,
+                          }}
+                        >
+                          {imagesAtt.map((value, i) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  setImagesAtt(
+                                    imagesAtt.filter((v) => v.url !== value.url)
+                                  );
+                                }}
+                                key={i}
+                              >
+                                <p>{value.label}</p>
+                                <img
+                                  src={value.url}
+                                  alt="image"
+                                  style={{ width: 100, height: 100 }}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      {item.type === "IMAGE" && (
+                        <div>
+                          <Input
+                            placeholder="Enter color name"
+                            value={imageLabel}
+                            onChange={(e) => {
+                              setImageLabel(e.target.value);
+                            }}
+                          />
+                        </div>
+                      )}
+                      {imageLabel.length > 1 &&
+                        item.type === "IMAGE" &&
+                        images.map((v, i) => {
+                          const arr = imagesAtt.filter(
+                            (value) => value.url === v
+                          );
+
+                          if (arr.length !== 0) {
+                            return null;
                           }
-                          // const arr = [...item.values, value];
-                          // attributes[index].values = [...arr];
-                          // setAttributes([...attributes]);
-                        }}
-                        options={[]}
-                      />
+                          return (
+                            <img
+                              key={i}
+                              src={v}
+                              alt="image"
+                              style={{ width: 100, height: 100 }}
+                              onClick={() => {
+                                setImagesAtt([
+                                  ...imagesAtt,
+                                  { url: v, label: imageLabel },
+                                ]);
+                                setImageLabel("");
+                                const arr = [
+                                  ...attributes[index].values,
+                                  { value: v, title: imageLabel },
+                                ];
+
+                                attributes[index].values = [...arr];
+                                setAttributes([...attributes]);
+                              }}
+                            />
+                          );
+                        })}
+
+                      {item.type === "COLOR" && (
+                        <div>
+                          <Input
+                            placeholder="Enter color name"
+                            value={colorLabel}
+                            onChange={(e) => {
+                              setColorLabel(e.target.value);
+                            }}
+                          />
+                          <div style={{ display: "flex", gap: 10 }}>
+                            <Input
+                              placeholder="Enter color name"
+                              type="color"
+                              // value={colorCode}
+                              onChange={(e) => {
+                                console.log(colorCode, "colorCode");
+                                console.log();
+                                setColorCode(e.target.value);
+                                // console.log({
+                                //   colorLabel,
+                                //   value: e.target.value,
+                                // });
+                                // setColorLabel(e.target.value);
+                              }}
+                            />
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                const arr = [
+                                  ...colorsAtt,
+                                  {
+                                    label: colorLabel,
+                                    value: colorCode,
+                                  },
+                                ];
+                                // setColors([...colors, colorLabel]);
+                                setColorLabel("");
+                                setColorCode("#000000");
+                                setColorsAtt([...arr]);
+                                attributes[index].values = [...arr];
+                              }}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                      {colorsAtt.length > 0 && item.type === "COLOR" && (
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            gap: 10,
+                          }}
+                        >
+                          {colorsAtt.map((value, i) => {
+                            return (
+                              <div
+                                onClick={() => {
+                                  setColorsAtt(
+                                    colorsAtt.filter((v) => v !== value)
+                                  );
+                                }}
+                                key={i}
+                              >
+                                <p>{value.label}</p>
+                                <div
+                                  style={{
+                                    backgroundColor: value.value,
+                                    height: 20,
+                                    width: 20,
+                                    borderRadius: 10,
+                                  }}
+                                ></div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                       {/* <CreateSelect
                         control={form.control}
                         name={`attributes.${index}.name_uz`}
@@ -343,7 +554,10 @@ const CreateProducts = () => {
                         }}
                         className="delete-btn"
                         danger
-                        onClick={() => remove(index)}
+                        onClick={() => {
+                          attributes.splice(index, 1);
+                          setAttributes([...attributes]);
+                        }}
                       />
                     </ListItem>
                   );
@@ -372,9 +586,62 @@ const CreateProducts = () => {
             </Col>
           </Row>
           {is_stock && (
-            <FormProvider {...form}>
-              <AdditionCrud />
-            </FormProvider>
+            <Row>
+              <Col span={24}>
+                <h4
+                  style={{
+                    color: "#212121",
+                    fontFamily: "Rubik",
+                    fontSize: "18px",
+                    fontWeight: 400,
+                    margin: "30px 0 20px 0",
+                  }}
+                >
+                  Mahsulot joylanadigan bo’lim
+                </h4>
+              </Col>
+              <Col span={24} md={6} lg={6}>
+                <Checkbox
+                  label={"Tavsiya etilganlar"}
+                  checked={isRecommend}
+                  onClick={() => setIsRecommend(!isRecommend)}
+                >
+                  Tavsiya etilganlar
+                </Checkbox>
+              </Col>
+              <Col span={24} md={6} lg={6}>
+                <Checkbox
+                  label={"Yangiliklar"}
+                  checked={isNew}
+                  onClick={() => setIsNew(!isNew)}
+                >
+                  Yangiliklar
+                </Checkbox>
+              </Col>
+              <Col span={24} md={6} lg={6}>
+                <Checkbox
+                  label={"Arzon narxlar"}
+                  checked={isCheap}
+                  onClick={() => setIsCheap(!isCheap)}
+                >
+                  Yangiliklar
+                </Checkbox>
+              </Col>
+              {/* <Col span={24} md={6} lg={6}>
+          <CheckboxCustom
+            control={form.control}
+            name="is_new"
+            label="Yangiliklar"
+          />
+        </Col>
+        <Col span={24} md={6} lg={6}>
+          <CheckboxCustom
+            control={form.control}
+            name="is_cheap"
+            label="Arzon narxlar"
+          />
+        </Col> */}
+            </Row>
           )}
           <Footer>
             <Button

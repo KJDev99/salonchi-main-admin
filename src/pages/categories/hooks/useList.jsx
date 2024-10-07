@@ -37,7 +37,6 @@ export const useList = () => {
     queryKey: [REACT_QUERY_KEYS.GET_CATEGORY_LIST, params],
     queryFn: () => getCategory(params),
     select: (res) => {
-      console.log(res);
       return {
         count: res?.data?.count,
         data: res?.data?.results,
@@ -82,7 +81,10 @@ export const useList = () => {
       title: "T/r",
       dataIndex: "key",
       render: (id, record, index) => (
-        <p>{(params.page - 1) * params.limit + index + 1}</p>
+        <p key={id} style={{ paddingLeft: "10px" }}>
+          {(params.page - 1) * params.limit + index + 1}
+        </p>
+        // <p>{(params.page - 1) * params.limit + index + 1}</p>
       ),
     },
     {
@@ -99,7 +101,16 @@ export const useList = () => {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",
-      render: (photo) => <Image src={photo} alt="photo" width={80} />,
+      render: (photo) => (
+        <Image
+          key={photo}
+          src={photo}
+          alt="photo"
+          width={70}
+          height={70}
+          style={{ objectFit: "cover" }}
+        />
+      ),
     },
     {
       title: "Created date",

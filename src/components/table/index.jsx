@@ -2,11 +2,10 @@ import { Table } from "antd";
 import PropTypes from "prop-types";
 import { TableWrapper } from "./style";
 
-export const CustomTable = ({ columns, data, style, loading, ...props }) => {
+export const CustomTable = ({ columns, data, loading, ...props }) => {
   return (
     <TableWrapper>
       <Table
-        style={style}
         columns={columns}
         dataSource={data}
         loading={loading}
@@ -18,8 +17,8 @@ export const CustomTable = ({ columns, data, style, loading, ...props }) => {
 };
 
 CustomTable.propTypes = {
-  columns: PropTypes.string.isRequired,
-  data: PropTypes.string.isRequired,
+  columns: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
   style: PropTypes.object,
   loading: PropTypes.bool.isRequired,
 };

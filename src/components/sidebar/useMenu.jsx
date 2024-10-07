@@ -65,9 +65,9 @@ export const useMenu = () => {
       <IconOrders />
     ),
     getItem("Slider", "admin/slider", <GiCarousel />),
-    getItem("Box", "admin/box", <AiOutlineCodeSandbox />),
+    // getItem("Box", "admin/box", <AiOutlineCodeSandbox />),
     getItem("Sozlamalar", "admin/settings", <SettingFilled />),
-    getItem("IKPU", "admin/ikpu", <AiOutlineCodeSandbox />),
+    // getItem("IKPU", "admin/ikpu", <AiOutlineCodeSandbox />),
     getItem("Chiqish", "logout", <IconLogout />),
   ];
 

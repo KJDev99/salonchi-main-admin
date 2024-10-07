@@ -19,7 +19,12 @@ const Categories = () => {
           onClick={() => navigate(ROUTER.CREATE)}
         />
       </Header>
-      <CustomTable columns={columns} data={data} loading={isLoading} />
+      <CustomTable
+        // style={{ height: "100px" }}
+        columns={columns}
+        data={data}
+        loading={isLoading}
+      />
       <Pagination params={params} setParams={setParams} total={count} />
       {contextHolder}
     </Wrapper>

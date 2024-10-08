@@ -11,7 +11,6 @@ import {
   ModalContent,
   ModalActions,
   ModalButton,
-  StatusFilter,
   StatusFilterButton,
   Titles,
 } from "./style"; // Ensure paths are correct
@@ -29,6 +28,9 @@ const Leads = () => {
   const [selectedLead, setSelectedLead] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [titles, setTitles] = useState("ALL");
+  const [modalOpenMsg, setModalOpenMsg] = useState(false); // Controls message modal
+  const [text, setText] = useState(""); // State for text in textarea
+  const [selectedLeadId, setSelectedLeadId] = useState(null); // Stores selected lead ID
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -127,6 +129,38 @@ const Leads = () => {
     }
   };
 
+  // Open modal and set the selected lead ID
+  const openMessageModal = (leadId) => {
+    setSelectedLeadId(leadId);
+    setModalOpenMsg(true); // Open modal
+  };
+
+  // Handle the POST request when submitting the form
+  const handleSubmit = async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem("userInfo"));
+
+      const payload = {
+        leads: [selectedLeadId], // Send the selected lead's ID in an array
+        all_lead: false, // Example all_lead value
+        text, // Text from textarea
+      };
+
+      // Make the POST request
+      await axios.post("https://api.salonchi.uz/api/v1/admin/sms", payload, {
+        headers: {
+          Authorization: `Bearer ${userData?.access}`, // Bearer token from localStorage
+        },
+      });
+
+      // Close the modal and show a success message
+      setModalOpenMsg(false);
+      alert("Xabar jonatildi!");
+    } catch (error) {
+      console.error("Error sending SMS:", error);
+    }
+  };
+
   return (
     <Wrapper>
       <Header>
@@ -213,7 +247,7 @@ const Leads = () => {
                 <TableCell>
                   <ViewIcon />
                 </TableCell>
-                <TableCell>
+                <TableCell onClick={() => openMessageModal(lead.id)}>
                   <MessageIcon />
                 </TableCell>
               </TableRow>
@@ -231,6 +265,49 @@ const Leads = () => {
             <ModalActions>
               <ModalButton onClick={confirmStatusChange}>Ha</ModalButton>
               <ModalButton onClick={() => setModalOpen(false)}>Yoq</ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
+      {modalOpenMsg && (
+        <Modal>
+          <ModalContent>
+            {/* Close Button */}
+            <button
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                background: "none",
+                border: "none",
+                fontSize: "16px",
+                cursor: "pointer",
+              }}
+              onClick={() => setModalOpenMsg(false)}
+            >
+              X
+            </button>
+
+            {/* Title */}
+            <h3>Xabar matni</h3>
+
+            {/* Textarea for input */}
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              rows="4"
+              placeholder="Xabar matnini kiriting"
+              style={{
+                width: "300px",
+                padding: "10px",
+                marginBottom: "10px",
+                borderRadius: "5px",
+              }}
+            />
+
+            {/* Actions */}
+            <ModalActions>
+              <ModalButton onClick={handleSubmit}>Yuborish</ModalButton>
             </ModalActions>
           </ModalContent>
         </Modal>

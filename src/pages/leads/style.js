@@ -64,13 +64,14 @@ export const Modal = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 `;
 
 export const ModalContent = styled.div`
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 300px;
+  width: 350px;
   text-align: center;
 `;
 

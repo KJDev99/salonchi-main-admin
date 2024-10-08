@@ -13,6 +13,7 @@ import {
   ModalButton,
   StatusFilterButton,
   Titles,
+  Textarea,
 } from "./style"; // Ensure paths are correct
 import MessageIcon from "@/assets/message";
 import ViewIcon from "@/assets/view";
@@ -31,6 +32,8 @@ const Leads = () => {
   const [modalOpenMsg, setModalOpenMsg] = useState(false); // Controls message modal
   const [text, setText] = useState(""); // State for text in textarea
   const [selectedLeadId, setSelectedLeadId] = useState(null); // Stores selected lead ID
+  const [smsShablon, setSmsShablon] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -53,9 +56,7 @@ const Leads = () => {
           }
         );
         setLeads(response.data.results);
-        console.log(response.data);
-
-        setFilteredLeads(response.data.results); // Initially show all leads
+        setFilteredLeads(response.data.results);
       } catch (error) {
         console.error("Error fetching leads:", error);
       } finally {
@@ -64,6 +65,34 @@ const Leads = () => {
     };
 
     fetchLeads();
+
+    const fetchSmsShablon = async () => {
+      try {
+        const userDataString = localStorage.getItem("userInfo");
+        let userData;
+        if (userDataString) {
+          try {
+            userData = JSON.parse(userDataString);
+          } catch (error) {
+            console.error("Error parsing JSON:", error);
+          }
+        }
+        const response = await axios.get(
+          "https://api.salonchi.uz/api/v1/admin/sms",
+          {
+            headers: {
+              Authorization: `Bearer ${userData.access}`,
+            },
+          }
+        );
+        setSmsShablon(response.data);
+        console.log(response.data, "sms shablon");
+      } catch (error) {
+        console.error("Error fetching sms shablon:", error);
+      }
+    };
+
+    fetchSmsShablon();
   }, []);
 
   const handleFilterChange = (status) => {
@@ -159,6 +188,22 @@ const Leads = () => {
     } catch (error) {
       console.error("Error sending SMS:", error);
     }
+  };
+
+  const handleSelectChange = (e) => {
+    const selectedId = e.target.value;
+    const selectedShablon = smsShablon.find(
+      (shablon) => shablon.id === Number(selectedId)
+    );
+    if (selectedShablon) {
+      setText(selectedShablon.text);
+      setSelectedOption(selectedId);
+    }
+  };
+
+  const closeModalMsg = () => {
+    setModalOpenMsg(false);
+    setSelectedOption("0");
   };
 
   return (
@@ -283,26 +328,28 @@ const Leads = () => {
                 fontSize: "16px",
                 cursor: "pointer",
               }}
-              onClick={() => setModalOpenMsg(false)}
+              onClick={() => closeModalMsg()}
             >
               X
             </button>
 
             {/* Title */}
-            <h3>Xabar matni</h3>
+            <h3>Xabar matnini tanlang</h3>
 
-            {/* Textarea for input */}
-            <textarea
+            <select onChange={handleSelectChange} value={selectedOption}>
+              <option value="0">SMS Shablon</option>
+              {smsShablon.map((shablon) => (
+                <option key={shablon.id} value={shablon.id}>
+                  {shablon.status} - {shablon.text.slice(0, 20)}...
+                </option>
+              ))}
+            </select>
+
+            <Textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              readOnly // Set textarea to read-only
               rows="4"
-              placeholder="Xabar matnini kiriting"
-              style={{
-                width: "300px",
-                padding: "10px",
-                marginBottom: "10px",
-                borderRadius: "5px",
-              }}
+              placeholder="Xabar matnini tanlang..."
             />
 
             {/* Actions */}

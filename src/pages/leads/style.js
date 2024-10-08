@@ -69,12 +69,27 @@ export const Modal = styled.div`
 
 export const ModalContent = styled.div`
   background-color: white;
+  position: relative;
   padding: 20px;
   border-radius: 8px;
   width: 350px;
   text-align: center;
+  select {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 95%;
+    height: 40px;
+    border-radius: 5px;
+    padding: 10px;
+  }
 `;
-
+export const Textarea = styled.textarea`
+  width: 300px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+`;
 export const ModalActions = styled.div`
   display: flex;
   justify-content: space-between;

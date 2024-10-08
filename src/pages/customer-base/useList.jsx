@@ -39,10 +39,10 @@ export const useList = () => {
           <Image
             src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
             alt="user"
-            width={60}
+            width={30}
           />
         ) : (
-          <Image src={row?.photo} width={80} />
+          <Image src={row?.photo} width={40} />
         );
       },
     },

@@ -7,21 +7,23 @@ import {
   Button as AntdButton,
   Select as AntdSelect,
   Checkbox,
+  notification,
 } from "antd";
 // import Upload from "@/components/upload";
 // import { Input } from "@/components/input";
-import { Select } from "@/components/select";
+// import { Select } from "@/components/select";
 import { Spinner } from "@/components/spinner";
 import { useNavigate } from "react-router-dom";
 import { useReset } from "../hooks/useReset";
-import TextEditorController from "@/components/text-editor";
+// import TextEditorController from "@/components/text-editor";
 import { getUser } from "@/utils/user";
-import AdditionCrud from "../addition";
-import { CreateSelect } from "@/components/create-select";
-import { FormProvider } from "react-hook-form";
+// import AdditionCrud from "../addition";
+// import { CreateSelect } from "@/components/create-select";
+// import { FormProvider, get, set } from "react-hook-form";
 import { List, ListItem } from "./style";
 import { FaPlus } from "react-icons/fa";
-import { FormGroupProvider, Label, Input, Error } from "@/styles/global";
+// import { FormGroupProvider, Label, Input, Error } from "@/styles/global";
+import { Label, Input } from "@/styles/global";
 import {
   CloseOutlined,
   CloudUploadOutlined,
@@ -30,8 +32,8 @@ import {
 // import UploadVideo from "@/components/upload_video";
 import { request } from "@/shared/api/request";
 import styles from "./product.module.css";
-import { useState } from "react";
-import UploadVideo from "@/components/upload_video";
+import { useEffect, useState } from "react";
+// import UploadVideo from "@/components/upload_video";
 import { VideoWrapper } from "@/components/upload_video/style";
 import { Reactquill } from "@/components/text-editor/style";
 const CreateProducts = () => {
@@ -45,9 +47,9 @@ const CreateProducts = () => {
   ]);
   const [imageLabel, setImageLabel] = useState("");
   const [imagesAtt, setImagesAtt] = useState([]);
-  const [colorLabel, setColorLabel] = useState("");
-  const [colorCode, setColorCode] = useState("");
-  const [colorsAtt, setColorsAtt] = useState([]);
+  // const [colorLabel, setColorLabel] = useState("");
+  // const [colorCode, setColorCode] = useState("");
+  // const [colorsAtt, setColorsAtt] = useState([]);
   const [name_uz, setNameUz] = useState("");
   const [name_ru, setNameRu] = useState("");
   const [price, setPrice] = useState();
@@ -60,22 +62,24 @@ const CreateProducts = () => {
   const [isRecommend, setIsRecommend] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [isCheap, setIsCheap] = useState(false);
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState(1);
   const [categoryList, setCategoryList] = useState([]);
+  const [subCategoryList, setSubCategoryList] = useState();
+  const [selectedCategory, setSelectedCategory] = useState("");
   const {
     form,
-    fields,
-    append,
-    remove,
-    confirm,
-    fileList,
+    // fields,
+    // append,
+    // remove,
+    // confirm,
+    // fileList,
     setFileList,
     isLoading,
     // categoryList,
-    contextHolder,
     setVideoFile,
-    videoFile,
+    // videoFile,
   } = useConfirm();
+  const [api, contextHolder] = notification.useNotification();
   const getFileUrl = async (e, video) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
@@ -97,12 +101,24 @@ const CreateProducts = () => {
   };
   const getCategoryList = async () => {
     const response = await request.get("/category/list");
-    setCategoryList(response.data.results);
+    setCategoryList(response.data);
   };
+  const getSubCategoryList = async (id) => {
+    const response = await request.get(`/category/sub/list/${id}`);
+    setSubCategoryList(response.data);
+  };
+  useEffect(() => {
+    getCategoryList();
+    getSubCategoryList(1);
+  }, []);
+  useEffect(() => {
+    getSubCategoryList(category);
+  }, [category]);
   const handleSubmit = async () => {
-    console.log(form.getValues());
+    const arr = [...images];
+    if (videoLink) arr.push(videoLink);
     const data = {
-      medias: [...images, videoLink],
+      medias: [...arr],
       name_uz,
       name_ru,
       desc_uz: description_uz,
@@ -113,10 +129,56 @@ const CreateProducts = () => {
       is_recommend: isRecommend,
       is_new: isNew,
       is_cheap: isCheap,
+      category: selectedCategory,
     };
-    const res = await request.post("admin/product/create", data);
-    console.log(res);
-    // console.log(data, "data");
+    if (
+      name_uz === "" ||
+      name_ru === "" ||
+      description_uz === "" ||
+      description_ru === "" ||
+      price === "" ||
+      selectedCategory === "" ||
+      images.length === 0 ||
+      attributes.length === 0
+    ) {
+      console.log("nimadir");
+      api["error"]({
+        message: "Error",
+        description: "Buyurtma ma'lumotlari to'liq kiritilmadi",
+      });
+    } else {
+      const res = await request.post("admin/product/create", data);
+      if (res.status === 201) {
+        api["success"]({
+          message: "Success",
+          description: "Maxsulot muvaffaqiyatli yaratildi",
+        });
+        setImages([]);
+        setAttributes([]);
+        setVideoLink(null);
+        // setFileList([]);
+        setCategory(1);
+        setNameUz("");
+        setNameRu("");
+        setDescriptionUz("");
+        setDescriptionRu("");
+        setPrice("");
+        setOldPrice("");
+        setIsRecommend(false);
+        setIsNew(false);
+        setIsCheap(false);
+        setSelectedCategory("");
+        setTimeout(() => {
+          navigate("/admin/products");
+        }, 1500);
+      } else {
+        console.log(res, "res");
+        api["error"]({
+          message: "Error",
+          description: res?.data?.message || "Nimadur xatolik yuz berdi!",
+        });
+      }
+    }
   };
   const types = [
     { label: "TEXT", value: "TEXT" },
@@ -142,15 +204,29 @@ const CreateProducts = () => {
             <Col span={24}>
               <div className={styles.imageContainer}>
                 {images.length > 0 &&
-                  images.map((image) => (
-                    <img
-                      key={image}
-                      className={styles.categoryLogo}
-                      src={image}
-                      alt="productImage"
-                      width={80}
-                      height={80}
-                    />
+                  images.map((image, index) => (
+                    <div className={styles.imageItem} key={index}>
+                      <p
+                        className={styles.delete}
+                        // style={{ backgroundColor: "white" }}
+                      >
+                        <DeleteFilled
+                          color="red"
+                          background="red"
+                          onClick={() =>
+                            setImages(images.filter((i) => i !== image))
+                          }
+                        />
+                      </p>
+                      <img
+                        key={image}
+                        className={styles.categoryLogo}
+                        src={image}
+                        alt="productImage"
+                        width={80}
+                        height={80}
+                      />
+                    </div>
                   ))}
                 <>
                   <label
@@ -177,7 +253,7 @@ const CreateProducts = () => {
                 </>
               </div>
               {videoLink ? (
-                <VideoWrapper>
+                <VideoWrapper style={{ marginTop: "5px" }}>
                   <video
                     src={videoLink}
                     width="400px"
@@ -266,21 +342,21 @@ const CreateProducts = () => {
           </Row>
           <Row style={{ marginTop: 12 }} gutter={[16, 16]}>
             <Col span={24} lg={12}>
-              <Label>Descrtiption - tasnif (O’zbek tili)</Label>
+              <Label>Description - tasnif (O’zbek tili)</Label>
               <Reactquill
                 value={description_uz}
                 onChange={(e) => setDescriptionUz(e)}
-                placeholder="Descrtiption - tasnif (O’zbek tili)"
+                placeholder="Description - tasnif (O’zbek tili)"
                 theme="snow"
                 rows={5}
               />
             </Col>
             <Col span={24} lg={12}>
-              <Label>Descrtiption - tasnif (Rus tili)</Label>
+              <Label>Description - tasnif (Rus tili)</Label>
               <Reactquill
                 value={description_ru}
                 onChange={(e) => setDescriptionRu(e)}
-                placeholder="Descrtiption - tasnif (Rus tili)"
+                placeholder="Description - tasnif (Rus tili)"
                 theme="snow"
                 rows={5}
               />
@@ -288,16 +364,37 @@ const CreateProducts = () => {
             <Col span={24} lg={12}>
               <AntdSelect
                 style={{ width: "100%" }}
-                control={form.control}
+                // control={form.control}
+                onChange={(e) => setCategory(e)}
                 name="category"
                 label="Kategoriyalar"
                 placeholder="Kategoriyalar"
-                options={categoryList}
+                options={categoryList.map((item) => ({
+                  label: item.name_uz,
+                  value: item.id,
+                }))}
+              />
+            </Col>
+            <Col span={24} lg={12}>
+              <AntdSelect
+                style={{ width: "100%" }}
+                onChange={(e) => setSelectedCategory(e)}
+                name="subCategory"
+                label="SubCategoriyalar"
+                placeholder="SubCategoriyalar"
+                options={
+                  subCategoryList && subCategoryList.length > 0
+                    ? subCategoryList.map((item) => ({
+                        label: item.name_uz,
+                        value: item.id,
+                      }))
+                    : []
+                }
               />
             </Col>
           </Row>
           <Row gutter={[16, 16]} style={{ marginTop: 12 }}>
-            <Col span={24} lg={12}>
+            <Col span={48} lg={24}>
               <List>
                 {attributes.map((item, index) => {
                   return (
@@ -307,29 +404,36 @@ const CreateProducts = () => {
                         display: "flex",
                         flexDirection: "column",
                         gap: 6,
+                        marginBottom: 12,
                       }}
                       key={index}
                     >
-                      <Label>Attribute nomi ru</Label>
-                      <Input
-                        label="Attribut nomi"
-                        placeholder="Attribut nomi ru"
-                        value={item?.name_ru}
-                        onChange={(e) => {
-                          attributes[index].name_ru = e.target.value;
-                          setAttributes([...attributes]);
-                        }}
-                      />
-                      <Label>Attribute nomi uz</Label>
+                      <Row gutter={[16, 16]}>
+                        <Col span={24} lg={12}>
+                          <Label>Attribute nomi ru</Label>
+                          <Input
+                            label="Attribut nomi"
+                            placeholder="Attribut nomi ru"
+                            value={item?.name_ru}
+                            onChange={(e) => {
+                              attributes[index].name_ru = e.target.value;
+                              setAttributes([...attributes]);
+                            }}
+                          />
+                        </Col>
+                        <Col span={24} lg={12}>
+                          <Label>Attribute nomi uz</Label>
 
-                      <Input
-                        placeholder="Attribut nomi uz"
-                        value={item?.name_uz}
-                        onChange={(e) => {
-                          attributes[index].name_uz = e.target.value;
-                          setAttributes([...attributes]);
-                        }}
-                      />
+                          <Input
+                            placeholder="Attribut nomi uz"
+                            value={item?.name_uz}
+                            onChange={(e) => {
+                              attributes[index].name_uz = e.target.value;
+                              setAttributes([...attributes]);
+                            }}
+                          />
+                        </Col>
+                      </Row>
                       {/* <Input
                         control={form.control}
                         value={item?.name_ru}
@@ -352,213 +456,220 @@ const CreateProducts = () => {
                         placeholder="Attribut nomi uz"
                         label="Attribut nomi uz"
                       /> */}
-                      <Label>Attribute turi</Label>
-                      <AntdSelect
-                        defaultValue={item?.type}
-                        style={{ width: "100%" }}
-                        options={types}
-                        onChange={(value) => {
-                          attributes[index].type = value;
-                          setAttributes([...attributes]);
-                        }}
-                      />
-                      {item.type === "TEXT" && (
+                      <Col style={{ padding: 0 }} span={24} lg={12}>
+                        <Label>Attribute turi</Label>
                         <AntdSelect
-                          mode="tags"
-                          style={{ width: "100%" }}
+                          defaultValue={item?.type}
+                          style={{ width: "100%", margin: "10px 0" }}
+                          options={types}
                           onChange={(value) => {
-                            if (item.type === "TEXT") {
-                              const valuee = [];
-                              value.map((v) => {
-                                valuee.push({
-                                  value: v,
-                                  title: v,
-                                });
-                              });
-                              attributes[index].values = [...valuee];
-                              setAttributes([...attributes]);
-                            }
-                            // const arr = [...item.values, value];
-                            // attributes[index].values = [...arr];
-                            // setAttributes([...attributes]);
+                            attributes[index].type = value;
+                            setAttributes([...attributes]);
                           }}
-                          options={[]}
                         />
-                      )}
-                      {imagesAtt.length > 0 && item.type === "IMAGE" && (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            gap: 10,
-                          }}
-                        >
-                          {imagesAtt.map((value, i) => {
-                            return (
-                              <div
-                                onClick={() => {
-                                  setImagesAtt(
-                                    imagesAtt.filter((v) => v.url !== value.url)
-                                  );
-                                }}
-                                key={i}
-                              >
-                                <p>{value.label}</p>
-                                <img
-                                  src={value.url}
-                                  alt="image"
-                                  style={{ width: 100, height: 100 }}
-                                />
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                      {item.type === "IMAGE" && (
-                        <div>
-                          <Input
-                            placeholder="Enter color name"
-                            value={imageLabel}
-                            onChange={(e) => {
-                              setImageLabel(e.target.value);
-                            }}
-                          />
-                        </div>
-                      )}
-                      {imageLabel.length > 1 &&
-                        item.type === "IMAGE" &&
-                        images.map((v, i) => {
-                          const arr = imagesAtt.filter(
-                            (value) => value.url === v
-                          );
-
-                          if (arr.length !== 0) {
-                            return null;
-                          }
-                          return (
-                            <img
-                              key={i}
-                              src={v}
-                              alt="image"
-                              style={{ width: 100, height: 100 }}
-                              onClick={() => {
-                                setImagesAtt([
-                                  ...imagesAtt,
-                                  { url: v, label: imageLabel },
-                                ]);
-                                setImageLabel("");
-                                const arr = [
-                                  ...attributes[index].values,
-                                  { value: v, title: imageLabel },
-                                ];
-
-                                attributes[index].values = [...arr];
+                        {item.type === "TEXT" && (
+                          <AntdSelect
+                            mode="tags"
+                            style={{ width: "100%", marginBottom: 10 }}
+                            onChange={(value) => {
+                              if (item.type === "TEXT") {
+                                const valuee = [];
+                                value.map((v) => {
+                                  valuee.push({
+                                    value: v,
+                                    title: v,
+                                  });
+                                });
+                                attributes[index].values = [...valuee];
                                 setAttributes([...attributes]);
-                              }}
-                            />
-                          );
-                        })}
-
-                      {item.type === "COLOR" && (
-                        <div>
-                          <Input
-                            placeholder="Enter color name"
-                            value={colorLabel}
-                            onChange={(e) => {
-                              setColorLabel(e.target.value);
+                              }
+                              // const arr = [...item.values, value];
+                              // attributes[index].values = [...arr];
+                              // setAttributes([...attributes]);
                             }}
+                            options={[]}
                           />
-                          <div style={{ display: "flex", gap: 10 }}>
+                        )}
+                        {imagesAtt.length > 0 && item.type === "IMAGE" && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              gap: 10,
+                            }}
+                          >
+                            {imagesAtt.map((value, i) => {
+                              return (
+                                <div
+                                  onClick={() => {
+                                    setImagesAtt(
+                                      imagesAtt.filter(
+                                        (v) => v.url !== value.url
+                                      )
+                                    );
+                                  }}
+                                  key={i}
+                                  className={`${styles.attributeImages} ${styles.imageItem}`}
+                                >
+                                  <p style={{ margin: 0 }}>{value.label}</p>
+                                  <p className={styles.delete}>
+                                    <DeleteFilled />
+                                  </p>
+                                  <img
+                                    src={value.url}
+                                    alt="image"
+                                    style={{ width: 100, height: 100 }}
+                                  />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {item.type === "IMAGE" && (
+                          <div>
                             <Input
                               placeholder="Enter color name"
-                              type="color"
-                              // value={colorCode}
+                              value={imageLabel}
                               onChange={(e) => {
-                                console.log(colorCode, "colorCode");
-                                console.log();
-                                setColorCode(e.target.value);
-                                // console.log({
-                                //   colorLabel,
-                                //   value: e.target.value,
-                                // });
-                                // setColorLabel(e.target.value);
+                                setImageLabel(e.target.value);
                               }}
                             />
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                const arr = [
-                                  ...colorsAtt,
-                                  {
-                                    label: colorLabel,
-                                    value: colorCode,
-                                  },
-                                ];
-                                // setColors([...colors, colorLabel]);
-                                setColorLabel("");
-                                setColorCode("#000000");
-                                setColorsAtt([...arr]);
-                                attributes[index].values = [...arr];
-                              }}
-                            >
-                              Add
-                            </button>
                           </div>
-                        </div>
-                      )}
-                      {colorsAtt.length > 0 && item.type === "COLOR" && (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            gap: 10,
-                          }}
-                        >
-                          {colorsAtt.map((value, i) => {
+                        )}
+                        {imageLabel.length > 1 &&
+                          item.type === "IMAGE" &&
+                          images.map((v, i) => {
+                            const arr = imagesAtt.filter(
+                              (value) => value.url === v
+                            );
+
+                            if (arr.length !== 0) {
+                              return null;
+                            }
                             return (
-                              <div
-                                onClick={() => {
-                                  setColorsAtt(
-                                    colorsAtt.filter((v) => v !== value)
-                                  );
-                                }}
+                              <img
                                 key={i}
-                              >
-                                <p>{value.label}</p>
-                                <div
-                                  style={{
-                                    backgroundColor: value.value,
-                                    height: 20,
-                                    width: 20,
-                                    borderRadius: 10,
-                                  }}
-                                ></div>
-                              </div>
+                                src={v}
+                                alt="image"
+                                style={{ width: 100, height: 100 }}
+                                onClick={() => {
+                                  setImagesAtt([
+                                    ...imagesAtt,
+                                    { url: v, label: imageLabel },
+                                  ]);
+                                  setImageLabel("");
+                                  const arr = [
+                                    ...attributes[index].values,
+                                    { value: v, title: imageLabel },
+                                  ];
+                                  attributes[index].values = [...arr];
+                                  setAttributes([...attributes]);
+                                }}
+                              />
                             );
                           })}
-                        </div>
-                      )}
-                      {/* <CreateSelect
+
+                        {/* {item.type === "COLOR" && (
+                          <div>
+                            <Input
+                              placeholder="Enter color name"
+                              value={colorLabel}
+                              onChange={(e) => {
+                                setColorLabel(e.target.value);
+                              }}
+                            />
+                            <div style={{ display: "flex", gap: 10 }}>
+                              <Input
+                                placeholder="Enter color name"
+                                type="color"
+                                // value={colorCode}
+                                onChange={(e) => {
+                                  console.log(colorCode, "colorCode");
+                                  console.log();
+                                  setColorCode(e.target.value);
+                                  // console.log({
+                                  //   colorLabel,
+                                  //   value: e.target.value,
+                                  // });
+                                  // setColorLabel(e.target.value);
+                                }}
+                              />
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  const arr = [
+                                    ...colorsAtt,
+                                    {
+                                      label: colorLabel,
+                                      value: colorCode,
+                                    },
+                                  ];
+                                  // setColors([...colors, colorLabel]);
+                                  setColorLabel("");
+                                  setColorCode("#000000");
+                                  setColorsAtt([...arr]);
+                                  attributes[index].values = [...arr];
+                                }}
+                              >
+                                Add
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        {colorsAtt.length > 0 && item.type === "COLOR" && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              gap: 10,
+                            }}
+                          >
+                            {colorsAtt.map((value, i) => {
+                              return (
+                                <div
+                                  onClick={() => {
+                                    setColorsAtt(
+                                      colorsAtt.filter((v) => v !== value)
+                                    );
+                                  }}
+                                  key={i}
+                                >
+                                  <p>{value.label}</p>
+                                  <div
+                                    style={{
+                                      backgroundColor: value.value,
+                                      height: 20,
+                                      width: 20,
+                                      borderRadius: 10,
+                                    }}
+                                  ></div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )} */}
+                        {/* <CreateSelect
                         control={form.control}
                         name={`attributes.${index}.name_uz`}
                         placeholder="Attribut qiymati"
                         options={[]}
                       /> */}
-                      <AntdButton
-                        icon={<DeleteFilled />}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          borderRadius: "50%",
-                        }}
-                        className="delete-btn"
-                        danger
-                        onClick={() => {
-                          attributes.splice(index, 1);
-                          setAttributes([...attributes]);
-                        }}
-                      />
+                        <AntdButton
+                          icon={<DeleteFilled />}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: "50%",
+                          }}
+                          className="delete-btn"
+                          danger
+                          onClick={() => {
+                            attributes.splice(index, 1);
+                            setAttributes([...attributes]);
+                          }}
+                        />
+                      </Col>
                     </ListItem>
                   );
                 })}

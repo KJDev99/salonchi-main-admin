@@ -35,3 +35,31 @@
   display: flex;
   gap: 10px;
 }
+.imageItem {
+  position: relative;
+}
+.delete {
+  opacity: 0;
+  position: absolute;
+  padding: 10px;
+  /* border-radius: 50%; */
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-color: #ffffff5e;
+  text-align: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.imageItem:hover .delete {
+  opacity: 1;
+}
+.attributeImages {
+  text-align: center;
+  gap: 0px;
+}
+.attributeImages .delete {
+  margin: 0px;
+}

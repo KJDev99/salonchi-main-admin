@@ -3,7 +3,7 @@ import { Input } from "@/components/input";
 import { Footer, Header, Title, Wrapper } from "@/styles/global";
 import { Col, notification, Row } from "antd";
 import { useConfirm } from "../hooks/useConfirm";
-import Upload from "@/components/upload";
+// import Upload from "@/components/upload";
 import { Spinner } from "@/components/spinner";
 // import { Select } from "@/components/select";
 import { useNavigate, useParams } from "react-router-dom";
@@ -11,15 +11,14 @@ import { useReset } from "../hooks/useReset";
 import { useEffect, useState } from "react";
 import { request } from "@/shared/api/request";
 import styles from "./styles.module.css";
-import { CloudUploadOutlined } from "@ant-design/icons";
+import { CloudUploadOutlined, DeleteFilled } from "@ant-design/icons";
 const CreateCategory = () => {
   const [categoryLogo, setCategoryLogo] = useState(null);
   const [categoryImageRu, setCategoryImageRu] = useState(null);
   const [categoryImageUz, setCategoryImageUz] = useState(null);
   const [api, contextHolder] = notification.useNotification();
   const navigate = useNavigate();
-  const { confirm, form, fileList, setFileList, isLoading, categoryList } =
-    useConfirm();
+  const { form, fileList, setFileList, isLoading } = useConfirm();
   const { id } = useParams();
   const getFileUrl = async (e, index) => {
     e.preventDefault();
@@ -60,7 +59,7 @@ const CreateCategory = () => {
       setCategoryImageRu(banner_ru);
     }
   };
-  const createCategory = async () => {
+  const createCategory = async (isEditing) => {
     const data = {
       name_uz: form.getValues().name_uz,
       name_ru: form.getValues().name_ru,
@@ -69,6 +68,8 @@ const CreateCategory = () => {
       banner_ru: categoryImageRu,
       parent: null,
     };
+
+    // if (isEditing) {
     const response = await request.post(`admin/category/create`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -89,9 +90,6 @@ const CreateCategory = () => {
       getCurrentValue();
     }
   }, [id]);
-
-  // console.log("categoryList", categoryLogo);
-  console.log("id", id);
   return (
     <>
       {contextHolder}
@@ -140,13 +138,27 @@ const CreateCategory = () => {
                       />
                     </>
                   ) : (
-                    <img
-                      className={styles.categoryLogo}
-                      src={categoryLogo}
-                      alt="categoryLogo"
-                      width={80}
-                      height={80}
-                    />
+                    <>
+                      <div className={styles.imageItem}>
+                        <p
+                          className={styles.delete}
+                          // style={{ backgroundColor: "white" }}
+                        >
+                          <DeleteFilled
+                            color="red"
+                            background="red"
+                            onClick={() => setCategoryLogo(null)}
+                          />
+                        </p>
+                        <img
+                          className={styles.categoryLogo}
+                          src={categoryLogo}
+                          alt="productImage"
+                          width={80}
+                          height={80}
+                        />
+                      </div>
+                    </>
                   )}
                   {/* <Upload
                 fileList={fileList}
@@ -182,13 +194,27 @@ const CreateCategory = () => {
                       />
                     </>
                   ) : (
-                    <img
-                      className={styles.categoryLogo}
-                      src={categoryImageUz}
-                      alt="categoryLogo"
-                      width={100}
-                      height={100}
-                    />
+                    <>
+                      <div className={styles.imageItem}>
+                        <p
+                          className={styles.delete}
+                          // style={{ backgroundColor: "white" }}
+                        >
+                          <DeleteFilled
+                            color="red"
+                            background="red"
+                            onClick={() => setCategoryImageUz(null)}
+                          />
+                        </p>
+                        <img
+                          className={styles.categoryLogo}
+                          src={categoryImageUz}
+                          alt="productImage"
+                          width={80}
+                          height={80}
+                        />
+                      </div>
+                    </>
                   )}
                   {/* <Upload
                 fileList={fileList}
@@ -224,13 +250,27 @@ const CreateCategory = () => {
                       />
                     </>
                   ) : (
-                    <img
-                      className={styles.categoryLogo}
-                      src={categoryImageRu}
-                      alt="categoryLogo"
-                      width={100}
-                      height={100}
-                    />
+                    <>
+                      <div className={styles.imageItem}>
+                        <p
+                          className={styles.delete}
+                          // style={{ backgroundColor: "white" }}
+                        >
+                          <DeleteFilled
+                            color="red"
+                            background="red"
+                            onClick={() => setCategoryImageRu(null)}
+                          />
+                        </p>
+                        <img
+                          className={styles.categoryLogo}
+                          src={categoryImageRu}
+                          alt="productImage"
+                          width={80}
+                          height={80}
+                        />
+                      </div>
+                    </>
                   )}
                   {/* <Upload
                 fileList={fileList}

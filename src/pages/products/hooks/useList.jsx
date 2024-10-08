@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Image, Modal, notification } from "antd";
 import { ActionWrapper } from "../style";
 import {
+  CopyFilled,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
@@ -146,14 +147,14 @@ export const useList = () => {
       key: "price",
       render: (price) => <p>{price} so`m</p>,
     },
-    {
-      title: "Discount",
-      dataIndex: "sale_price",
-      key: "sale_price",
-      render: (sale_price) => (
-        <p>{sale_price === null ? 0 : sale_price} so`m</p>
-      ),
-    },
+    // {
+    //   title: "Discount",
+    //   dataIndex: "sale_price",
+    //   key: "sale_price",
+    //   render: (sale_price) => (
+    //     <p>{sale_price === null ? 0 : sale_price} so`m</p>
+    //   ),
+    // },
     {
       title: "Action",
       key: "action",
@@ -169,6 +170,29 @@ export const useList = () => {
             <DeleteOutlined />
           </Button>
         </ActionWrapper>
+      ),
+    },
+    {
+      title: "Referal link",
+      dataIndex: "url",
+      key: "url",
+      render: (link) => (
+        <p>
+          {
+            <Button
+              // className="edit-btn"
+              onClick={() => {
+                navigator.clipboard.writeText(link);
+                api["success"]({
+                  message: "Success",
+                  description: "Link copied",
+                });
+              }}
+            >
+              <CopyFilled />
+            </Button>
+          }
+        </p>
       ),
     },
   ];

@@ -8,7 +8,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 export const Pagination = ({ total, params, setParams }) => {
   const navigate = useNavigate();
   const location = useLocation();
-
   useEffect(() => {
     let queryParams = "?page=" + params.page;
     navigate({
@@ -16,13 +15,13 @@ export const Pagination = ({ total, params, setParams }) => {
       search: queryParams,
     });
   }, [params]);
-
   return (
     <Wrapper>
       <AntdPagination
         defaultCurrent={params.page}
         current={params.page}
         total={total}
+        pageSize={20}
         value={params}
         onChange={(e) =>
           setParams({

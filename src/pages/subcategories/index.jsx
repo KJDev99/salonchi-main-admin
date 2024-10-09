@@ -5,30 +5,39 @@ import { CustomTable } from "@/components/table";
 import { useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/router";
 import { Pagination } from "@/components/pagination";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ButtonElement } from "@/components/button/style";
 
-const Categories = () => {
+const SubCategories = () => {
   const { columns, data, isLoading, contextHolder, count, params, setParams } =
     useList();
   const navigate = useNavigate();
   return (
     <Wrapper>
+      <ButtonElement
+        style={{
+          width: "auto",
+          color: "black",
+          padding: "5px 10px",
+          backgroundColor: "transparent",
+          fontSize: "24px",
+        }}
+        onClick={() => navigate("/admin/categories")}
+      >
+        <ArrowLeftOutlined />
+      </ButtonElement>
       <Header>
-        <Title>Kategoriyalar</Title>
+        <Title>Sub Kategoriyalar</Title>
         <Button
-          name="Kategoriya yaratish"
+          name="Sub Kategoriya yaratish"
           onClick={() => navigate(ROUTER.CREATE)}
         />
       </Header>
       <CustomTable
-        style={{ cursor: "pointer" }}
+        // style={{ height: "100px" }}
         columns={columns}
         data={data}
         loading={isLoading}
-        onRow={(record) => ({
-          onClick: () => {
-            navigate(`${record.id}/${ROUTER.SUBCATEGORIES}/`);
-          },
-        })}
       />
       <Pagination params={params} setParams={setParams} total={count} />
       {contextHolder}
@@ -36,4 +45,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default SubCategories;

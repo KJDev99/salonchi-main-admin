@@ -39,7 +39,6 @@ export const useList = () => {
     queryKey: [REACT_QUERY_KEYS.GET_CATEGORY_LIST, params],
     queryFn: () => getSubCategory(params),
     select: (res) => {
-      console.log(res);
       return {
         count: res?.data?.count,
         data: res?.data?.results,
@@ -59,7 +58,7 @@ export const useList = () => {
 
   const handleDelete = (id) => {
     confirm({
-      title: "Rostdan ham kategoriyani o`chirmoqchimisiz?",
+      title: "Rostdan ham sub kategoriyani o`chirmoqchimisiz?",
       icon: <ExclamationCircleOutlined />,
       onOk() {
         mutate(id);

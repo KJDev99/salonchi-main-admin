@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 export const useReset = ({ form, setFileList }) => {
-  const { id } = useParams();
+  const { subid } = useParams();
 
   return useQuery({
     queryKey: ["get-category-detail"],
-    queryFn: () => detailCategory(id),
+    queryFn: () => detailCategory(subid),
     select: (res) => res?.data,
     onSuccess: (res) => {
       if (res?.photo) {
@@ -24,6 +24,6 @@ export const useReset = ({ form, setFileList }) => {
           : null,
       });
     },
-    enabled: id ? true : false,
+    enabled: subid ? true : false,
   });
 };

@@ -1,7 +1,7 @@
 import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 import { ROUTER } from "@/constants/router";
 import { ActionWrapper } from "@/pages/products/style";
-import { deleteCategory, getCategory } from "@/shared/modules/category";
+import { deleteCategory, getSubCategory } from "@/shared/modules/category";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -17,10 +17,14 @@ const { confirm } = Modal;
 
 export const useList = () => {
   const { search } = useLocation();
+  // console.log(window.location.pathname.split("/")[3]);
   const initial_params = new URLSearchParams(search);
   const [params, setParams] = useState({
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
-    limit: 20,
+    limit: initial_params.has("limit")
+      ? Number(initial_params.get("limit"))
+      : 20,
+    categoryId: window.location.pathname.split("/")[3],
   });
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
@@ -33,14 +37,16 @@ export const useList = () => {
     refetch,
   } = useQuery({
     queryKey: [REACT_QUERY_KEYS.GET_CATEGORY_LIST, params],
-    queryFn: () => getCategory(params),
+    queryFn: () => getSubCategory(params),
     select: (res) => {
+      console.log(res);
       return {
         count: res?.data?.count,
         data: res?.data?.results,
       };
     },
   });
+
   const { mutate } = useMutation((data) => deleteCategory(data), {
     onSuccess: () => {
       refetch();
@@ -120,22 +126,12 @@ export const useList = () => {
       key: "action",
       render: (record) => (
         <ActionWrapper size="middle">
-          <Button
-            className="edit-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEdit(record.id);
-            }}
-          >
+          <Button className="edit-btn" onClick={() => handleEdit(record.id)}>
             <EditOutlined />
           </Button>
           <Button
             className="delete-btn"
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log(record.id);
-              handleDelete(record.id);
-            }}
+            onClick={() => handleDelete(record.id)}
           >
             <DeleteOutlined />
           </Button>

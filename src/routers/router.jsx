@@ -12,6 +12,7 @@ const Staff = lazy(async () => await import("@/pages/staff"));
 const StaffCrud = lazy(async () => await import("@/pages/staff/crud"));
 const Roles = lazy(async () => await import("@/pages/roles"));
 const Categories = lazy(async () => await import("@/pages/categories"));
+const SubCategories = lazy(async () => await import("@/pages/subcategories"));
 const Orders = lazy(async () => await import("@/pages/orders"));
 const OrderDetail = lazy(async () => await import("@/pages/orders/detail"));
 const OrdersWaiting = lazy(async () => await import("@/pages/orders-waiting"));
@@ -24,6 +25,9 @@ const OrderDetailWaiting = lazy(
 const Statistics = lazy(async () => await import("@/pages/statistics"));
 const CreateCategory = lazy(
   async () => await import("@/pages/categories/crud")
+);
+const CreateSubCategory = lazy(
+  async () => await import("@/pages/subcategories/crud")
 );
 const CreateProducts = lazy(async () => await import("@/pages/products/crud"));
 const Settings = lazy(async () => await import("@/pages/settings"));
@@ -99,6 +103,23 @@ export const router = createBrowserRouter([
       {
         path: ROUTER.CATEGORIES + ROUTER.EDIT + "/:id",
         element: <CreateCategory />,
+      },
+      {
+        path: ROUTER.CATEGORIES + ":id/" + ROUTER.SUBCATEGORIES,
+        element: <SubCategories />,
+      },
+      {
+        path: ROUTER.CATEGORIES + ":id/" + ROUTER.SUBCATEGORIES + ROUTER.CREATE,
+        element: <CreateSubCategory />,
+      },
+      {
+        path:
+          ROUTER.CATEGORIES +
+          ":id/" +
+          ROUTER.SUBCATEGORIES +
+          ROUTER.EDIT +
+          "/:subid",
+        element: <CreateSubCategory />,
       },
       {
         path: ROUTER.ORDERS,

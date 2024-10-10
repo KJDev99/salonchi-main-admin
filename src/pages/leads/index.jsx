@@ -16,7 +16,12 @@ import {
   Textarea,
 } from "./style"; // Ensure paths are correct
 import MessageIcon from "@/assets/message";
-import ViewIcon from "@/assets/view";
+// import ViewIcon from "@/assets/view";
+import { Button, Space } from "antd";
+import { ROUTER } from "@/constants/router";
+import { EyeFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+// import { Pagination } from "@/components/pagination";
 
 const statusOptions = ["NEW", "ACCEPT", "REJECTED", "DELIVERED", "RECALL"];
 
@@ -34,6 +39,10 @@ const Leads = () => {
   const [selectedLeadId, setSelectedLeadId] = useState(null); // Stores selected lead ID
   const [smsShablon, setSmsShablon] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
+  const [comment, setComment] = useState(null);
+  const [isReCallOpen, setIsReCallOpen] = useState();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -57,6 +66,7 @@ const Leads = () => {
         );
         setLeads(response.data.results);
         setFilteredLeads(response.data.results);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching leads:", error);
       } finally {
@@ -86,7 +96,6 @@ const Leads = () => {
           }
         );
         setSmsShablon(response.data);
-        console.log(response.data, "sms shablon");
       } catch (error) {
         console.error("Error fetching sms shablon:", error);
       }
@@ -99,15 +108,15 @@ const Leads = () => {
     setSelectedStatus(status);
     if (status === "ALL") {
       setFilteredLeads(leads);
-      console.log(leads, "all");
     } else {
       setFilteredLeads(leads.filter((lead) => lead.status === status));
     }
   };
+
   useEffect(() => {
     handleFilterChange(selectedStatus);
     setTitles(selectedStatus);
-  }, [selectedStatus]);
+  }, [selectedStatus, titles, modalOpen]);
 
   const handleStatusChange = (lead, newStatus) => {
     setSelectedLead(lead);
@@ -121,7 +130,7 @@ const Leads = () => {
         const userData = JSON.parse(localStorage.getItem("userInfo"));
         await axios.put(
           `https://api.salonchi.uz/api/v1/lead/${selectedLead.id}/status`,
-          { status: newStatus },
+          { status: newStatus, comment: comment, schedule: isReCallOpen },
           {
             headers: {
               Authorization: `Bearer ${userData?.access}`,
@@ -158,31 +167,27 @@ const Leads = () => {
     }
   };
 
-  // Open modal and set the selected lead ID
   const openMessageModal = (leadId) => {
     setSelectedLeadId(leadId);
-    setModalOpenMsg(true); // Open modal
+    setModalOpenMsg(true);
   };
 
-  // Handle the POST request when submitting the form
   const handleSubmit = async () => {
     try {
       const userData = JSON.parse(localStorage.getItem("userInfo"));
 
       const payload = {
-        leads: [selectedLeadId], // Send the selected lead's ID in an array
-        all_lead: false, // Example all_lead value
-        text, // Text from textarea
+        leads: [selectedLeadId],
+        all_lead: false,
+        text,
       };
 
-      // Make the POST request
       await axios.post("https://api.salonchi.uz/api/v1/admin/sms", payload, {
         headers: {
-          Authorization: `Bearer ${userData?.access}`, // Bearer token from localStorage
+          Authorization: `Bearer ${userData?.access}`,
         },
       });
 
-      // Close the modal and show a success message
       setModalOpenMsg(false);
       alert("Xabar jonatildi!");
     } catch (error) {
@@ -290,7 +295,17 @@ const Leads = () => {
                   </Select>
                 </TableCell>
                 <TableCell>
-                  <ViewIcon />
+                  <Space>
+                    <Button
+                      type="primary"
+                      ghost
+                      onClick={() =>
+                        navigate(`${ROUTER.DETAIL}/${lead.product.id}`)
+                      }
+                    >
+                      <EyeFilled />
+                    </Button>
+                  </Space>
                 </TableCell>
                 <TableCell onClick={() => openMessageModal(lead.id)}>
                   <MessageIcon />
@@ -298,6 +313,7 @@ const Leads = () => {
               </TableRow>
             ))}
           </tbody>
+          {/* <Pagination total={count} params={params} setParams={setParams} /> */}
         </Table>
       )}
 
@@ -307,6 +323,23 @@ const Leads = () => {
             <p>
               Siz {getStatusMessage(newStatus)} statusga o`zgartirmoqchimisiz?
             </p>
+            {(newStatus == "REJECTED" || newStatus == "RECALL") && (
+              <Textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Bekor qilish sababini kiriting..."
+                required={true}
+              />
+            )}
+            {newStatus == "RECALL" && (
+              <input
+                type="date"
+                name=""
+                id=""
+                onChange={(e) => setIsReCallOpen(e.target.value)}
+                required={true}
+              />
+            )}
             <ModalActions>
               <ModalButton onClick={confirmStatusChange}>Ha</ModalButton>
               <ModalButton onClick={() => setModalOpen(false)}>Yoq</ModalButton>
@@ -333,7 +366,6 @@ const Leads = () => {
               X
             </button>
 
-            {/* Title */}
             <h3>Xabar matnini tanlang</h3>
 
             <select onChange={handleSelectChange} value={selectedOption}>

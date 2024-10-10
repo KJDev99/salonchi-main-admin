@@ -25,6 +25,7 @@ export const TableRow = styled.tr`
 export const TableCell = styled.td`
   padding: 12px 15px;
   text-align: center;
+  cursor: pointer;
 
   &:first-child {
     width: 50px;
@@ -89,11 +90,12 @@ export const Textarea = styled.textarea`
   margin-bottom: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  outline: none;
 `;
 export const ModalActions = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 0px;
 `;
 
 export const ModalButton = styled.button`

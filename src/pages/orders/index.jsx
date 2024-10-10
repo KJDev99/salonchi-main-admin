@@ -1,16 +1,16 @@
-import { CustomTable } from '@/components/table';
-import { Header, Title, Wrapper } from '@/styles/global';
-import { useList } from './hooks/useList';
-import { Filter } from './style';
-import { Select } from '@/components/select';
-import { status } from '@/constants/status';
-import { Col, Row } from 'antd';
-import { DoubleRangePicker } from '@/components/double-datepicker';
-import { Pagination } from '@/components/pagination';
-import { FormProvider } from 'react-hook-form';
-import { CancelModal } from './components/cancel-modal';
-import { CancelFromCourier } from './components/cancel-from-courier-modal';
-import { ReCallModal } from './components/re-call-modal';
+import { CustomTable } from "@/components/table";
+import { Header, Title, Wrapper } from "@/styles/global";
+import { useList } from "./hooks/useList";
+import { Filter } from "./style";
+import { Select } from "@/components/select";
+import { status } from "@/constants/status";
+import { Col, Row } from "antd";
+import { DoubleRangePicker } from "@/components/double-datepicker";
+import { Pagination } from "@/components/pagination";
+import { FormProvider } from "react-hook-form";
+import { CancelModal } from "./components/cancel-modal";
+import { CancelFromCourier } from "./components/cancel-from-courier-modal";
+import { ReCallModal } from "./components/re-call-modal";
 
 const Orders = () => {
   const {

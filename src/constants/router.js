@@ -4,7 +4,7 @@ export const ROUTER = {
   ADMIN: "/admin",
   PRODUCTS: "products/",
   CATEGORIES: "categories/",
-  SUBCATEGORIES: "sub",
+  SUBCATEGORIES: "sub/",
   ORDERS: "orders",
   ORDERS_WAITING: "orders-waiting",
   ACCEPTED_ORDERS: "accepted-orders",

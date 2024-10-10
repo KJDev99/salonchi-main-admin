@@ -13,7 +13,7 @@ import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 
 export const useConfirm = () => {
   const queryClient = useQueryClient();
-  const { id } = useParams();
+  const { subId } = useParams();
   const navigate = useNavigate();
   const form = useForm({
     resolver: yupResolver(formSchema),
@@ -32,8 +32,8 @@ export const useConfirm = () => {
       }),
   });
 
-  const { mutate, isLoading } = useMutation(
-    (data) => (id ? updateCategory(id, data) : createCategory(data)),
+  const { isLoading } = useMutation(
+    (data) => (subId ? updateCategory(subId, data) : createCategory(data)),
     {
       onSuccess: () => {
         navigate("/admin/categories");
@@ -44,23 +44,23 @@ export const useConfirm = () => {
     }
   );
 
-  const confirm = (data) => {
-    const formData = new FormData();
-    formData.append("name_uz", data.name_uz);
-    formData.append("name_ru", data.name_ru);
-    if (fileList && fileList[0]?.originFileObj !== undefined)
-      formData.append("photo", fileList[0]?.originFileObj);
-    formData.append("is_active", true);
-    if (data.parent !== undefined && data?.parent !== null) {
-      formData.append("parent", data.parent);
-    } else {
-      formData.append("parent", null);
-    }
-    mutate(formData);
-  };
+  // const confirm = (data) => {
+  //   const formData = new FormData();
+  //   formData.append("name_uz", data.name_uz);
+  //   formData.append("name_ru", data.name_ru);
+  //   if (fileList && fileList[0]?.originFileObj !== undefined)
+  //     formData.append("photo", fileList[0]?.originFileObj);
+  //   formData.append("is_active", true);
+  //   if (data.parent !== undefined && data?.parent !== null) {
+  //     formData.append("parent", data.parent);
+  //   } else {
+  //     formData.append("parent", null);
+  //   }
+  //   mutate(formData);
+  // };
 
   return {
-    confirm,
+    // confirm,
     form,
     fileList,
     setFileList,

@@ -14,13 +14,12 @@ import styles from "./styles.module.css";
 import { CloudUploadOutlined, DeleteFilled } from "@ant-design/icons";
 const CreateSubCategory = () => {
   const [categoryLogo, setCategoryLogo] = useState(null);
-  const [categoryImageRu, setCategoryImageRu] = useState(null);
-  const [categoryImageUz, setCategoryImageUz] = useState(null);
   const [api, contextHolder] = notification.useNotification();
   const navigate = useNavigate();
   const { form, fileList, setFileList, isLoading } = useConfirm();
-  const { id } = useParams();
-  const getFileUrl = async (e, index) => {
+  const { id, subid } = useParams();
+  console.log(id, subid);
+  const getFileUrl = async (e) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
     const formData = new FormData();
@@ -33,15 +32,7 @@ const CreateSubCategory = () => {
     });
 
     if (response.status === 200) {
-      if (index === 0) {
-        setCategoryLogo(response.data.file);
-      }
-      if (index === 1) {
-        setCategoryImageUz(response.data.file);
-      }
-      if (index === 2) {
-        setCategoryImageRu(response.data.file);
-      }
+      setCategoryLogo(response.data.file);
     }
   };
   const { isLoading: detailLoading } = useReset({
@@ -55,9 +46,7 @@ const CreateSubCategory = () => {
       name_uz: form.getValues().name_uz,
       name_ru: form.getValues().name_ru,
       photo: categoryLogo,
-      banner_uz: categoryImageUz,
-      banner_ru: categoryImageRu,
-      parent: null,
+      parent: id,
     };
 
     // if (isEditing) {
@@ -69,7 +58,7 @@ const CreateSubCategory = () => {
     if (response.status === 201) {
       api["success"]({
         message: "Success",
-        description: "Kategoriya muvaffaqiyatli yaratildi.",
+        description: "Sub categoriya muvaffaqiyatli yaratildi.",
       });
       setTimeout(() => {
         navigate("/admin/categories");
@@ -77,27 +66,25 @@ const CreateSubCategory = () => {
     }
   };
   useEffect(() => {
-    if (id) {
+    if (subid) {
       const getCurrentValue = async () => {
-        const res = await request.get(`admin/category/${id}/detail`);
-
+        // console.log("worked", subid);
+        const res = await request.get(`admin/category/${subid}/detail`);
         if (res.status === 200) {
-          const { photo, banner_uz, banner_ru } = res.data;
+          const { photo } = res.data;
           setCategoryLogo(photo);
-          setCategoryImageUz(banner_uz);
-          setCategoryImageRu(banner_ru);
         }
       };
       getCurrentValue();
     }
-  }, [id]);
+  }, [subid, id]);
   return (
     <>
       {contextHolder}
       <Wrapper>
         <Header>
           <Title>
-            {id ? "Kategoriyani yangilash" : "Kategoriya yaratish"}{" "}
+            {subid ? "Sub kategoriyani yangilash" : "Sub kategoriya yaratish"}{" "}
           </Title>
           <Button
             name="Orqaga"
@@ -105,14 +92,14 @@ const CreateSubCategory = () => {
             className="go-back-btn"
           />
         </Header>
-        {id && detailLoading ? (
+        {subid && detailLoading ? (
           <Spinner />
         ) : (
           <form>
             <Row gutter={[16, 16]}>
               <Col span={24} className={styles.imagesUploading}>
                 <div className={styles.imagesUploadingDiv}>
-                  <p>Kategoriya logosi</p>
+                  <p>Sub kategoriya logosi</p>
                   {!categoryLogo ? (
                     <>
                       <label
@@ -168,7 +155,7 @@ const CreateSubCategory = () => {
                 maxCount={1}
               /> */}
                 </div>
-                <div className={styles.imagesUploadingDiv}>
+                {/* <div className={styles.imagesUploadingDiv}>
                   <p>Kategoriya banner(uz)</p>
                   {!categoryImageUz ? (
                     <>
@@ -199,7 +186,7 @@ const CreateSubCategory = () => {
                       <div className={styles.imageItem}>
                         <p
                           className={styles.delete}
-                          // style={{ backgroundColor: "white" }}
+                          style={{ backgroundColor: "white" }}
                         >
                           <DeleteFilled
                             color="red"
@@ -217,14 +204,14 @@ const CreateSubCategory = () => {
                       </div>
                     </>
                   )}
-                  {/* <Upload
+                  <Upload
                 fileList={fileList}
                 setFileList={setFileList}
                 multiple={false}
                 maxCount={1}
-              /> */}
-                </div>
-                <div className={styles.imagesUploadingDiv}>
+              /> 
+                </div> */}
+                {/* <div className={styles.imagesUploadingDiv}>
                   <p>Kategoriya banner(ru)</p>
                   {!categoryImageRu ? (
                     <>
@@ -273,13 +260,13 @@ const CreateSubCategory = () => {
                       </div>
                     </>
                   )}
-                  {/* <Upload
+                   <Upload
                 fileList={fileList}
                 setFileList={setFileList}
                 multiple={false}
                 maxCount={1}
-              /> */}
-                </div>
+              /> 
+                </div> */}
               </Col>
               <Col span={24} lg={12}>
                 <Input
@@ -310,7 +297,7 @@ const CreateSubCategory = () => {
             <Footer>
               <Button
                 onClick={createCategory}
-                name={id ? "Yangilash" : "Kategoriya yaratish"}
+                name={subid ? "Yangilash" : "Sub kategoriya yaratish"}
                 className="category-btn"
                 // type="submit"
               />

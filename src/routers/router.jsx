@@ -51,6 +51,7 @@ const ReCallOrderDetails = lazy(
 const ArchiveOrderDetails = lazy(
   async () => await import("@/pages/archive/details")
 );
+const LeadWaiting = lazy(async () => await import("@/pages/leads/detail"));
 
 const Slider = lazy(async () => await import("@/pages/slider"));
 const CreateBanner = lazy(async () => await import("@/pages/slider/crud"));
@@ -220,6 +221,10 @@ export const router = createBrowserRouter([
       {
         path: `${ROUTER.LEADS}/`,
         element: <Leads />,
+      },
+      {
+        path: `${ROUTER.LEADS}/` + ROUTER.DETAIL + "/:id",
+        element: <LeadWaiting />,
       },
       {
         path: `${ROUTER.WAITING_LEADS}/`,

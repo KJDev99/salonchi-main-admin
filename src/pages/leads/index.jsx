@@ -299,9 +299,7 @@ const Leads = () => {
                     <Button
                       type="primary"
                       ghost
-                      onClick={() =>
-                        navigate(`${ROUTER.DETAIL}/${lead.product.id}`)
-                      }
+                      onClick={() => navigate(`${ROUTER.DETAIL}/${lead.id}`)}
                     >
                       <EyeFilled />
                     </Button>
@@ -323,7 +321,7 @@ const Leads = () => {
             <p>
               Siz {getStatusMessage(newStatus)} statusga o`zgartirmoqchimisiz?
             </p>
-            {(newStatus == "REJECTED" || newStatus == "RECALL") && (
+            {(newStatus == "RECALL" || newStatus == "REJECTED") && (
               <Textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}

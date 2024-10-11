@@ -15,46 +15,51 @@ import axios from "axios";
 
 const LeadWaiting = () => {
   const navigate = useNavigate();
-  const { product_id } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [form] = useState({ control: {} }); // Agar form qo'llanmasa, shuni olib tashlash mumkin
 
-  // API'dan ma'lumot olish uchun useEffect ishlatamiz
+  const { id } = useParams();
+  // const [id, setId] = useState(product_id);
+
   useEffect(() => {
+    console.log(id, "product_id");
+
     const fetchData = async () => {
       try {
         const userDataString = localStorage.getItem("userInfo");
-        let userData;
-        if (userDataString) {
-          try {
-            userData = JSON.parse(userDataString);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
+
+        if (!userDataString) {
+          throw new Error("User data not found in localStorage");
         }
+
+        const userData = JSON.parse(userDataString);
+        const token = userData?.access;
+
+        if (!token) {
+          throw new Error("Access token not found");
+        }
+
         const response = await axios.get(
-          `https://api.salonchi.uz/api/v1/lead/${3}/detail`,
+          `https://api.salonchi.uz/api/v1/lead/${id}/detail`,
           {
             headers: {
-              Authorization: `Bearer ${userData.access}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
-        setData(response.data);
-        console.log(response.data);
 
-        setIsLoading(false);
-        console.log(response.data);
+        setData(response.data);
       } catch (error) {
-        console.error("Error fetching data", error);
+        console.error("Error fetching data:", error);
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [product_id]);
+  }, [id]);
 
   const rejectOrder = () => {
     // Reject order logikasi (backend bilan bog'lash kerak bo'lishi mumkin)
@@ -111,12 +116,14 @@ const LeadWaiting = () => {
             <span>{dayjs(data?.created_at).format(DATE_FORMAT)}</span>
           </ListItem>
 
-          <ListItem>
-            <span>Izoh</span>
-            <span className="comment">
-              {data?.comment === "" ? "Izohlar yo'q" : data?.comment}
-            </span>
-          </ListItem>
+          {(data?.status == "REJECTED" || data?.status == "RECALL") && (
+            <ListItem>
+              <span>Izoh</span>
+              <span className="comment">
+                {data?.comment === "" ? "Izohlar yo'q" : data?.comment}
+              </span>
+            </ListItem>
+          )}
           {data?.product && (
             <ListItem className="product-list-item">
               <span>

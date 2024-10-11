@@ -29,20 +29,20 @@ export const Navbar = () => {
 
   return (
     <Wrapper>
-      {admin && (
+      {/* {admin && (
         <BellContainer>
           <GoBell />
           <div className="new-message">1</div>
         </BellContainer>
-      )}
+      )} */}
 
-      {worker && (
+      {!admin && worker && (
         <OrdersCard>
           Buyurtmalar:
           <div className="order-count">{userInfo?.order?.count} ta</div>
         </OrdersCard>
       )}
-      {worker && (
+      {!admin && worker && (
         <OrdersCard>
           Maoshi:
           <div className="order-count">{userInfo?.order?.salary} so&apos;m</div>

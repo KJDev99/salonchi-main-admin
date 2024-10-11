@@ -12,6 +12,13 @@ export const Table = styled.table`
   margin: 20px 0;
   font-size: 16px;
   font-family: "Rubik", sans-serif;
+  .lfyzXM {
+    font-size: 13px !important;
+  }
+
+  .fBlcEQ {
+    padding: 8px 4px !important;
+  }
 `;
 
 export const TableRow = styled.tr`

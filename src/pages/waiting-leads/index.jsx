@@ -10,6 +10,7 @@ import {
   ModalContent,
   ModalActions,
   ModalButton,
+  StatusEditButton,
 } from "./style"; // Ensure paths are correct
 import { Titles } from "../leads/style";
 
@@ -119,11 +120,10 @@ const WaitingLeads = () => {
                 </TableCell>
                 <TableCell>{new Date(lead.created).toLocaleString()}</TableCell>
                 <TableCell>
-                  {/* Only allow changing status if it's currently NEW */}
                   {lead.status === "WAITING" && (
-                    <button onClick={() => handleStatusChange(lead)}>
+                    <StatusEditButton onClick={() => handleStatusChange(lead)}>
                       Qabul qilish
-                    </button>
+                    </StatusEditButton>
                   )}
                 </TableCell>
                 {/* <TableCell>

@@ -211,6 +211,18 @@ const Leads = () => {
     setSelectedOption("0");
   };
 
+  const today = new Date().toLocaleDateString(); // Bugungi sana
+
+  const sortedLeads = [...filteredLeads].sort((a, b) => {
+    const aDate = new Date(a.schedule).toLocaleDateString();
+    const bDate = new Date(b.schedule).toLocaleDateString();
+
+    // Bugungi sanani oldinga chiqarish
+    if (aDate === today) return -1;
+    if (bDate === today) return 1;
+    return 0;
+  });
+
   return (
     <Wrapper>
       <Header>
@@ -218,36 +230,42 @@ const Leads = () => {
         <div>
           <StatusFilterButton
             isActive={selectedStatus === "ALL"}
+            status="ALL"
             onClick={() => setSelectedStatus("ALL")}
           >
             Barchasi
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "NEW"}
+            status="NEW"
             onClick={() => setSelectedStatus("NEW")}
           >
             Yangi
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "ACCEPT"}
+            status="ACCEPT"
             onClick={() => setSelectedStatus("ACCEPT")}
           >
             Qabul qilingan
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "REJECTED"}
+            status="REJECTED"
             onClick={() => setSelectedStatus("REJECTED")}
           >
             Bekor qilingan
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "DELIVERED"}
+            status="DELIVERED"
             onClick={() => setSelectedStatus("DELIVERED")}
           >
             Yetkazilgan
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "RECALL"}
+            status="RECALL"
             onClick={() => setSelectedStatus("RECALL")}
           >
             Qayta aloqa
@@ -264,14 +282,19 @@ const Leads = () => {
               <TableCell as="th">Ismi</TableCell>
               <TableCell as="th">Telefon raqami</TableCell>
               <TableCell as="th">Statusi</TableCell>
-              <TableCell as="th">Yaratilgan vaqti</TableCell>
+
+              {selectedStatus == "RECALL" ? (
+                <TableCell as="th">Aloqa vaqti</TableCell>
+              ) : (
+                <TableCell as="th">Yaratilgan vaqti</TableCell>
+              )}
               <TableCell as="th">Xolati</TableCell>
               <TableCell as="th">Ko`rish</TableCell>
               <TableCell as="th">Xabar</TableCell>
             </tr>
           </thead>
           <tbody>
-            {filteredLeads.map((lead, index) => (
+            {sortedLeads.map((lead, index) => (
               <TableRow key={lead.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{lead.name}</TableCell>
@@ -281,7 +304,22 @@ const Leads = () => {
                     {getStatusMessage(lead.status)}
                   </Badge>
                 </TableCell>
-                <TableCell>{new Date(lead.created).toLocaleString()}</TableCell>
+                {selectedStatus == "RECALL" ? (
+                  <TableCell
+                    className={
+                      new Date(lead.schedule).toLocaleDateString() === today
+                        ? "today-row"
+                        : ""
+                    }
+                  >
+                    {new Date(lead.schedule).toLocaleDateString()}
+                  </TableCell>
+                ) : (
+                  <TableCell>
+                    {new Date(lead.created).toLocaleString()}
+                  </TableCell>
+                )}
+
                 <TableCell>
                   <Select
                     value={lead.status}

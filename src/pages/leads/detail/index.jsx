@@ -8,7 +8,6 @@ import { Image, Modal, Tag } from "antd";
 import dayjs from "dayjs";
 import { DATE_FORMAT } from "@/constants/format";
 import { getStatus } from "@/utils/status";
-import { ChangeStatus } from "./change-status";
 import { Fragment } from "react";
 import { CustomTextArea } from "@/components/textarea";
 import axios from "axios";
@@ -21,11 +20,8 @@ const LeadWaiting = () => {
   const [form] = useState({ control: {} }); // Agar form qo'llanmasa, shuni olib tashlash mumkin
 
   const { id } = useParams();
-  // const [id, setId] = useState(product_id);
 
   useEffect(() => {
-    console.log(id, "product_id");
-
     const fetchData = async () => {
       try {
         const userDataString = localStorage.getItem("userInfo");
@@ -51,6 +47,7 @@ const LeadWaiting = () => {
         );
 
         setData(response.data);
+        console.log(response.data, "text/plain");
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -60,14 +57,6 @@ const LeadWaiting = () => {
 
     fetchData();
   }, [id]);
-
-  const rejectOrder = () => {
-    // Reject order logikasi (backend bilan bog'lash kerak bo'lishi mumkin)
-  };
-
-  const acceptOrder = () => {
-    // Accept order logikasi (backend bilan bog'lash kerak bo'lishi mumkin)
-  };
 
   const getStatusMessage = (status) => {
     switch (status) {
@@ -113,7 +102,7 @@ const LeadWaiting = () => {
           </ListItem>
           <ListItem>
             <span>Lead yaratilgan sana</span>{" "}
-            <span>{dayjs(data?.created_at).format(DATE_FORMAT)}</span>
+            <span>{dayjs(data?.created).format(DATE_FORMAT)}</span>
           </ListItem>
 
           {(data?.status == "REJECTED" || data?.status == "RECALL") && (
@@ -157,16 +146,11 @@ const LeadWaiting = () => {
           </ol>
         </List>
       )}
-      <ChangeStatus
-        status={data?.status}
-        setOpen={setOpen}
-        acceptOrder={acceptOrder}
-      />
+
       {open && (
         <Modal
           title="Buyurtmani rad etish"
           open={open}
-          onOk={rejectOrder}
           onCancel={() => setOpen(false)}
           cancelText="Bekor qilish"
           okText="Rad etish"

@@ -23,14 +23,17 @@ export const Table = styled.table`
 
 export const TableRow = styled.tr`
   border-bottom: 1px solid #ddd;
-
+  .today-row {
+    color: #ff851b;
+    font-weight: bold;
+  }
   &:nth-child(even) {
     background-color: #f9f9f9;
   }
 `;
 
 export const TableCell = styled.td`
-  padding: 12px 15px;
+  padding: 8px 4px;
   text-align: center;
   cursor: pointer;
 
@@ -101,8 +104,9 @@ export const Textarea = styled.textarea`
 `;
 export const ModalActions = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 0px;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 20px;
 `;
 
 export const ModalButton = styled.button`
@@ -126,16 +130,35 @@ export const StatusFilter = styled(Select)`
 `;
 
 export const StatusFilterButton = styled.button`
-  padding: 10px 20px;
+  padding: 7px 15px;
   margin-right: 10px;
-  font-size: 14px;
+  font-size: 14px !important;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: ${(props) => (props.isActive ? "#007bff" : "#e0e0e0")};
+  background-color: ${(props) =>
+    props.isActive ? getStatusStyle(props.status).backgroundColor : "#e0e0e0"};
   color: ${(props) => (props.isActive ? "#fff" : "#333")};
 
   &:hover {
-    background-color: ${(props) => (props.isActive ? "#0056b3" : "#ccc")};
+    background-color: ${(props) =>
+      props.isActive ? getStatusStyle(props.status).hoverColor : "#ccc"};
   }
 `;
+
+const getStatusStyle = (status) => {
+  switch (status) {
+    case "NEW":
+      return { backgroundColor: "#FFD700", hoverColor: "#FFC107" }; // Gold for new
+    case "ACCEPT":
+      return { backgroundColor: "#007bff", hoverColor: "#0056b3" }; // Blue for accept
+    case "REJECTED":
+      return { backgroundColor: "#dc3545", hoverColor: "#c82333" }; // Red for rejected
+    case "DELIVERED":
+      return { backgroundColor: "#28a745", hoverColor: "#218838" }; // Green for delivered
+    case "RECALL":
+      return { backgroundColor: "#ff851b", hoverColor: "#e67e22" }; // Orange for recall
+    default:
+      return { backgroundColor: "#6c757d", hoverColor: "#5a6268" }; // Grey for others
+  }
+};

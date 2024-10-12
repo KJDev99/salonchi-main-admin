@@ -93,7 +93,7 @@ export const StatusFilter = styled(Select)`
   font-size: 14px;
 `;
 
-export const StatusFilterButton = styled.button`
+export const StatusEditButton = styled.button`
   padding: 10px 20px;
   margin-right: 10px;
   font-size: 14px;

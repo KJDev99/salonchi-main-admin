@@ -99,10 +99,10 @@ input:-webkit-autofill:active {
   cursor: pointer !important;
 }
 
-/* tr td {
-  min-width: 140px;
+tr td {
+  font-size: 13px;
 }
 
 tr th {
-  min-width: 160px;
-} */
+  /* min-width: 160px; */
+}

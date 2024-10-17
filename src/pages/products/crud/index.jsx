@@ -43,11 +43,11 @@ const CreateProducts = () => {
   const [images, setImages] = useState([]);
   const [videoLink, setVideoLink] = useState(null);
   const [attributes, setAttributes] = useState([
-    { type: "TEXT", name_uz: "", name_ru: "", values: [] },
+    { type: "TEXT", name_uz: "", name_ru: "", values: ["asda", "asdasd"] },
   ]);
   const [imageLabel, setImageLabel] = useState("");
   const [imagesAtt, setImagesAtt] = useState([]);
-  // const [colorLabel, setColorLabel] = useState("");
+  // const [colorLabel, setColouseLocationrLabel] = useState("");
   // const [colorCode, setColorCode] = useState("");
   // const [colorsAtt, setColorsAtt] = useState([]);
   const [name_uz, setNameUz] = useState("");
@@ -107,10 +107,62 @@ const CreateProducts = () => {
     const response = await request.get(`/category/sub/list/${id}`);
     setSubCategoryList(response.data);
   };
+  const { id, detailLoading } = useReset({ form, setFileList, setVideoFile });
   useEffect(() => {
     getCategoryList();
     getSubCategoryList(1);
-  }, []);
+    const getData = async () => {
+      if (id) {
+        const response = await request.get(`admin/product/${id}/detail`);
+        console.log(response);
+        if (response.status === 200) {
+          const {
+            name_uz,
+            name_ru,
+            desc_uz,
+            desc_ru,
+            media,
+            attributes,
+            is_new,
+            is_recommend,
+            is_cheap,
+            price,
+            old_price,
+          } = response.data;
+          setNameUz(name_uz);
+          setNameRu(name_ru);
+          setDescriptionUz(desc_uz);
+          setDescriptionRu(desc_ru);
+          setAttributes(attributes);
+          setIsCheap(is_cheap);
+          setIsNew(is_new);
+          setIsRecommend(is_recommend);
+          setPrice(price);
+          setOldPrice(old_price);
+          const arr = [];
+          media.forEach((item) => {
+            if (item.file_type === "video") {
+              setVideoLink(item.file);
+            } else {
+              arr.push(item.file);
+            }
+          });
+          setImages(arr);
+          const attr = [];
+          attributes.forEach((item) => {
+            attr.push({
+              type: item.type,
+              name_uz: item.name_uz,
+              name_ru: item.name_ru,
+              values: [...item.values],
+            });
+          });
+          setAttributes(attr);
+        }
+      }
+    };
+    getData();
+  }, [id]);
   useEffect(() => {
     getSubCategoryList(category);
   }, [category]);
@@ -184,7 +236,7 @@ const CreateProducts = () => {
     { label: "TEXT", value: "TEXT" },
     { label: "IMAGE", value: "IMAGE" },
   ];
-  const { id, detailLoading } = useReset({ form, setFileList, setVideoFile });
+
   return (
     <Wrapper>
       {contextHolder}
@@ -410,18 +462,6 @@ const CreateProducts = () => {
                     >
                       <Row gutter={[16, 16]}>
                         <Col span={24} lg={12}>
-                          <Label>Attribute nomi ru</Label>
-                          <Input
-                            label="Attribut nomi"
-                            placeholder="Attribut nomi ru"
-                            value={item?.name_ru}
-                            onChange={(e) => {
-                              attributes[index].name_ru = e.target.value;
-                              setAttributes([...attributes]);
-                            }}
-                          />
-                        </Col>
-                        <Col span={24} lg={12}>
                           <Label>Attribute nomi uz</Label>
 
                           <Input
@@ -429,6 +469,18 @@ const CreateProducts = () => {
                             value={item?.name_uz}
                             onChange={(e) => {
                               attributes[index].name_uz = e.target.value;
+                              setAttributes([...attributes]);
+                            }}
+                          />
+                        </Col>
+                        <Col span={24} lg={12}>
+                          <Label>Attribute nomi ru</Label>
+                          <Input
+                            label="Attribut nomi"
+                            placeholder="Attribut nomi ru"
+                            value={item?.name_ru}
+                            onChange={(e) => {
+                              attributes[index].name_ru = e.target.value;
                               setAttributes([...attributes]);
                             }}
                           />

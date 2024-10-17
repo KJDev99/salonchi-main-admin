@@ -123,7 +123,6 @@ const CreateProducts = () => {
             desc_ru,
             media,
             attributes,
-            category,
             is_new,
             is_recommend,
             is_cheap,
@@ -159,12 +158,6 @@ const CreateProducts = () => {
             });
           });
           setAttributes(attr);
-          const productSub = subCategoryList.find(
-            (item) => item.id === category
-          );
-          if (productSub) {
-            setSelectedCategory(productSub.id);
-          }
         }
       }
     };

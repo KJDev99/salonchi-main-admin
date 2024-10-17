@@ -16,7 +16,12 @@ import {
   Textarea,
 } from "./style"; // Ensure paths are correct
 import MessageIcon from "@/assets/message";
-import ViewIcon from "@/assets/view";
+// import ViewIcon from "@/assets/view";
+import { Button, Space } from "antd";
+import { ROUTER } from "@/constants/router";
+import { EyeFilled } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+// import { Pagination } from "@/components/pagination";
 
 const statusOptions = ["NEW", "ACCEPT", "REJECTED", "DELIVERED", "RECALL"];
 
@@ -34,6 +39,10 @@ const Leads = () => {
   const [selectedLeadId, setSelectedLeadId] = useState(null); // Stores selected lead ID
   const [smsShablon, setSmsShablon] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
+  const [comment, setComment] = useState(null);
+  const [isReCallOpen, setIsReCallOpen] = useState();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -57,6 +66,7 @@ const Leads = () => {
         );
         setLeads(response.data.results);
         setFilteredLeads(response.data.results);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching leads:", error);
       } finally {
@@ -86,7 +96,6 @@ const Leads = () => {
           }
         );
         setSmsShablon(response.data);
-        console.log(response.data, "sms shablon");
       } catch (error) {
         console.error("Error fetching sms shablon:", error);
       }
@@ -99,15 +108,15 @@ const Leads = () => {
     setSelectedStatus(status);
     if (status === "ALL") {
       setFilteredLeads(leads);
-      console.log(leads, "all");
     } else {
       setFilteredLeads(leads.filter((lead) => lead.status === status));
     }
   };
+
   useEffect(() => {
     handleFilterChange(selectedStatus);
     setTitles(selectedStatus);
-  }, [selectedStatus]);
+  }, [selectedStatus, titles, modalOpen]);
 
   const handleStatusChange = (lead, newStatus) => {
     setSelectedLead(lead);
@@ -121,7 +130,7 @@ const Leads = () => {
         const userData = JSON.parse(localStorage.getItem("userInfo"));
         await axios.put(
           `https://api.salonchi.uz/api/v1/lead/${selectedLead.id}/status`,
-          { status: newStatus },
+          { status: newStatus, comment: comment, schedule: isReCallOpen },
           {
             headers: {
               Authorization: `Bearer ${userData?.access}`,
@@ -158,31 +167,27 @@ const Leads = () => {
     }
   };
 
-  // Open modal and set the selected lead ID
   const openMessageModal = (leadId) => {
     setSelectedLeadId(leadId);
-    setModalOpenMsg(true); // Open modal
+    setModalOpenMsg(true);
   };
 
-  // Handle the POST request when submitting the form
   const handleSubmit = async () => {
     try {
       const userData = JSON.parse(localStorage.getItem("userInfo"));
 
       const payload = {
-        leads: [selectedLeadId], // Send the selected lead's ID in an array
-        all_lead: false, // Example all_lead value
-        text, // Text from textarea
+        leads: [selectedLeadId],
+        all_lead: false,
+        text,
       };
 
-      // Make the POST request
       await axios.post("https://api.salonchi.uz/api/v1/admin/sms", payload, {
         headers: {
-          Authorization: `Bearer ${userData?.access}`, // Bearer token from localStorage
+          Authorization: `Bearer ${userData?.access}`,
         },
       });
 
-      // Close the modal and show a success message
       setModalOpenMsg(false);
       alert("Xabar jonatildi!");
     } catch (error) {
@@ -206,6 +211,18 @@ const Leads = () => {
     setSelectedOption("0");
   };
 
+  const today = new Date().toLocaleDateString(); // Bugungi sana
+
+  const sortedLeads = [...filteredLeads].sort((a, b) => {
+    const aDate = new Date(a.schedule).toLocaleDateString();
+    const bDate = new Date(b.schedule).toLocaleDateString();
+
+    // Bugungi sanani oldinga chiqarish
+    if (aDate === today) return -1;
+    if (bDate === today) return 1;
+    return 0;
+  });
+
   return (
     <Wrapper>
       <Header>
@@ -213,36 +230,42 @@ const Leads = () => {
         <div>
           <StatusFilterButton
             isActive={selectedStatus === "ALL"}
+            status="ALL"
             onClick={() => setSelectedStatus("ALL")}
           >
             Barchasi
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "NEW"}
+            status="NEW"
             onClick={() => setSelectedStatus("NEW")}
           >
             Yangi
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "ACCEPT"}
+            status="ACCEPT"
             onClick={() => setSelectedStatus("ACCEPT")}
           >
             Qabul qilingan
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "REJECTED"}
+            status="REJECTED"
             onClick={() => setSelectedStatus("REJECTED")}
           >
             Bekor qilingan
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "DELIVERED"}
+            status="DELIVERED"
             onClick={() => setSelectedStatus("DELIVERED")}
           >
             Yetkazilgan
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "RECALL"}
+            status="RECALL"
             onClick={() => setSelectedStatus("RECALL")}
           >
             Qayta aloqa
@@ -259,14 +282,19 @@ const Leads = () => {
               <TableCell as="th">Ismi</TableCell>
               <TableCell as="th">Telefon raqami</TableCell>
               <TableCell as="th">Statusi</TableCell>
-              <TableCell as="th">Yaratilgan vaqti</TableCell>
+
+              {selectedStatus == "RECALL" ? (
+                <TableCell as="th">Aloqa vaqti</TableCell>
+              ) : (
+                <TableCell as="th">Yaratilgan vaqti</TableCell>
+              )}
               <TableCell as="th">Xolati</TableCell>
               <TableCell as="th">Ko`rish</TableCell>
               <TableCell as="th">Xabar</TableCell>
             </tr>
           </thead>
           <tbody>
-            {filteredLeads.map((lead, index) => (
+            {sortedLeads.map((lead, index) => (
               <TableRow key={lead.id}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{lead.name}</TableCell>
@@ -276,7 +304,22 @@ const Leads = () => {
                     {getStatusMessage(lead.status)}
                   </Badge>
                 </TableCell>
-                <TableCell>{new Date(lead.created).toLocaleString()}</TableCell>
+                {selectedStatus == "RECALL" ? (
+                  <TableCell
+                    className={
+                      new Date(lead.schedule).toLocaleDateString() === today
+                        ? "today-row"
+                        : ""
+                    }
+                  >
+                    {new Date(lead.schedule).toLocaleDateString()}
+                  </TableCell>
+                ) : (
+                  <TableCell>
+                    {new Date(lead.created).toLocaleString()}
+                  </TableCell>
+                )}
+
                 <TableCell>
                   <Select
                     value={lead.status}
@@ -290,7 +333,15 @@ const Leads = () => {
                   </Select>
                 </TableCell>
                 <TableCell>
-                  <ViewIcon />
+                  <Space>
+                    <Button
+                      type="primary"
+                      ghost
+                      onClick={() => navigate(`${ROUTER.DETAIL}/${lead.id}`)}
+                    >
+                      <EyeFilled />
+                    </Button>
+                  </Space>
                 </TableCell>
                 <TableCell onClick={() => openMessageModal(lead.id)}>
                   <MessageIcon />
@@ -298,6 +349,7 @@ const Leads = () => {
               </TableRow>
             ))}
           </tbody>
+          {/* <Pagination total={count} params={params} setParams={setParams} /> */}
         </Table>
       )}
 
@@ -307,6 +359,23 @@ const Leads = () => {
             <p>
               Siz {getStatusMessage(newStatus)} statusga o`zgartirmoqchimisiz?
             </p>
+            {(newStatus == "RECALL" || newStatus == "REJECTED") && (
+              <Textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Bekor qilish sababini kiriting..."
+                required={true}
+              />
+            )}
+            {newStatus == "RECALL" && (
+              <input
+                type="date"
+                name=""
+                id=""
+                onChange={(e) => setIsReCallOpen(e.target.value)}
+                required={true}
+              />
+            )}
             <ModalActions>
               <ModalButton onClick={confirmStatusChange}>Ha</ModalButton>
               <ModalButton onClick={() => setModalOpen(false)}>Yoq</ModalButton>
@@ -333,7 +402,6 @@ const Leads = () => {
               X
             </button>
 
-            {/* Title */}
             <h3>Xabar matnini tanlang</h3>
 
             <select onChange={handleSelectChange} value={selectedOption}>

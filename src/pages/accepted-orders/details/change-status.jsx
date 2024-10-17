@@ -1,7 +1,7 @@
-import { Space, Button as AntdButton } from 'antd';
-import { StatusWrapper } from './style';
-import PropTypes from 'prop-types';
-import { STATUS } from '@/constants/status';
+import { Space, Button as AntdButton } from "antd";
+import { StatusWrapper } from "./style";
+import PropTypes from "prop-types";
+import { STATUS } from "@/constants/status";
 
 export const ChangeStatus = ({ status, setOpen, acceptOrder }) => {
   return (

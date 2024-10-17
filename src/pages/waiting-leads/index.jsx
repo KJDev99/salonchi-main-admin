@@ -10,8 +10,8 @@ import {
   ModalContent,
   ModalActions,
   ModalButton,
+  StatusEditButton,
 } from "./style"; // Ensure paths are correct
-import MessageIcon from "@/assets/message";
 import { Titles } from "../leads/style";
 
 const WaitingLeads = () => {
@@ -20,7 +20,6 @@ const WaitingLeads = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
-  const [newStatus, setNewStatus] = useState("NEW");
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -60,12 +59,12 @@ const WaitingLeads = () => {
   };
 
   const confirmStatusChange = async () => {
-    if (selectedLead && newStatus) {
+    if (selectedLead) {
       try {
         const userData = JSON.parse(localStorage.getItem("userInfo"));
         await axios.put(
           `https://api.salonchi.uz/api/v1/lead/${selectedLead.id}/status`,
-          { status: newStatus },
+          { status: "NEW" },
           {
             headers: {
               Authorization: `Bearer ${userData?.access}`,
@@ -75,7 +74,7 @@ const WaitingLeads = () => {
         // Update the leads list after status change
         setLeads((prevLeads) =>
           prevLeads.map((lead) =>
-            lead.id === selectedLead.id ? { ...lead, status: newStatus } : lead
+            lead.id === selectedLead.id ? { ...lead, status: "NEW" } : lead
           )
         );
         setModalOpen(false);
@@ -90,7 +89,7 @@ const WaitingLeads = () => {
   return (
     <Wrapper>
       <Header>
-        <Title>Kutilayotgan buyurtmalar</Title>
+        <Title>Kutilayotgan Leadlar</Title>
       </Header>
       {filteredLeads.length == 0 ? (
         <Titles>Hozircha bu yer bosh:!</Titles>
@@ -104,14 +103,14 @@ const WaitingLeads = () => {
               <TableCell as="th">Statusi</TableCell>
               <TableCell as="th">Yaratilgan vaqti</TableCell>
               <TableCell as="th">Actions</TableCell>
-              <TableCell as="th">Ko'rish</TableCell>
-              <TableCell as="th">Xabar</TableCell>
+              {/* <TableCell as="th">Ko'rish</TableCell> */}
+              {/* <TableCell as="th">Xabar</TableCell> */}
             </tr>
           </thead>
           <tbody>
-            {filteredLeads.map((lead) => (
+            {filteredLeads.map((lead, index) => (
               <TableRow key={lead.id}>
-                <TableCell>{lead.id}</TableCell>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>{lead.name}</TableCell>
                 <TableCell>{lead.phone}</TableCell>
                 <TableCell>
@@ -121,19 +120,18 @@ const WaitingLeads = () => {
                 </TableCell>
                 <TableCell>{new Date(lead.created).toLocaleString()}</TableCell>
                 <TableCell>
-                  {/* Only allow changing status if it's currently NEW */}
                   {lead.status === "WAITING" && (
-                    <button onClick={() => handleStatusChange(lead)}>
+                    <StatusEditButton onClick={() => handleStatusChange(lead)}>
                       Qabul qilish
-                    </button>
+                    </StatusEditButton>
                   )}
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <MessageIcon />
-                </TableCell>
-                <TableCell>
+                </TableCell> */}
+                {/* <TableCell>
                   <MessageIcon />
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </tbody>
@@ -145,7 +143,7 @@ const WaitingLeads = () => {
         <Modal>
           <ModalContent>
             <p>
-              Siz ushbu buyurtmani "Qabul qilingan" statusiga
+              Siz ushbu buyurtmani Qabul qilingan statusiga
               o`zgartirmoqchimisiz?
             </p>
             <ModalActions>

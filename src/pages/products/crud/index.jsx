@@ -43,8 +43,9 @@ const CreateProducts = () => {
   const [images, setImages] = useState([]);
   const [videoLink, setVideoLink] = useState(null);
   const [attributes, setAttributes] = useState([
-    { type: "TEXT", name_uz: "", name_ru: "", values: ["asda", "asdasd"] },
+    { type: "TEXT", name_uz: "", name_ru: "", values: [] },
   ]);
+  console.log(attributes, "attributes");
   const [imageLabel, setImageLabel] = useState("");
   const [imagesAtt, setImagesAtt] = useState([]);
   // const [colorLabel, setColouseLocationrLabel] = useState("");
@@ -96,7 +97,6 @@ const CreateProducts = () => {
       } else {
         setImages([...images, response.data.file]);
       }
-      // console.log(images);
     }
   };
   const getCategoryList = async () => {
@@ -463,7 +463,6 @@ const CreateProducts = () => {
                       <Row gutter={[16, 16]}>
                         <Col span={24} lg={12}>
                           <Label>Attribute nomi uz</Label>
-
                           <Input
                             placeholder="Attribut nomi uz"
                             value={item?.name_uz}
@@ -523,6 +522,7 @@ const CreateProducts = () => {
                           <AntdSelect
                             mode="tags"
                             style={{ width: "100%", marginBottom: 10 }}
+                            defaultValue={item?.values}
                             onChange={(value) => {
                               if (item.type === "TEXT") {
                                 const valuee = [];

@@ -45,7 +45,7 @@ const CreateProducts = () => {
   const [attributes, setAttributes] = useState([
     { type: "TEXT", name_uz: "", name_ru: "", values: [] },
   ]);
-  console.log(attributes, "attributes");
+
   const [imageLabel, setImageLabel] = useState("");
   const [imagesAtt, setImagesAtt] = useState([]);
   // const [colorLabel, setColouseLocationrLabel] = useState("");
@@ -108,13 +108,14 @@ const CreateProducts = () => {
     setSubCategoryList(response.data);
   };
   const { id, detailLoading } = useReset({ form, setFileList, setVideoFile });
+
   useEffect(() => {
     getCategoryList();
     getSubCategoryList(1);
     const getData = async () => {
       if (id) {
         const response = await request.get(`admin/product/${id}/detail`);
-        console.log(response);
+
         if (response.status === 200) {
           const {
             name_uz,
@@ -191,44 +192,70 @@ const CreateProducts = () => {
       price === "" ||
       selectedCategory === "" ||
       images.length === 0 ||
-      attributes.length === 0
+      attributes.length === 0 ||
+      attributes.some((item) => item.values.length === 0)
     ) {
-      console.log("nimadir");
       api["error"]({
         message: "Error",
         description: "Buyurtma ma'lumotlari to'liq kiritilmadi",
       });
     } else {
-      const res = await request.post("admin/product/create", data);
-      if (res.status === 201) {
-        api["success"]({
-          message: "Success",
-          description: "Maxsulot muvaffaqiyatli yaratildi",
-        });
-        setImages([]);
-        setAttributes([]);
-        setVideoLink(null);
-        // setFileList([]);
-        setCategory(1);
-        setNameUz("");
-        setNameRu("");
-        setDescriptionUz("");
-        setDescriptionRu("");
-        setPrice("");
-        setOldPrice("");
-        setIsRecommend(false);
-        setIsNew(false);
-        setIsCheap(false);
-        setSelectedCategory("");
-        setTimeout(() => {
-          navigate("/admin/products");
-        }, 1500);
+      if (id) {
+        const res = await request.put(`admin/product/${id}/update`, data);
+        if (res.status === 200) {
+          api["success"]({
+            message: "Success",
+            description: "Maxsulot muvaffaqiyatli yangilandi",
+          });
+          setImages([]);
+          setAttributes([]);
+          setVideoLink(null);
+          // setFileList([]);
+          setCategory(1);
+          setNameUz("");
+          setNameRu("");
+          setDescriptionUz("");
+          setDescriptionRu("");
+          setPrice("");
+          setOldPrice("");
+          setIsRecommend(false);
+          setIsNew(false);
+          setIsCheap(false);
+          setTimeout(() => {
+            navigate("/admin/products");
+          }, 1500);
+        }
       } else {
-        console.log(res, "res");
-        api["error"]({
-          message: "Error",
-          description: res?.data?.message || "Nimadur xatolik yuz berdi!",
-        });
+        const res = await request.post("admin/product/create", data);
+        if (res.status === 201) {
+          api["success"]({
+            message: "Success",
+            description: "Maxsulot muvaffaqiyatli yaratildi",
+          });
+          setImages([]);
+          setAttributes([]);
+          setVideoLink(null);
+          // setFileList([]);
+          setCategory(1);
+          setNameUz("");
+          setNameRu("");
+          setDescriptionUz("");
+          setDescriptionRu("");
+          setPrice("");
+          setOldPrice("");
+          setIsRecommend(false);
+          setIsNew(false);
+          setIsCheap(false);
+          setSelectedCategory("");
+          setTimeout(() => {
+            navigate("/admin/products");
+          }, 1500);
+        } else {
+          api["error"]({
+            message: "Error",
+            description: res?.data?.message || "Nimadur xatolik yuz berdi!",
+          });
+        }
       }
     }
   };
@@ -787,7 +814,7 @@ const CreateProducts = () => {
                   checked={isCheap}
                   onClick={() => setIsCheap(!isCheap)}
                 >
-                  Yangiliklar
+                  Arzon narxlar
                 </Checkbox>
               </Col>
               {/* <Col span={24} md={6} lg={6}>

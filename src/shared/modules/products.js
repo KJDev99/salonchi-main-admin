@@ -2,7 +2,7 @@ import { request } from "../api/request";
 import { ENDPOINTS } from "../endpoints";
 
 export const getProducts = (params) =>
-  request(`admin/product/list?limit=10&page=${params.page}`);
+  request(`admin/product/list?limit=20&page=${params.page}`);
 
 export const createProducts = (data) =>
   request.post(ENDPOINTS.ADMIN_PRODUCT_CREATE, data, {

@@ -1,31 +1,64 @@
 /* eslint-disable react/no-unescaped-entities */
-import Upload from "@/components/upload";
-import { Footer, Header, Title, Wrapper } from "@/styles/global";
+// import Upload from "@/components/upload";
+import {
+  Footer,
+  Header,
+  Title,
+  Wrapper,
+  Input as CustomInput,
+  Label,
+} from "@/styles/global";
 import { Col, Row } from "antd";
 import { useSettings } from "./useSettings";
-import { Input } from "@/components/input";
+// import { Input } from "@/components/input";
 import { PhoneInput } from "@/components/phone-input";
 import { InputPassword } from "@/components/input-password";
 import { Button } from "@/components/button";
 import { getUser } from "@/utils/user";
 import { CheckboxStyle } from "./style";
 import { Spinner } from "@/components/spinner";
-
+import { useState } from "react";
+import { CloudUploadOutlined, DeleteFilled } from "@ant-design/icons";
+import styles from "./styles.module.css";
+import { request } from "@/shared/api/request";
 const Settings = () => {
   const user = getUser();
   const {
     form1,
     form2,
-    fileList,
     isLoading,
-    setFileList,
     onSubmitInfo,
     changeChacked,
     setChangeChacked,
     onSubmitPassword,
     contextHolder,
   } = useSettings();
+  const [image, setImage] = useState(null);
+  const [name, setName] = useState("");
+  const getFileUrl = async (e) => {
+    e.preventDefault();
+    // console.log("e.target.files[0]", e.target.files[0]);
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
 
+    const response = await request.post("upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    if (response.status === 200) {
+      setImage(response.data.file);
+    }
+  };
+  // const getCurrentValue = async () => {};
+  const onSubmit = async () => {
+    const res = await request.post("admin/worker/detail", {
+      name,
+      image,
+    });
+    console.log(res);
+  };
   return (
     <Wrapper>
       <Header>
@@ -33,21 +66,67 @@ const Settings = () => {
       </Header>
       <form onSubmit={form1.handleSubmit(onSubmitInfo)}>
         <Row gutter={[16, 16]}>
-          <Col span={24}>
-            <Upload
-              fileList={fileList}
-              setFileList={setFileList}
-              maxCount={1}
-              multiple={false}
-            />
+          <Col span={4}>
+            {!image ? (
+              <>
+                <label htmlFor="categoryLogo" className={styles.imageUploading}>
+                  <CloudUploadOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                      fontSize: "12px",
+                    }}
+                  >
+                    Rasm yuklang
+                  </div>
+                </label>
+                <input
+                  type="file"
+                  name="categoryLogo"
+                  accept="image/*"
+                  id="categoryLogo"
+                  style={{ display: "none" }}
+                  onChange={(e) => getFileUrl(e, 0)}
+                />
+              </>
+            ) : (
+              <>
+                <div className={styles.imageItem}>
+                  <p
+                    className={styles.delete}
+                    onClick={() => setImage(null)}
+                    // style={{ backgroundColor: "white" }}
+                  >
+                    <DeleteFilled color="red" background="red" />
+                  </p>
+                  <img
+                    className={styles.categoryLogo}
+                    src={image}
+                    alt="productImage"
+                    width={80}
+                    height={80}
+                  />
+                </div>
+              </>
+            )}
           </Col>
+          <Col span={20}></Col>
           <Col span={24} lg={12}>
-            <Input
+            <Label>Ism sharifingiz</Label>
+            <CustomInput
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              // className={errors[name] ? "input-error" : ""}
+              // onBlur={onBlur}
+            />
+            {/* <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               control={form1.control}
               name="firstname"
               label="Ism sharifingiz"
               placeholder="Ism sharifingiz"
-            />
+            /> */}
           </Col>
           {user?.is_worker || user?.is_stock ? null : (
             <>
@@ -101,7 +180,13 @@ const Settings = () => {
           )}
 
           <Footer>
-            <Button name="Saqlash" className="category-btn" type="submit" />
+            <Button
+              name="Saqlash"
+              className="category-btn"
+              onClick={onSubmit}
+              // loading={isLoading}
+              // type="submit"
+            />
           </Footer>
         </Row>
       </form>

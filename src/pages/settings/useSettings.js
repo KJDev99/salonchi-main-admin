@@ -33,7 +33,7 @@ export const useSettings = () => {
     },
   });
 
-  console.log(fileList, "file-list");
+  // console.log(fileList, "file-list");
 
   const { mutate: userNameMutate, isLoading } = useMutation(
     (data) => updateUserName(data),

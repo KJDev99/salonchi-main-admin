@@ -49,20 +49,40 @@ const CreateSubCategory = () => {
       parent: id,
     };
 
-    // if (isEditing) {
-    const response = await request.post(`admin/category/create`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    if (response.status === 201) {
-      api["success"]({
-        message: "Success",
-        description: "Sub categoriya muvaffaqiyatli yaratildi.",
+    if (subid) {
+      const response = await request.put(
+        `admin/category/${subid}/update`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200) {
+        api["success"]({
+          message: "Success",
+          description: "Sub categoriya muvaffaqiyatli yangilandi.",
+        });
+        setTimeout(() => {
+          navigate("/admin/categories");
+        }, 1500);
+      }
+    } else {
+      const response = await request.post(`admin/category/create`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      setTimeout(() => {
-        navigate("/admin/categories");
-      }, 1500);
+      if (response.status === 201) {
+        api["success"]({
+          message: "Success",
+          description: "Sub categoriya muvaffaqiyatli yaratildi.",
+        });
+        setTimeout(() => {
+          navigate("/admin/categories");
+        }, 1500);
+      }
     }
   };
   useEffect(() => {

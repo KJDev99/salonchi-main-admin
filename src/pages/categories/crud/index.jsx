@@ -20,6 +20,7 @@ const CreateCategory = () => {
   const navigate = useNavigate();
   const { form, fileList, setFileList, isLoading } = useConfirm();
   const { id } = useParams();
+  console.log(id);
   const getFileUrl = async (e, index) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
@@ -49,17 +50,8 @@ const CreateCategory = () => {
     fileList,
     setFileList,
   });
-  const getCurrentValue = async () => {
-    const res = await request.get(`admin/category/${id}/detail`);
 
-    if (res.status === 200) {
-      const { photo, banner_uz, banner_ru } = res.data;
-      setCategoryLogo(photo);
-      setCategoryImageUz(banner_uz);
-      setCategoryImageRu(banner_ru);
-    }
-  };
-  const createCategory = async (isEditing) => {
+  const createCategory = async () => {
     const data = {
       name_uz: form.getValues().name_uz,
       name_ru: form.getValues().name_ru,
@@ -70,22 +62,49 @@ const CreateCategory = () => {
     };
 
     // if (isEditing) {
-    const response = await request.post(`admin/category/create`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    if (response.status === 201) {
-      api["success"]({
-        message: "Success",
-        description: "Kategoriya muvaffaqiyatli yaratildi.",
+    if (id) {
+      const response = await request.put(`admin/category/${id}/update`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      setTimeout(() => {
-        navigate("/admin/categories");
-      }, 1500);
+      if (response.status === 200) {
+        api["success"]({
+          message: "Success",
+          description: "Kategoriya muvaffaqiyatli yangilandi.",
+        });
+        setTimeout(() => {
+          navigate("/admin/categories");
+        }, 1500);
+      }
+    } else {
+      const response = await request.post(`admin/category/create`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response.status === 201) {
+        api["success"]({
+          message: "Success",
+          description: "Kategoriya muvaffaqiyatli yaratildi.",
+        });
+        setTimeout(() => {
+          navigate("/admin/categories");
+        }, 1500);
+      }
     }
   };
   useEffect(() => {
+    const getCurrentValue = async () => {
+      const res = await request.get(`admin/category/${id}/detail`);
+
+      if (res.status === 200) {
+        const { photo, banner_uz, banner_ru } = res.data;
+        setCategoryLogo(photo);
+        setCategoryImageUz(banner_uz);
+        setCategoryImageRu(banner_ru);
+      }
+    };
     if (id) {
       getCurrentValue();
     }

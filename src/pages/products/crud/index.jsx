@@ -42,9 +42,7 @@ const CreateProducts = () => {
   const is_stock = user?.is_stock;
   const [images, setImages] = useState([]);
   const [videoLink, setVideoLink] = useState(null);
-  const [attributes, setAttributes] = useState([
-    { type: "TEXT", name_uz: "", name_ru: "", values: [] },
-  ]);
+  const [attributes, setAttributes] = useState([]);
 
   const [imageLabel, setImageLabel] = useState("");
   const [imagesAtt, setImagesAtt] = useState([]);
@@ -184,6 +182,7 @@ const CreateProducts = () => {
       is_cheap: isCheap,
       category: selectedCategory,
     };
+    console.log(attributes, "attributes");
     if (
       name_uz === "" ||
       name_ru === "" ||

@@ -20,7 +20,6 @@ const CreateCategory = () => {
   const navigate = useNavigate();
   const { form, fileList, setFileList, isLoading } = useConfirm();
   const { id } = useParams();
-  console.log(id);
   const getFileUrl = async (e, index) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
@@ -60,8 +59,15 @@ const CreateCategory = () => {
       banner_ru: categoryImageRu,
       parent: null,
     };
+    if (!categoryLogo || !data.name_ru || !data.name_uz === "") {
+      api["error"]({
+        message: "Error",
+        description: "Kategoriya ma'lumotlari to'liq kiritilmadi!",
+      });
 
-    // if (isEditing) {
+      return;
+    }
+    console.log(data.name_ru, data.name_uz);
     if (id) {
       const response = await request.put(`admin/category/${id}/update`, data, {
         headers: {

@@ -1,6 +1,6 @@
 import { getUser } from "@/utils/user";
-import { AccountCard, BellContainer, OrdersCard, Wrapper } from "./style";
-import { GoBell } from "react-icons/go";
+import { AccountCard, OrdersCard, Wrapper } from "./style";
+// import { GoBell } from "react-icons/go";
 import { Avatar, Image } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getUserName } from "@/shared/modules/settings";
@@ -24,8 +24,6 @@ export const Navbar = () => {
     select: (res) => res?.data,
     enabled: worker,
   });
-
-  console.log(user, "user");
 
   return (
     <Wrapper>

@@ -113,7 +113,6 @@ const CreateProducts = () => {
     const getData = async () => {
       if (id) {
         const response = await request.get(`admin/product/${id}/detail`);
-
         if (response.status === 200) {
           const {
             name_uz,
@@ -127,6 +126,7 @@ const CreateProducts = () => {
             is_cheap,
             price,
             old_price,
+            category,
           } = response.data;
           setNameUz(name_uz);
           setNameRu(name_ru);
@@ -138,6 +138,7 @@ const CreateProducts = () => {
           setIsRecommend(is_recommend);
           setPrice(price);
           setOldPrice(old_price);
+
           const arr = [];
           media.forEach((item) => {
             if (item.file_type === "video") {
@@ -146,9 +147,19 @@ const CreateProducts = () => {
               arr.push(item.file);
             }
           });
+
           setImages(arr);
           const attr = [];
           attributes.forEach((item) => {
+            if (item.type === "IMAGE") {
+              const arr = item.values.map((v) => {
+                return {
+                  url: v.value,
+                  label: v.title,
+                };
+              });
+              setImagesAtt([...arr]);
+            }
             attr.push({
               type: item.type,
               name_uz: item.name_uz,
@@ -166,6 +177,9 @@ const CreateProducts = () => {
     getSubCategoryList(category);
   }, [category]);
   const handleSubmit = async () => {
+    // console.log(categoryList, "categoryList");
+    // console.log(selectedCategory, "selectedCategory");
+    // console.log(subCategoryList, "subCategoryList");
     const arr = [...images];
     if (videoLink) arr.push(videoLink);
     const data = {
@@ -182,7 +196,7 @@ const CreateProducts = () => {
       is_cheap: isCheap,
       category: selectedCategory,
     };
-    console.log(attributes, "attributes");
+    console.log(data, "attributes");
     if (
       name_uz === "" ||
       name_ru === "" ||
@@ -191,8 +205,9 @@ const CreateProducts = () => {
       price === "" ||
       selectedCategory === "" ||
       images.length === 0 ||
-      attributes.length === 0 ||
-      attributes.some((item) => item.values.length === 0)
+      attributes.some((item) => item.values.length === 0) ||
+      attributes.some((item) => item.name_ru.length === 0) ||
+      attributes.some((item) => item.name_uz.length === 0)
     ) {
       api["error"]({
         message: "Error",
@@ -585,6 +600,14 @@ const CreateProducts = () => {
                                         (v) => v.url !== value.url
                                       )
                                     );
+                                    attributes[index].values = [
+                                      ...attributes[index].values.filter(
+                                        (v) => v.value !== value.url
+                                      ),
+                                    ];
+                                    console.log(attributes[index].values);
+                                    console.log(value);
+                                    setAttributes([...attributes]);
                                   }}
                                   key={i}
                                   className={`${styles.attributeImages} ${styles.imageItem}`}

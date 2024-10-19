@@ -264,7 +264,6 @@ export const useList = () => {
     },
   ];
 
-  console.log(selectedRowKeys, "selectedrowkeys");
 
   return {
     data: products.data,

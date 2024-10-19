@@ -64,7 +64,6 @@ const CreateCategory = () => {
         message: "Error",
         description: "Kategoriya ma'lumotlari to'liq kiritilmadi!",
       });
-
       return;
     }
     console.log(data.name_ru, data.name_uz);

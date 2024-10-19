@@ -49,16 +49,13 @@ export const Sidebar = ({ children }) => {
           }
         );
         setCount(response.data);
-        console.log(response.data, "count");
       } catch (error) {
         console.error("Error fetching leads:", error);
       }
     };
-
     fetchLeads();
   }, []);
 
-  console.log(collapsed, "collapsed");
   return (
     <Wrapper>
       <Layout hasSider>

@@ -18,7 +18,6 @@ const CreateSubCategory = () => {
   const navigate = useNavigate();
   const { form, fileList, setFileList, isLoading } = useConfirm();
   const { id, subid } = useParams();
-  console.log(id, subid);
   const getFileUrl = async (e) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
@@ -65,7 +64,7 @@ const CreateSubCategory = () => {
           description: "Sub categoriya muvaffaqiyatli yangilandi.",
         });
         setTimeout(() => {
-          navigate("/admin/categories");
+          navigate("/admin/categories/" + id + "/sub");
         }, 1500);
       }
     } else {
@@ -80,7 +79,7 @@ const CreateSubCategory = () => {
           description: "Sub categoriya muvaffaqiyatli yaratildi.",
         });
         setTimeout(() => {
-          navigate("/admin/categories");
+          navigate("/admin/categories/" + id + "/sub");
         }, 1500);
       }
     }
@@ -108,7 +107,7 @@ const CreateSubCategory = () => {
           </Title>
           <Button
             name="Orqaga"
-            onClick={() => navigate("/admin/categories")}
+            onClick={() => navigate("/admin/categories/" + id + "/sub")}
             className="go-back-btn"
           />
         </Header>

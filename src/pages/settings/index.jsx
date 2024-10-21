@@ -8,7 +8,7 @@ import {
   Input as CustomInput,
   Label,
 } from "@/styles/global";
-import { Col, Row } from "antd";
+import { Col, notification, Row } from "antd";
 import { useSettings } from "./useSettings";
 // import { Input } from "@/components/input";
 import { PhoneInput } from "@/components/phone-input";
@@ -17,7 +17,7 @@ import { Button } from "@/components/button";
 import { getUser } from "@/utils/user";
 import { CheckboxStyle } from "./style";
 import { Spinner } from "@/components/spinner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CloudUploadOutlined, DeleteFilled } from "@ant-design/icons";
 import styles from "./styles.module.css";
 import { request } from "@/shared/api/request";
@@ -31,10 +31,10 @@ const Settings = () => {
     changeChacked,
     setChangeChacked,
     onSubmitPassword,
-    contextHolder,
   } = useSettings();
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
+  const [api, contextHolder] = notification.useNotification();
   const getFileUrl = async (e) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
@@ -51,13 +51,30 @@ const Settings = () => {
       setImage(response.data.file);
     }
   };
+  useEffect(() => {
+    const getCurrentValue = async () => {
+      const res = await request.get("admin/worker/detail");
+      if (res.status === 200) {
+        const { firstname, photo } = res.data;
+        setName(firstname);
+        setImage(photo);
+      }
+      console.log(res);
+    };
+    getCurrentValue();
+  }, []);
   // const getCurrentValue = async () => {};
   const onSubmit = async () => {
-    const res = await request.post("admin/worker/detail", {
-      name,
-      image,
+    const res = await request.patch("admin/worker/detail", {
+      firstname: name,
+      photo: image,
     });
-    console.log(res);
+    if (res.status === 200) {
+      api["success"]({
+        message: "Success",
+        description: "Sozlamalar muvaffaqiyatli yangilandi.",
+      });
+    }
   };
   return (
     <Wrapper>

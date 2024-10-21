@@ -109,7 +109,12 @@ const CreateProducts = () => {
 
   useEffect(() => {
     getCategoryList();
-    getSubCategoryList(1);
+    if (id) {
+      getSubCategoryList(category);
+      console.log(subCategoryList, "categoryyy");
+    } else {
+      getSubCategoryList(1);
+    }
     const getData = async () => {
       if (id) {
         const response = await request.get(`admin/product/${id}/detail`);
@@ -138,7 +143,9 @@ const CreateProducts = () => {
           setIsRecommend(is_recommend);
           setPrice(price);
           setOldPrice(old_price);
-
+          setCategory(category.id);
+          getSubCategoryList(category.id);
+          setSelectedCategory(category.sub.id);
           const arr = [];
           media.forEach((item) => {
             if (item.file_type === "video") {
@@ -196,7 +203,6 @@ const CreateProducts = () => {
       is_cheap: isCheap,
       category: selectedCategory,
     };
-    console.log(data, "attributes");
     if (
       name_uz === "" ||
       name_ru === "" ||
@@ -225,7 +231,7 @@ const CreateProducts = () => {
           setAttributes([]);
           setVideoLink(null);
           // setFileList([]);
-          setCategory(1);
+          // setCategory(1);
           setNameUz("");
           setNameRu("");
           setDescriptionUz("");
@@ -250,7 +256,7 @@ const CreateProducts = () => {
           setAttributes([]);
           setVideoLink(null);
           // setFileList([]);
-          setCategory(1);
+          // setCategory(1);
           setNameUz("");
           setNameRu("");
           setDescriptionUz("");
@@ -454,37 +460,79 @@ const CreateProducts = () => {
                 rows={5}
               />
             </Col>
-            <Col span={24} lg={12}>
-              <AntdSelect
-                style={{ width: "100%" }}
-                // control={form.control}
-                onChange={(e) => setCategory(e)}
-                name="category"
-                label="Kategoriyalar"
-                placeholder="Kategoriyalar"
-                options={categoryList.map((item) => ({
-                  label: item.name_uz,
-                  value: item.id,
-                }))}
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <AntdSelect
-                style={{ width: "100%" }}
-                onChange={(e) => setSelectedCategory(e)}
-                name="subCategory"
-                label="SubCategoriyalar"
-                placeholder="SubCategoriyalar"
-                options={
-                  subCategoryList && subCategoryList.length > 0
-                    ? subCategoryList.map((item) => ({
-                        label: item.name_uz,
-                        value: item.id,
-                      }))
-                    : []
-                }
-              />
-            </Col>
+            {id ? (
+              <>
+                <Col span={24} lg={12}>
+                  <AntdSelect
+                    style={{ width: "100%" }}
+                    // control={form.control}
+                    onChange={(e) => setCategory(e)}
+                    value={category}
+                    name="category"
+                    label="Kategoriyalar"
+                    placeholder="Kategoriyalar"
+                    options={categoryList.map((item) => ({
+                      label: item.name_uz,
+                      value: item.id,
+                    }))}
+                  />
+                </Col>
+                <Col span={24} lg={12}>
+                  <AntdSelect
+                    style={{ width: "100%" }}
+                    onChange={(e) => setSelectedCategory(e)}
+                    name="subCategory"
+                    label="SubCategoriyalar"
+                    placeholder="SubCategoriyalar"
+                    value={selectedCategory}
+                    // value={selectedCategory}
+                    options={
+                      subCategoryList && subCategoryList.length > 0
+                        ? subCategoryList.map((item) => ({
+                            label: item.name_uz,
+                            value: item.id,
+                          }))
+                        : []
+                    }
+                  />
+                </Col>
+              </>
+            ) : (
+              <>
+                <Col span={24} lg={12}>
+                  <AntdSelect
+                    style={{ width: "100%" }}
+                    // control={form.control}
+                    onChange={(e) => setCategory(e)}
+                    name="category"
+                    label="Kategoriyalar"
+                    placeholder="Kategoriyalar"
+                    options={categoryList.map((item) => ({
+                      label: item.name_uz,
+                      value: item.id,
+                    }))}
+                  />
+                </Col>
+                <Col span={24} lg={12}>
+                  <AntdSelect
+                    style={{ width: "100%" }}
+                    onChange={(e) => setSelectedCategory(e)}
+                    name="subCategory"
+                    label="SubCategoriyalar"
+                    placeholder="SubCategoriyalar"
+                    // value={selectedCategory}
+                    options={
+                      subCategoryList && subCategoryList.length > 0
+                        ? subCategoryList.map((item) => ({
+                            label: item.name_uz,
+                            value: item.id,
+                          }))
+                        : []
+                    }
+                  />
+                </Col>
+              </>
+            )}
           </Row>
           <Row gutter={[16, 16]} style={{ marginTop: 12 }}>
             <Col span={48} lg={24}>

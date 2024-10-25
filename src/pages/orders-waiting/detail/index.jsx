@@ -1,18 +1,19 @@
-import { Button } from '@/components/button';
-import { Header, Title, Wrapper } from '@/styles/global';
-import { useNavigate } from 'react-router-dom';
-import { useDetail } from './useDetail';
-import { Spinner } from '@/components/spinner';
-import { List, ListItem } from './style';
-import { Image, Modal, Tag } from 'antd';
-import dayjs from 'dayjs';
-import { DATE_FORMAT } from '@/constants/format';
-import { getStatus, tagStatus } from '@/utils/status';
-import { ChangeStatus } from './change-status';
-import { Fragment } from 'react';
-import { CustomTextArea } from '@/components/textarea';
-import { LiaMoneyBillWaveAltSolid } from 'react-icons/lia';
-import { BsCreditCard } from 'react-icons/bs';
+import { Button } from "@/components/button";
+import { Header, Title, Wrapper } from "@/styles/global";
+import { useNavigate } from "react-router-dom";
+import { useDetail } from "./useDetail";
+import { Spinner } from "@/components/spinner";
+import { List, ListItem } from "./style";
+import { Image, Modal, Tag } from "antd";
+import dayjs from "dayjs";
+import { DATE_FORMAT } from "@/constants/format";
+import { getStatus, tagStatus } from "@/utils/status";
+import { ChangeStatus } from "./change-status";
+import { Fragment } from "react";
+import { CustomTextArea } from "@/components/textarea";
+import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+// import { BsCreditCard } from 'react-icons/bs';
+import { ReactComponent as Nasiya } from "@/assets/nasiya.svg";
 
 const OrderDetailWaiting = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const OrderDetailWaiting = () => {
         <Title>Buyurtma ma`lumotlari</Title>
         <Button
           name="Orqaga"
-          onClick={() => navigate('/admin/orders-waiting')}
+          onClick={() => navigate("/admin/orders-waiting")}
           className="go-back-btn"
         />
       </Header>
@@ -47,43 +48,44 @@ const OrderDetailWaiting = () => {
             <span>{data?.user}</span>
           </ListItem>
           <ListItem getstatus={getStatus(data?.status)}>
-            <span>Status</span>{' '}
+            <span>Status</span>{" "}
             <Tag color={tagStatus(data?.status)} bordered={false}>
               {getStatus(data?.status)?.label}
             </Tag>
           </ListItem>
           <ListItem>
             <span>To`lov turi</span>
-            {data?.payment_type == 'CASH' ? (
+            {data?.payment_type == "CASH" ? (
               <LiaMoneyBillWaveAltSolid
-                style={{ color: 'green', fontSize: '28px' }}
+                style={{ color: "green", fontSize: "28px" }}
               />
             ) : (
-              <BsCreditCard style={{ color: 'green', fontSize: '28px' }} />
+              // <BsCreditCard style={{ color: 'green', fontSize: '28px' }} />
+              <Nasiya style={{ width: "100px", height: "30px" }} />
             )}
           </ListItem>
           <ListItem>
             <span>Telefon raqami</span> <span>{data?.phone}</span>
-          </ListItem>{' '}
+          </ListItem>{" "}
           <ListItem>
-            <span>Buyurtma yaratilgan sanasi</span>{' '}
+            <span>Buyurtma yaratilgan sanasi</span>{" "}
             <span>{dayjs(data?.created_at).format(DATE_FORMAT)}</span>
-          </ListItem>{' '}
+          </ListItem>{" "}
           <ListItem>
             <span>Buyurtma manzili</span>
             <span className="address-info">
-              {data?.address?.region?.name_uz} viloyati,{' '}
-              {data?.address?.district?.name_uz} tumani {data?.address?.street}{' '}
+              {data?.address?.region?.name_uz} viloyati,{" "}
+              {data?.address?.district?.name_uz} tumani {data?.address?.street}{" "}
               ko`chasi
             </span>
           </ListItem>
           <ListItem>
             <span>Jami</span> <span>{data?.amount} so`m</span>
-          </ListItem>{' '}
+          </ListItem>{" "}
           <ListItem>
             <span>Izoh</span>
             <span className="comment">
-              {data?.comment === '' ? "Izohlar yo'q" : data?.comment}
+              {data?.comment === "" ? "Izohlar yo'q" : data?.comment}
             </span>
           </ListItem>
           {data?.order_items?.length > 0 && (

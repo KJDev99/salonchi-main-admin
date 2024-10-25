@@ -43,6 +43,7 @@ export const useSettings = () => {
           message: "Success",
           description: "Muvaffaqiyatli yangilandi",
         });
+        console.log("success");
         window.location.reload();
       },
       onError: () => {

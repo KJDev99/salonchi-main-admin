@@ -48,12 +48,13 @@ export const Navbar = () => {
       )}
       <AccountCard>
         <div className="user-name">{updateUser?.firstname}</div>
-        {updateUser === null || user?.photo === "" ? (
+        {updateUser !== null || user?.photo !== "" ? (
           <Image
             src={updateUser?.photo || user?.photo}
             alt="people"
-            width={40}
-            style={{ borderRadius: "50%" }}
+            width={60}
+            height={67}
+            style={{ borderRadius: "20%", objectFit: "cover" }}
           />
         ) : (
           <Avatar icon={<UserOutlined style={{ fontSize: 16 }} />} />

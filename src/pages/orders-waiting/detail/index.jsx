@@ -112,7 +112,10 @@ const OrderDetailWaiting = () => {
                     <span>{i + 1}. Maxsulot rasmi</span>
                     {v?.product?.photo?.length > 0 ? (
                       <Image
-                        src={v?.product?.photo}
+                        src={
+                          v?.details?.attributes[0]?.value[0].value ||
+                          v?.product?.photo
+                        }
                         alt="media"
                         className="product-image"
                       />

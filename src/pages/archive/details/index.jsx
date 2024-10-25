@@ -112,7 +112,10 @@ const ArchiveOrderDetails = () => {
                     <span>{i + 1}. Maxsulot rasmi</span>
                     {v?.details?.photo?.length > 0 ? (
                       <Image
-                        src={v?.details?.photo}
+                        src={
+                          v?.details?.attributes[0]?.value[0].value ||
+                          v?.details?.photo
+                        }
                         alt="media"
                         className="product-image"
                       />

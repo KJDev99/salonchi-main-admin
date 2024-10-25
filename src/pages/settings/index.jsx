@@ -59,7 +59,6 @@ const Settings = () => {
         setName(firstname);
         setImage(photo);
       }
-      console.log(res);
     };
     getCurrentValue();
   }, []);
@@ -74,6 +73,7 @@ const Settings = () => {
         message: "Success",
         description: "Sozlamalar muvaffaqiyatli yangilandi.",
       });
+      window.location.reload();
     }
   };
   return (

@@ -52,6 +52,7 @@ export const OrdersCard = styled.div`
 export const AccountCard = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   height: 64px;
   .user-name {

@@ -13,6 +13,7 @@ import { Fragment } from "react";
 import { CustomTextArea } from "@/components/textarea";
 import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
 import { ReactComponent as Nasiya } from "@/assets/nasiya.svg";
+import { BsCreditCard } from "react-icons/bs";
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -26,7 +27,22 @@ const OrderDetail = () => {
     rejectOrder,
     acceptOrder,
   } = useDetail();
-
+  const getPaymentIcon = (paymentType) => {
+    switch (paymentType) {
+      case "CASH":
+        return (
+          <LiaMoneyBillWaveAltSolid
+            style={{ color: "green", fontSize: "28px" }}
+          />
+        );
+      case "UZUM":
+        return <Nasiya style={{ width: "100px", height: "30px" }} />;
+      case "CART":
+        return <BsCreditCard style={{ color: "green", fontSize: "28px" }} />;
+      default:
+        return null;
+    }
+  };
   return (
     <Wrapper>
       {contextHolder}
@@ -54,14 +70,7 @@ const OrderDetail = () => {
           </ListItem>
           <ListItem>
             <span>To`lov turi</span>
-            {data?.payment_type == "CASH" ? (
-              <LiaMoneyBillWaveAltSolid
-                style={{ color: "green", fontSize: "28px" }}
-              />
-            ) : (
-              // <BsCreditCard style={{ color: 'green', fontSize: '28px' }} />
-              <Nasiya style={{ width: "100px", height: "30px" }} />
-            )}
+            {getPaymentIcon(data?.payment_type)}
           </ListItem>
           <ListItem>
             <span>Telefon raqami</span> <span>{data?.phone}</span>

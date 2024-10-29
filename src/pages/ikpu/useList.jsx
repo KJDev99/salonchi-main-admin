@@ -16,7 +16,7 @@ export const useList = () => {
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
     limit: initial_params.has("limit")
       ? Number(initial_params.get("limit"))
-      : 10,
+      : 20,
   });
 
   const {
@@ -72,7 +72,12 @@ export const useList = () => {
   );
 
   const handleMutation = (id) => {
-    console.log( "form", form.watch(`mxik_${id}`),form.watch(`package_code_${id}`),form.watch(`vat_percent_${id}`))
+    console.log(
+      "form",
+      form.watch(`mxik_${id}`),
+      form.watch(`package_code_${id}`),
+      form.watch(`vat_percent_${id}`)
+    );
     setProductId(id);
     if (
       form.watch(`mxik_${id}`) &&

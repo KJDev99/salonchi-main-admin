@@ -40,7 +40,7 @@ export const useList = () => {
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
     limit: initial_params.has("limit")
       ? Number(initial_params.get("limit"))
-      : 10,
+      : 20,
   });
   const {
     data: ordersOnTheWay = {
@@ -78,7 +78,7 @@ export const useList = () => {
     onSuccess: () => {
       if (params?.page > 1 && form.watch("date")) {
         setParams({
-          limit: 10,
+          limit: 20,
           page: 1,
         });
       }

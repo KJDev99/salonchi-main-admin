@@ -1,6 +1,6 @@
 export const ENDPOINTS = {
   LOGIN: "edmadmin/login",
-  ADMIN_PRODUCT_LIST: "admin/product/list?limit=10&offset=1",
+  ADMIN_PRODUCT_LIST: "admin/product/list?limit=20&offset=1",
   ADMIN_DELETE_PRODUCT: "admin/product/delete/",
   ADMIN_PRODUCT_CREATE: "admin/product/create",
   ADMIN_PRODUCT_DETAIL: "admin/product/detail/",

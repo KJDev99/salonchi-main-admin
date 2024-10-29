@@ -4,7 +4,7 @@ import { ENDPOINTS } from "../endpoints";
 export const getOrders = (data) =>
   request(ENDPOINTS.ADMIN_ORDER, {
     params: {
-      limit: 10,
+      limit: 20,
       page:
         data?.params?.page > 1 && data?.from_date && data?.to_date
           ? 1
@@ -20,7 +20,7 @@ export const orderDetails = (id) => request(`admin/order/${id}/detail`);
 export const orderAccepted = (params) =>
   request(ENDPOINTS.ADMIN_ORDER_ACCEPTED, {
     params: {
-      limit: 10,
+      limit: 20,
       page: params?.page,
     },
   });

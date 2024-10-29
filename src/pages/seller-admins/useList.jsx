@@ -20,8 +20,10 @@ export const useList = () => {
   const navigate = useNavigate();
   const [params, setParams] = useState({
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
-    limit: initial_params.has("limit")? Number(initial_params.get("limit")): 10,
-    has_amount:true
+    limit: initial_params.has("limit")
+      ? Number(initial_params.get("limit"))
+      : 20,
+    has_amount: true,
   });
 
   const {
@@ -34,7 +36,7 @@ export const useList = () => {
     queryFn: () =>
       request(`/admin/seller/list`, {
         params: {
-          has_amount: params.has_amount ? undefined :  params.has_amount ,
+          has_amount: params.has_amount ? undefined : params.has_amount,
           limit: params?.limit,
           page: params?.page,
         },
@@ -46,7 +48,7 @@ export const useList = () => {
         data: res?.data?.results,
       };
     },
-   keepPreviousData: true,
+    keepPreviousData: true,
   });
 
   const columns = [

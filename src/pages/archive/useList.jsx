@@ -53,7 +53,7 @@ export const useList = () => {
     onSuccess: () => {
       if (params?.page > 1 && form.watch("date")) {
         setParams({
-          limit: 10,
+          limit: 20,
           page: 1,
         });
       }

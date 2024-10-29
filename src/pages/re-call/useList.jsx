@@ -1,19 +1,19 @@
-import { getStatus, tagStatus } from '@/utils/status';
-import { Button, Space, Tag, notification, Modal } from 'antd';
-import dayjs from 'dayjs';
-import { DATE_FORMAT } from '@/constants/format';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { reCall, updateReCall } from '@/shared/modules/re-call';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { STATUS } from '@/constants/status';
+import { getStatus, tagStatus } from "@/utils/status";
+import { Button, Space, Tag, notification, Modal } from "antd";
+import dayjs from "dayjs";
+import { DATE_FORMAT } from "@/constants/format";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { reCall, updateReCall } from "@/shared/modules/re-call";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { STATUS } from "@/constants/status";
 import {
   EyeFilled,
   SyncOutlined,
   ExclamationCircleOutlined,
-} from '@ant-design/icons';
-import { ROUTER } from '@/constants/router';
-import { useLocation, useNavigate } from 'react-router-dom';
+} from "@ant-design/icons";
+import { ROUTER } from "@/constants/router";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const useList = () => {
   const { confirm } = Modal;
@@ -23,10 +23,10 @@ export const useList = () => {
   const { search } = useLocation();
   const initial_params = new URLSearchParams(search);
   const [params, setParams] = useState({
-    page: initial_params.has('page') ? Number(initial_params.get('page')) : 1,
-    limit: initial_params.has('limit')
-      ? Number(initial_params.get('limit'))
-      : 10,
+    page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
+    limit: initial_params.has("limit")
+      ? Number(initial_params.get("limit"))
+      : 20,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [api, contextHolder] = notification.useNotification();
@@ -39,18 +39,18 @@ export const useList = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ['get-re-call-order-list', params, form.watch('date')],
+    queryKey: ["get-re-call-order-list", params, form.watch("date")],
     queryFn: () =>
       reCall({
         params,
         from_date:
-          form.watch('date') == undefined
+          form.watch("date") == undefined
             ? null
-            : dayjs(form.watch('date')[0]).format('YYYY-MM-DD'),
+            : dayjs(form.watch("date")[0]).format("YYYY-MM-DD"),
         to_date:
-          form.watch('date') == undefined
+          form.watch("date") == undefined
             ? null
-            : dayjs(form.watch('date')[1]).format('YYYY-MM-DD'),
+            : dayjs(form.watch("date")[1]).format("YYYY-MM-DD"),
       }),
     select: (res) => {
       return {
@@ -63,23 +63,23 @@ export const useList = () => {
   const updateMutate = useMutation((data) => updateReCall(rowid, data), {
     onSuccess: () => {
       refetch();
-      api['success']({
-        message: 'Success',
+      api["success"]({
+        message: "Success",
         description: "Buyurtma holati o'zgartirildi",
       });
       setIsModalOpen(false);
     },
     onError: (error) => {
-      api['error']({
-        message: 'Error',
-        description: error?.response?.data?.detail || 'Something went wrong!',
+      api["error"]({
+        message: "Error",
+        description: error?.response?.data?.detail || "Something went wrong!",
       });
     },
   });
 
   const accept = (id) => {
     confirm({
-      title: 'Buyurtmani qabul chiqmoqchimisiz?',
+      title: "Buyurtmani qabul chiqmoqchimisiz?",
       icon: <ExclamationCircleOutlined />,
       onOk() {
         setRowid(id);
@@ -88,8 +88,8 @@ export const useList = () => {
         };
         updateMutate.mutate(payload);
       },
-      okText: 'Ha',
-      cancelText: 'Bekor qilish',
+      okText: "Ha",
+      cancelText: "Bekor qilish",
 
       // onCancel() {
       //   console.log("Cancel");
@@ -105,7 +105,7 @@ export const useList = () => {
   const handleOk = () => {
     let payload = {
       status: STATUS.CANCELLED,
-      comment: form.watch('comment'),
+      comment: form.watch("comment"),
     };
     updateMutate.mutate(payload);
   };
@@ -116,26 +116,26 @@ export const useList = () => {
 
   const columns = [
     {
-      title: 'T/r',
-      key: 'row',
+      title: "T/r",
+      key: "row",
       render: (id, record, index) => (
         <p>{(params.page - 1) * params.limit + index + 1}</p>
       ),
     },
     {
-      title: 'Buyurtma ID si',
-      key: 'row',
+      title: "Buyurtma ID si",
+      key: "row",
       render: (row) => <p>{row?.id}</p>,
     },
     {
-      title: 'Telefon raqami',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: "Telefon raqami",
+      dataIndex: "phone",
+      key: "phone",
     },
     {
-      title: 'Statusi',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Statusi",
+      dataIndex: "status",
+      key: "status",
       render: (status) => (
         <Tag
           icon={status == STATUS.ON_THE_WAY && <SyncOutlined spin />}
@@ -147,28 +147,28 @@ export const useList = () => {
       ),
     },
     {
-      title: 'Umumiy summa',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (amount) => <p style={{ margin: '0' }}>{amount} so`m</p>,
+      title: "Umumiy summa",
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => <p style={{ margin: "0" }}>{amount} so`m</p>,
     },
     {
-      title: 'Yaratilgan vaqti',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Yaratilgan vaqti",
+      dataIndex: "created_at",
+      key: "created_at",
       render: (created_at) => (
-        <p style={{ margin: '0' }}>{dayjs(created_at).format(DATE_FORMAT)}</p>
+        <p style={{ margin: "0" }}>{dayjs(created_at).format(DATE_FORMAT)}</p>
       ),
     },
     {
-      title: 'Izoh',
-      dataIndex: 'comment',
-      key: 'comment',
-      render: (comment) => <p>{comment !== '' ? comment : "Izoh yo'q"}</p>,
+      title: "Izoh",
+      dataIndex: "comment",
+      key: "comment",
+      render: (comment) => <p>{comment !== "" ? comment : "Izoh yo'q"}</p>,
     },
     {
-      title: 'Ko`rish',
-      key: 'row',
+      title: "Ko`rish",
+      key: "row",
       render: (row) => (
         <Space>
           <Button
@@ -182,8 +182,8 @@ export const useList = () => {
       ),
     },
     {
-      title: 'Actions',
-      key: 'row',
+      title: "Actions",
+      key: "row",
       render: (row) => (
         <Space>
           <Button type="primary" onClick={() => accept(row?.id)}>

@@ -44,7 +44,7 @@ const OrderDetailWaiting = () => {
         return null;
     }
   };
-  console.log(data.address);
+  console.log(data?.address);
   return (
     <Wrapper>
       {contextHolder}
@@ -83,10 +83,12 @@ const OrderDetailWaiting = () => {
           </ListItem>{" "}
           <ListItem>
             <span>Buyurtma manzili</span>
-            <span className="address-info">
-              {data?.address?.region}, {data?.address?.district} tumani ,
-              {data?.address?.street} ko`chasi, {data?.address?.home}
-            </span>
+            {data && data?.address && (
+              <span className="address-info">
+                {data?.address?.region}, {data?.address?.district} tumani ,
+                {data?.address?.street} ko`chasi, {data?.address?.home}
+              </span>
+            )}
           </ListItem>
           <ListItem>
             <span>Jami</span> <span>{data?.amount} so`m</span>

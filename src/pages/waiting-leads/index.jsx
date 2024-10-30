@@ -13,6 +13,8 @@ import {
   StatusEditButton,
 } from "./style"; // Ensure paths are correct
 import { Titles } from "../leads/style";
+import { PaginationTen } from "@/components/paginationten";
+import { useLocation } from "react-router-dom";
 
 const WaitingLeads = () => {
   const [leads, setLeads] = useState([]);
@@ -20,7 +22,15 @@ const WaitingLeads = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
-
+  const [count, setCount] = useState(0);
+  const { search } = useLocation();
+  const initial_params = new URLSearchParams(search);
+  const [params, setParams] = useState({
+    page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
+    limit: initial_params.has("limit")
+      ? Number(initial_params.get("limit"))
+      : 20,
+  });
   useEffect(() => {
     const fetchLeads = async () => {
       try {
@@ -34,7 +44,8 @@ const WaitingLeads = () => {
           }
         }
         const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/lead/waiting",
+          "https://api.salonchi.uz/api/v1/lead/waiting" +
+            `?page=${params.page}`,
           {
             headers: {
               Authorization: `Bearer ${userData?.access}`,
@@ -43,6 +54,7 @@ const WaitingLeads = () => {
         );
         setLeads(response.data.results);
         setFilteredLeads(response.data.results); // Show all leads initially
+        setCount(response.data.count);
       } catch (error) {
         console.error("Error fetching leads:", error);
       } finally {
@@ -51,7 +63,7 @@ const WaitingLeads = () => {
     };
 
     fetchLeads();
-  }, []);
+  }, [params.page]);
 
   const handleStatusChange = (lead) => {
     setSelectedLead(lead);
@@ -137,7 +149,7 @@ const WaitingLeads = () => {
           </tbody>
         </Table>
       )}
-
+      <PaginationTen total={count} params={params} setParams={setParams} />
       {/* Modal for confirmation */}
       {modalOpen && (
         <Modal>

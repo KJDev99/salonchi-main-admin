@@ -23,6 +23,7 @@ import { EyeFilled } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { request } from "@/shared/api/request";
 import { PaginationTen } from "@/components/paginationten";
+import { LoaderWrapper } from "@/components/spinner/style";
 
 // import { Pagination } from "@/components/pagination";
 // import { Pagination } from "@/components/pagination";
@@ -56,10 +57,13 @@ const Leads = () => {
       : 20,
   });
   const navigate = useNavigate();
-
+  useEffect(() => {
+    setParams({ ...params, page: 1 });
+  }, [selectedStatus]);
   useEffect(() => {
     const fetchLeads = async () => {
       try {
+        setLoading(true);
         const userDataString = localStorage.getItem("userInfo");
         let userData;
         if (userDataString) {
@@ -83,7 +87,6 @@ const Leads = () => {
         );
         setLeads(response.data.results);
         setFilteredLeads(response.data.results);
-        // console.log(response.data);
         setCount(response.data.count);
       } catch (error) {
         console.error("Error fetching leads:", error);
@@ -126,7 +129,6 @@ const Leads = () => {
           "https://api.salonchi.uz/api/v1/lead/status/count"
         );
         setCounts(response.data);
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching statistics:", error);
       }
@@ -178,7 +180,6 @@ const Leads = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
   const getStatusMessage = (status) => {
     switch (status) {
       case "ALL":
@@ -256,52 +257,52 @@ const Leads = () => {
     <Wrapper>
       <Header>
         <Title>{getStatusMessage(titles)}</Title>
-        <div>
+        <div style={{ display: "flex", gap: "10px" }}>
           <StatusFilterButton
             isActive={selectedStatus === "ALL"}
             status="ALL"
             onClick={() => setSelectedStatus("ALL")}
           >
-            Barchasi {counts ? counts.all : ""}
+            Barchasi <p>{counts ? counts.all : ""}</p>
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "NEW"}
             status="NEW"
             onClick={() => setSelectedStatus("NEW")}
           >
-            Yangi {counts ? counts.new : ""}
+            Yangi <p>{counts ? counts.new : ""}</p>
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "ACCEPT"}
             status="ACCEPT"
             onClick={() => setSelectedStatus("ACCEPT")}
           >
-            Qabul qilingan {counts ? counts.accepted : ""}
+            Qabul qilingan <p>{counts ? counts.accepted : ""}</p>
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "REJECTED"}
             status="REJECTED"
             onClick={() => setSelectedStatus("REJECTED")}
           >
-            Bekor qilingan {counts ? counts.rejected : ""}
+            Bekor qilingan <p>{counts ? counts.rejected : ""}</p>
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "DELIVERED"}
             status="DELIVERED"
             onClick={() => setSelectedStatus("DELIVERED")}
           >
-            Yetkazilgan {counts ? counts.delivered : ""}
+            Yetkazilgan <p>{counts ? counts.delivered : ""}</p>
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "RECALL"}
             status="RECALL"
             onClick={() => setSelectedStatus("RECALL")}
           >
-            Qayta aloqa {counts ? counts.recall : ""}
+            Qayta aloqa <p>{counts ? counts.recall : ""}</p>
           </StatusFilterButton>
         </div>
       </Header>
-      {filteredLeads.length == 0 ? (
+      {filteredLeads.length == 0 && !loading ? (
         <Titles>Hozircha bu yer bosh:!</Titles>
       ) : (
         <Table>
@@ -323,62 +324,66 @@ const Leads = () => {
             </tr>
           </thead>
           <tbody>
-            {sortedLeads.map((lead, index) => (
-              <TableRow key={lead.id}>
-                <TableCell>
-                  {(params.page - 1) * params.limit + index + 1}
-                </TableCell>
-                <TableCell>{lead.name}</TableCell>
-                <TableCell>{lead.phone}</TableCell>
-                <TableCell>
-                  <Badge getstatus={getStatusStyle(lead.status)}>
-                    {getStatusMessage(lead.status)}
-                  </Badge>
-                </TableCell>
-                {selectedStatus == "RECALL" ? (
-                  <TableCell
-                    className={
-                      new Date(lead.schedule).toLocaleDateString() === today
-                        ? "today-row"
-                        : ""
-                    }
-                  >
-                    {new Date(lead.schedule).toLocaleDateString()}
-                  </TableCell>
-                ) : (
+            {!loading ? (
+              sortedLeads.map((lead, index) => (
+                <TableRow key={lead.id}>
                   <TableCell>
-                    {new Date(lead.created).toLocaleString()}
+                    {(params.page - 1) * params.limit + index + 1}
                   </TableCell>
-                )}
-
-                <TableCell>
-                  <Select
-                    value={lead.status}
-                    onChange={(e) => handleStatusChange(lead, e.target.value)}
-                  >
-                    {statusOptions.map((status) => (
-                      <option key={status} value={status}>
-                        {getStatusMessage(status)}
-                      </option>
-                    ))}
-                  </Select>
-                </TableCell>
-                <TableCell>
-                  <Space>
-                    <Button
-                      type="primary"
-                      ghost
-                      onClick={() => navigate(`${ROUTER.DETAIL}/${lead.id}`)}
+                  <TableCell>{lead.name}</TableCell>
+                  <TableCell>{lead.phone}</TableCell>
+                  <TableCell>
+                    <Badge getstatus={getStatusStyle(lead.status)}>
+                      {getStatusMessage(lead.status)}
+                    </Badge>
+                  </TableCell>
+                  {selectedStatus == "RECALL" ? (
+                    <TableCell
+                      className={
+                        new Date(lead.schedule).toLocaleDateString() === today
+                          ? "today-row"
+                          : ""
+                      }
                     >
-                      <EyeFilled />
-                    </Button>
-                  </Space>
-                </TableCell>
-                <TableCell onClick={() => openMessageModal(lead.id)}>
-                  <MessageIcon />
-                </TableCell>
-              </TableRow>
-            ))}
+                      {new Date(lead.schedule).toLocaleDateString()}
+                    </TableCell>
+                  ) : (
+                    <TableCell>
+                      {new Date(lead.created).toLocaleString()}
+                    </TableCell>
+                  )}
+
+                  <TableCell>
+                    <Select
+                      value={lead.status}
+                      onChange={(e) => handleStatusChange(lead, e.target.value)}
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                          {getStatusMessage(status)}
+                        </option>
+                      ))}
+                    </Select>
+                  </TableCell>
+                  <TableCell>
+                    <Space>
+                      <Button
+                        type="primary"
+                        ghost
+                        onClick={() => navigate(`${ROUTER.DETAIL}/${lead.id}`)}
+                      >
+                        <EyeFilled />
+                      </Button>
+                    </Space>
+                  </TableCell>
+                  <TableCell onClick={() => openMessageModal(lead.id)}>
+                    <MessageIcon />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <LoaderWrapper />
+            )}
           </tbody>
           {/* <Pagination total={count} params={params} setParams={setParams} /> */}
         </Table>

@@ -72,12 +72,6 @@ export const useList = () => {
   );
 
   const handleMutation = (id) => {
-    console.log(
-      "form",
-      form.watch(`mxik_${id}`),
-      form.watch(`package_code_${id}`),
-      form.watch(`vat_percent_${id}`)
-    );
     setProductId(id);
     if (
       form.watch(`mxik_${id}`) &&

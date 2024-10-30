@@ -24,7 +24,6 @@ export const Navbar = () => {
     select: (res) => res?.data,
     enabled: worker,
   });
-
   return (
     <Wrapper>
       {/* {admin && (
@@ -48,13 +47,17 @@ export const Navbar = () => {
       )}
       <AccountCard>
         <div className="user-name">{updateUser?.firstname}</div>
-        {updateUser !== null || user?.photo !== "" ? (
+        {(updateUser && updateUser.photo !== null) || user?.photo !== null ? (
           <Image
             src={updateUser?.photo || user?.photo}
             alt="people"
-            width={60}
-            height={67}
-            style={{ borderRadius: "20%", objectFit: "cover" }}
+            width={50}
+            height={50}
+            style={{
+              borderRadius: "20%",
+              objectFit: "cover",
+              transform: "translateY(-10px)",
+            }}
           />
         ) : (
           <Avatar icon={<UserOutlined style={{ fontSize: 16 }} />} />

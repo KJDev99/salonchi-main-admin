@@ -25,7 +25,6 @@ const Expenses = () => {
     createIsLoading,
   } = useList();
 
-  console.log(data, "data");
   return (
     <Wrapper>
       {contextHolder}

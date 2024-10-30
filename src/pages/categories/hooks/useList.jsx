@@ -133,7 +133,6 @@ export const useList = () => {
             className="delete-btn"
             onClick={(e) => {
               e.stopPropagation();
-              console.log(record.id);
               handleDelete(record.id);
             }}
           >

@@ -136,16 +136,46 @@ export const StatusFilterButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   background-color: ${(props) =>
-    props.isActive ? getStatusStyle(props.status).backgroundColor : "#e0e0e0"};
-  color: ${(props) => (props.isActive ? "#fff" : "#333")};
+    props.isActive ? getStatusStyle(props.status).backgroundColor : "#f27c33"};
+  color: ${(props) => (props.isActive ? "#fff" : "#fff")};
 
   &:hover {
     background-color: ${(props) =>
-      props.isActive ? getStatusStyle(props.status).hoverColor : "#ccc"};
+      props.isActive ? getStatusStyle(props.status).hoverColor : "#fc9e62"};
+  }
+  p {
+    background-color: white;
+    font-weight: 500;
+    margin: 0;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: ${(props) =>
+      props.isActive ? getStatusStyle1(props.status).color : "#00000099"};
   }
 `;
 
+const getStatusStyle1 = (status) => {
+  switch (status) {
+    case "NEW":
+      return { color: "#FFD700" }; // Gold for new
+    case "ACCEPT":
+      return { color: "#007bff" }; // Blue for accept
+    case "REJECTED":
+      return { color: "#dc3545" }; // Red for rejected
+    case "DELIVERED":
+      return { color: "#28a745" }; // Green for delivered
+    case "RECALL":
+      return { color: "#ff851b" }; // Orange for recall
+    default:
+      return { color: "#6c757d" }; // Grey for others
+  }
+};
 const getStatusStyle = (status) => {
   switch (status) {
     case "NEW":

@@ -106,7 +106,6 @@ const Customerbase = () => {
           }
         );
         setNewData(response.data.results, ...newData);
-        console.log(response.data.results);
       } catch (error) {
         console.error("Error fetching leads:", error);
       }

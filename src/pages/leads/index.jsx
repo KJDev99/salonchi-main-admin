@@ -48,6 +48,7 @@ const Leads = () => {
   const [isReCallOpen, setIsReCallOpen] = useState();
   const { search } = useLocation();
   const initial_params = new URLSearchParams(search);
+  const [counts, setCounts] = useState({});
   const [params, setParams] = useState({
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
     limit: initial_params.has("limit")
@@ -72,7 +73,8 @@ const Leads = () => {
           "https://api.salonchi.uz/api/v1/lead?page=" +
             params.page +
             "&limit=" +
-            20,
+            20 +
+            `&status=${selectedStatus === "ALL" ? "" : selectedStatus}`,
           {
             headers: {
               Authorization: `Bearer ${userData.access}`,
@@ -123,13 +125,14 @@ const Leads = () => {
         const response = await request.get(
           "https://api.salonchi.uz/api/v1/lead/status/count"
         );
+        setCounts(response.data);
         console.log(response.data);
       } catch (error) {
         console.error("Error fetching statistics:", error);
       }
     };
     fetchStatistics();
-  }, [params.page]);
+  }, [params.page, selectedStatus]);
 
   const handleFilterChange = (status) => {
     setSelectedStatus(status);
@@ -259,42 +262,42 @@ const Leads = () => {
             status="ALL"
             onClick={() => setSelectedStatus("ALL")}
           >
-            Barchasi
+            Barchasi {counts ? counts.all : ""}
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "NEW"}
             status="NEW"
             onClick={() => setSelectedStatus("NEW")}
           >
-            Yangi
+            Yangi {counts ? counts.new : ""}
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "ACCEPT"}
             status="ACCEPT"
             onClick={() => setSelectedStatus("ACCEPT")}
           >
-            Qabul qilingan
+            Qabul qilingan {counts ? counts.accepted : ""}
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "REJECTED"}
             status="REJECTED"
             onClick={() => setSelectedStatus("REJECTED")}
           >
-            Bekor qilingan
+            Bekor qilingan {counts ? counts.rejected : ""}
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "DELIVERED"}
             status="DELIVERED"
             onClick={() => setSelectedStatus("DELIVERED")}
           >
-            Yetkazilgan
+            Yetkazilgan {counts ? counts.delivered : ""}
           </StatusFilterButton>
           <StatusFilterButton
             isActive={selectedStatus === "RECALL"}
             status="RECALL"
             onClick={() => setSelectedStatus("RECALL")}
           >
-            Qayta aloqa
+            Qayta aloqa {counts ? counts.recall : ""}
           </StatusFilterButton>
         </div>
       </Header>

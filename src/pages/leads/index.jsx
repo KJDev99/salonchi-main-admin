@@ -20,7 +20,11 @@ import MessageIcon from "@/assets/message";
 import { Button, Space } from "antd";
 import { ROUTER } from "@/constants/router";
 import { EyeFilled } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { request } from "@/shared/api/request";
+import { PaginationTen } from "@/components/paginationten";
+
+// import { Pagination } from "@/components/pagination";
 // import { Pagination } from "@/components/pagination";
 
 const statusOptions = ["NEW", "ACCEPT", "REJECTED", "DELIVERED", "RECALL"];
@@ -40,8 +44,16 @@ const Leads = () => {
   const [smsShablon, setSmsShablon] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [comment, setComment] = useState(null);
+  const [count, setCount] = useState(0);
   const [isReCallOpen, setIsReCallOpen] = useState();
-
+  const { search } = useLocation();
+  const initial_params = new URLSearchParams(search);
+  const [params, setParams] = useState({
+    page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
+    limit: initial_params.has("limit")
+      ? Number(initial_params.get("limit"))
+      : 20,
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,7 +69,10 @@ const Leads = () => {
           }
         }
         const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/lead",
+          "https://api.salonchi.uz/api/v1/lead?page=" +
+            params.page +
+            "&limit=" +
+            20,
           {
             headers: {
               Authorization: `Bearer ${userData.access}`,
@@ -66,7 +81,8 @@ const Leads = () => {
         );
         setLeads(response.data.results);
         setFilteredLeads(response.data.results);
-        console.log(response.data);
+        // console.log(response.data);
+        setCount(response.data.count);
       } catch (error) {
         console.error("Error fetching leads:", error);
       } finally {
@@ -102,7 +118,18 @@ const Leads = () => {
     };
 
     fetchSmsShablon();
-  }, []);
+    const fetchStatistics = async () => {
+      try {
+        const response = await request.get(
+          "https://api.salonchi.uz/api/v1/lead/status/count"
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching statistics:", error);
+      }
+    };
+    fetchStatistics();
+  }, [params.page]);
 
   const handleFilterChange = (status) => {
     setSelectedStatus(status);
@@ -112,7 +139,6 @@ const Leads = () => {
       setFilteredLeads(leads.filter((lead) => lead.status === status));
     }
   };
-
   useEffect(() => {
     handleFilterChange(selectedStatus);
     setTitles(selectedStatus);
@@ -296,7 +322,9 @@ const Leads = () => {
           <tbody>
             {sortedLeads.map((lead, index) => (
               <TableRow key={lead.id}>
-                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  {(params.page - 1) * params.limit + index + 1}
+                </TableCell>
                 <TableCell>{lead.name}</TableCell>
                 <TableCell>{lead.phone}</TableCell>
                 <TableCell>
@@ -352,7 +380,7 @@ const Leads = () => {
           {/* <Pagination total={count} params={params} setParams={setParams} /> */}
         </Table>
       )}
-
+      <PaginationTen total={count} params={params} setParams={setParams} />
       {modalOpen && (
         <Modal>
           <ModalContent>

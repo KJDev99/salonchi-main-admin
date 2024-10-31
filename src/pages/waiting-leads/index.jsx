@@ -154,13 +154,21 @@ const WaitingLeads = () => {
       {modalOpen && (
         <Modal>
           <ModalContent>
-            <p>
-              Siz ushbu buyurtmani Qabul qilingan statusiga
-              o`zgartirmoqchimisiz?
-            </p>
+            <p>Siz ushbu buyurtmani qabul qilmoqchimisiz?</p>
             <ModalActions>
-              <ModalButton onClick={confirmStatusChange}>Yes</ModalButton>
-              <ModalButton onClick={() => setModalOpen(false)}>No</ModalButton>
+              <ModalButton
+                style={{ backgroundColor: "red" }}
+                onClick={() => setModalOpen(false)}
+              >
+                Yo&apos;q
+              </ModalButton>
+
+              <ModalButton
+                style={{ backgroundColor: "green" }}
+                onClick={confirmStatusChange}
+              >
+                Qabul qilish
+              </ModalButton>
             </ModalActions>
           </ModalContent>
         </Modal>

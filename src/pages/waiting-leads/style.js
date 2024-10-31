@@ -69,7 +69,8 @@ export const ModalContent = styled.div`
 
 export const ModalActions = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 10px;
   margin-top: 20px;
 `;
 

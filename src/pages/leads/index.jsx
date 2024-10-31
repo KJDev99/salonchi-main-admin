@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Wrapper, Header, Title } from "@/styles/global"; // Keep these as needed
+import { Wrapper, Header, Title, Input } from "@/styles/global"; // Keep these as needed
 import {
   Table,
   TableRow,
@@ -17,13 +17,14 @@ import {
 } from "./style"; // Ensure paths are correct
 import MessageIcon from "@/assets/message";
 // import ViewIcon from "@/assets/view";
-import { Button, Space } from "antd";
+import { Button, Space, Select as SelectAntd, notification } from "antd";
 import { ROUTER } from "@/constants/router";
-import { EyeFilled } from "@ant-design/icons";
+import { EyeFilled, PlusCircleFilled } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { request } from "@/shared/api/request";
 import { PaginationTen } from "@/components/paginationten";
 import { LoaderWrapper } from "@/components/spinner/style";
+import { ButtonElement } from "@/components/button/style";
 
 // import { Pagination } from "@/components/pagination";
 // import { Pagination } from "@/components/pagination";
@@ -36,6 +37,7 @@ const Leads = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpenCreate, setModalOpenCreate] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [titles, setTitles] = useState("ALL");
@@ -60,6 +62,70 @@ const Leads = () => {
   useEffect(() => {
     setParams({ ...params, page: 1 });
   }, [selectedStatus]);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [api, contextHolder] = notification.useNotification();
+  const [userName, setUserName] = useState("");
+  const [userPhone, setUserPhone] = useState("+998");
+  const fetchProducts = async (product) => {
+    try {
+      const response = await request.get(
+        "https://api.salonchi.uz/api/v1/product/list/lead?search=" + product ||
+          ""
+      );
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchProducts("");
+  }, []);
+  const onChange = (value) => {
+    setSelectedProductId(value);
+  };
+
+  const onSearch = (value) => {
+    fetchProducts(value);
+  };
+
+  const confirmCreate = async () => {
+    if (!userName || !userPhone) {
+      api["error"]({
+        message: "Error",
+        description: "Iltimos, barcha ma'lumotlarni to'ldiring!",
+      });
+      return;
+    }
+    try {
+      const response = await request.post(
+        "https://api.salonchi.uz/api/v1/lead",
+        {
+          name: userName,
+          product: selectedProductId,
+          phone: userPhone,
+        }
+      );
+      if (response.status === 201) {
+        setModalOpenCreate(false);
+        setSelectedProductId(null);
+        setUserPhone("+998");
+        setUserName("");
+        api["success"]({
+          message: "Success",
+          description: "Lead muvaffaqiyatli yaratildi",
+        });
+      }
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      api["error"]({
+        message: "Error",
+        description: "Lead yaratishda xatolik berdi!",
+      });
+    }
+  };
   useEffect(() => {
     const fetchLeads = async () => {
       try {
@@ -69,6 +135,7 @@ const Leads = () => {
         if (userDataString) {
           try {
             userData = JSON.parse(userDataString);
+            console.log(userData, "asd;ofjlashfklashkl");
           } catch (error) {
             console.error("Error parsing JSON:", error);
           }
@@ -224,7 +291,25 @@ const Leads = () => {
       console.error("Error sending SMS:", error);
     }
   };
+  const handleUserPhone = (e) => {
+    if (e.target.value.length > 4) {
+      let input = e.target.value.replace(/[^\d]/g, "");
 
+      // Ensure it starts with +998
+      if (!input.startsWith("998")) {
+        input = "998";
+      }
+
+      // Apply formatting as +998-91-123-45-56
+      let formatted = `+${input.slice(0, 3)}`;
+      if (input.length > 3) formatted += `-${input.slice(3, 5)}`;
+      if (input.length > 5) formatted += `-${input.slice(5, 8)}`;
+      if (input.length > 8) formatted += `-${input.slice(8, 10)}`;
+      if (input.length > 10) formatted += `-${input.slice(10, 12)}`;
+
+      setUserPhone(formatted);
+    }
+  };
   const handleSelectChange = (e) => {
     const selectedId = e.target.value;
     const selectedShablon = smsShablon.find(
@@ -256,6 +341,7 @@ const Leads = () => {
   return (
     <Wrapper>
       <Header>
+        {contextHolder}
         <Title>{getStatusMessage(titles)}</Title>
         <div style={{ display: "flex", gap: "10px" }}>
           <StatusFilterButton
@@ -300,7 +386,15 @@ const Leads = () => {
           >
             Qayta aloqa <p>{counts ? counts.recall : ""}</p>
           </StatusFilterButton>
-        </div>
+          <div style={{ display: "flex", width: "50px" }}>
+            <ButtonElement
+              onClick={() => setModalOpenCreate(true)}
+              style={{ padding: "5px 10px" }}
+            >
+              <PlusCircleFilled />
+            </ButtonElement>
+          </div>
+        </div>{" "}
       </Header>
       {filteredLeads.length == 0 && !loading ? (
         <Titles>Hozircha bu yer bosh:!</Titles>
@@ -413,8 +507,48 @@ const Leads = () => {
               />
             )}
             <ModalActions>
-              <ModalButton onClick={confirmStatusChange}>Ha</ModalButton>
               <ModalButton onClick={() => setModalOpen(false)}>Yoq</ModalButton>
+              <ModalButton onClick={confirmStatusChange}>Ha</ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
+      {modalOpenCreate && (
+        <Modal>
+          <ModalContent>
+            <p>Lead yaratish</p>
+            <Input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required={true}
+              placeholder="Mijoz ismi..."
+            />
+            <Input
+              type="text"
+              value={userPhone}
+              onChange={(e) => handleUserPhone(e)}
+              required={true}
+              placeholder="Mijoz telefon raqami..."
+            />
+            <SelectAntd
+              // width="100%"
+              style={{ width: "100%", marginBottom: "10px" }}
+              showSearch
+              placeholder="Mahsulot tanlang"
+              optionFilterProp="label"
+              onChange={onChange}
+              onSearch={onSearch}
+              options={products.map((product) => ({
+                value: product.id,
+                label: product.name_uz,
+              }))}
+            />
+            <ModalActions>
+              <ModalButton onClick={() => setModalOpenCreate(false)}>
+                Yoq
+              </ModalButton>
+              <ModalButton onClick={confirmCreate}>Ha</ModalButton>
             </ModalActions>
           </ModalContent>
         </Modal>

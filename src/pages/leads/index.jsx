@@ -57,16 +57,18 @@ const Leads = () => {
     limit: initial_params.has("limit")
       ? Number(initial_params.get("limit"))
       : 20,
+    status: initial_params.has("status") ? initial_params.get("status") : "ALL",
   });
   const navigate = useNavigate();
   useEffect(() => {
     setParams({ ...params, page: 1 });
   }, [selectedStatus]);
-  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState("");
   const [products, setProducts] = useState([]);
   const [api, contextHolder] = notification.useNotification();
   const [userName, setUserName] = useState("");
   const [userPhone, setUserPhone] = useState("+998");
+  const [productWithLead, setProductWithLead] = useState([]);
   const fetchProducts = async (product) => {
     try {
       const response = await request.get(
@@ -80,9 +82,25 @@ const Leads = () => {
       setLoading(false);
     }
   };
+  const fetchProductsWithLead = async () => {
+    try {
+      const response = await request.get(
+        "https://api.salonchi.uz/api/v1/lead/products"
+      );
+      setProductWithLead(response.data);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchProducts("");
+    fetchProductsWithLead();
   }, []);
+  useEffect(() => {
+    // fetchProducts(selectedProductId, selectedStatus);
+  }, [selectedStatus]);
   const onChange = (value) => {
     setSelectedProductId(value);
   };
@@ -135,7 +153,6 @@ const Leads = () => {
         if (userDataString) {
           try {
             userData = JSON.parse(userDataString);
-            console.log(userData, "asd;ofjlashfklashkl");
           } catch (error) {
             console.error("Error parsing JSON:", error);
           }
@@ -145,7 +162,9 @@ const Leads = () => {
             params.page +
             "&limit=" +
             20 +
-            `&status=${selectedStatus === "ALL" ? "" : selectedStatus}`,
+            `&status=${
+              selectedStatus === "ALL" ? "" : selectedStatus
+            }&product_id=${selectedProductId ? selectedProductId : ""}`,
           {
             headers: {
               Authorization: `Bearer ${userData.access}`,
@@ -161,8 +180,6 @@ const Leads = () => {
         setLoading(false);
       }
     };
-
-    fetchLeads();
 
     const fetchSmsShablon = async () => {
       try {
@@ -193,25 +210,27 @@ const Leads = () => {
     const fetchStatistics = async () => {
       try {
         const response = await request.get(
-          "https://api.salonchi.uz/api/v1/lead/status/count"
+          "https://api.salonchi.uz/api/v1/lead/status/count?product=" +
+            selectedProductId
         );
         setCounts(response.data);
       } catch (error) {
         console.error("Error fetching statistics:", error);
       }
     };
+    fetchLeads();
     fetchStatistics();
-  }, [params.page, selectedStatus]);
+  }, [params.page, selectedStatus, selectedProductId]);
 
-  const handleFilterChange = (status) => {
-    setSelectedStatus(status);
-    if (status === "ALL") {
-      setFilteredLeads(leads);
-    } else {
-      setFilteredLeads(leads.filter((lead) => lead.status === status));
-    }
-  };
   useEffect(() => {
+    const handleFilterChange = (status) => {
+      setSelectedStatus(status);
+      if (status === "ALL") {
+        setFilteredLeads(leads);
+      } else {
+        setFilteredLeads(leads.filter((lead) => lead.status === status));
+      }
+    };
     handleFilterChange(selectedStatus);
     setTitles(selectedStatus);
   }, [selectedStatus, titles, modalOpen]);
@@ -221,7 +240,21 @@ const Leads = () => {
     setNewStatus(newStatus);
     setModalOpen(true); // Open the modal for confirmation
   };
+  const handleProductChange = async (product) => {
+    setSelectedProductId(product);
 
+    try {
+      const response = await request.get(
+        "https://api.salonchi.uz/api/v1/lead/status/count?product=" + product
+      );
+      const response2 = await request.get("lead?product_id=" + product);
+      setFilteredLeads(response2.data.results);
+      setCounts(response.data);
+    } catch (error) {
+      console.error("Error fetching statistics:", error);
+    }
+    //
+  };
   const confirmStatusChange = async () => {
     if (selectedLead && newStatus) {
       try {
@@ -342,8 +375,24 @@ const Leads = () => {
     <Wrapper>
       <Header>
         {contextHolder}
-        <Title>{getStatusMessage(titles)}</Title>
-        <div style={{ display: "flex", gap: "10px" }}>
+        {/* <Title>{getStatusMessage(titles)}</Title> */}
+        <div style={{ display: "flex", gap: "5px" }}>
+          <SelectAntd
+            // width="100%"
+            style={{ width: "200px", marginBottom: "10px", alignSelf: "end" }}
+            showSearch
+            placeholder="Mahsulot tanlang"
+            optionFilterProp="label"
+            onChange={handleProductChange}
+            onSearch={onSearch}
+            options={[
+              { value: "", label: "Barchasi" },
+              ...productWithLead.map((product) => ({
+                value: product.product_id,
+                label: product.product__name_uz,
+              })),
+            ]}
+          />
           <StatusFilterButton
             isActive={selectedStatus === "ALL"}
             status="ALL"

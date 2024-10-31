@@ -12,18 +12,64 @@ import {
 } from "@ant-design/icons";
 import { GiCarousel } from "react-icons/gi";
 import { AiOutlineCodeSandbox } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const useMenu = () => {
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const admin = user?.is_superuser;
   const worker = user?.is_worker;
-
-  function getItem(label, key, icon, children, type) {
+  const [counts, setCounts] = useState();
+  useEffect(() => {
+    const fetchLeads = async () => {
+      try {
+        const userDataString = localStorage.getItem("userInfo");
+        let userData;
+        if (userDataString) {
+          try {
+            userData = JSON.parse(userDataString);
+          } catch (error) {
+            console.error("Error parsing JSON:", error);
+          }
+        }
+        const response = await axios.get(
+          "https://api.salonchi.uz/api/v1/admin/sidebar/counts",
+          {
+            headers: {
+              Authorization: `Bearer ${userData.access}`,
+            },
+          }
+        );
+        setCounts(response.data);
+      } catch (error) {
+        console.error("Error fetching leads:", error);
+      }
+    };
+    fetchLeads();
+  }, []);
+  function getItem(label, key, icon, children, type, count) {
     return {
       key,
       icon,
       children,
-      label,
+      label: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {label}{" "}
+          {count != null && (
+            <span
+              style={{ color: "#EA580C", fontWeight: "bold", marginLeft: 8 }}
+            >
+              {count}
+            </span>
+          )}
+        </div>
+      ),
       type,
     };
   }
@@ -41,16 +87,47 @@ export const useMenu = () => {
   ];
 
   const workerItems = [
-    getItem("Kutilayotgan buyurtmalar", "admin/orders-waiting", <IconOrders />),
-    getItem("Buyurtmalar", "admin/orders", <IconOrders />),
+    getItem(
+      "Kutilayotgan buyurtmalar",
+      "admin/orders-waiting",
+      <IconOrders />,
+      null,
+      null,
+      counts?.waiting_orders
+    ),
+    getItem(
+      "Buyurtmalar",
+      "admin/orders",
+      <IconOrders />,
+      null,
+      null,
+      counts?.accepted_orders
+    ),
     getItem(
       "Kuryerga chiqarilganlar",
       "admin/on-the-way-orders",
-      <IconOrders />
+      <IconOrders />,
+      null,
+      null,
+      counts?.courier_orders
     ),
-    getItem("Qayta aloqa", "admin/re-call", <PhoneOutlined />),
+    getItem(
+      "Qayta aloqa",
+      "admin/re-call",
+      <PhoneOutlined />,
+      null,
+      null,
+      counts?.recall_orders
+    ),
     getItem("Arxiv", "admin/archive", <FolderOutlined />),
-    getItem("Kutilayotgan leadlar", "admin/waiting-leads", <TeamOutlined />),
+    getItem(
+      "Kutilayotgan leadlar",
+      "admin/waiting-leads",
+      <TeamOutlined />,
+      null,
+      null,
+      counts?.waiting_leads
+    ),
     getItem("Leadlar", "admin/leads", <TeamOutlined />),
     // getItem("Xabar jo'natish", "admin/sms", <PhoneOutlined />),
     getItem("Ishchilar", "admin/workers", <TeamOutlined />),

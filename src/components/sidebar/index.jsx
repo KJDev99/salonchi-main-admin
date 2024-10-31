@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ExclamationCircleOutlined,
   MenuFoldOutlined,
@@ -12,7 +12,6 @@ import IconLogo from "@/assets/logo.svg";
 import { Wrapper } from "./style";
 import { clearStorage } from "@/utils/clearStorage";
 import { Navbar } from "../navbar";
-import axios from "axios";
 
 const { confirm } = Modal;
 const { Header, Content, Footer, Sider } = Layout;
@@ -25,36 +24,6 @@ export const Sidebar = ({ children }) => {
   const { items } = useMenu();
   const { pathname } = useLocation();
   const navigation = useNavigate();
-
-  const [count, setCount] = useState();
-
-  useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const userDataString = localStorage.getItem("userInfo");
-        let userData;
-        if (userDataString) {
-          try {
-            userData = JSON.parse(userDataString);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
-        }
-        const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/admin/sidebar/counts",
-          {
-            headers: {
-              Authorization: `Bearer ${userData.access}`,
-            },
-          }
-        );
-        setCount(response.data);
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-      }
-    };
-    fetchLeads();
-  }, []);
 
   return (
     <Wrapper>

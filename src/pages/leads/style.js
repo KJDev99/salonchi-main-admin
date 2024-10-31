@@ -104,9 +104,9 @@ export const Textarea = styled.textarea`
 `;
 export const ModalActions = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   margin-top: 20px;
-  gap: 20px;
+  gap: 10px;
 `;
 
 export const ModalButton = styled.button`

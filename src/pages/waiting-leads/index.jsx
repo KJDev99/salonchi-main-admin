@@ -14,7 +14,8 @@ import {
 } from "./style"; // Ensure paths are correct
 import { Titles } from "../leads/style";
 import { PaginationTen } from "@/components/paginationten";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { notification } from "antd";
 
 const WaitingLeads = () => {
   const [leads, setLeads] = useState([]);
@@ -64,12 +65,12 @@ const WaitingLeads = () => {
 
     fetchLeads();
   }, [params.page]);
-
+  const [api, contextHolder] = notification.useNotification();
   const handleStatusChange = (lead) => {
     setSelectedLead(lead);
     setModalOpen(true); // Open the modal for confirmation
   };
-
+  const navigate = useNavigate();
   const confirmStatusChange = async () => {
     if (selectedLead) {
       try {
@@ -90,8 +91,17 @@ const WaitingLeads = () => {
           )
         );
         setModalOpen(false);
+        navigate("/admin/leads/");
+        api["success"]({
+          message: "Success",
+          description: "Muvaffaqiyatli qabul qilindi",
+        });
       } catch (error) {
         console.error("Error updating lead status:", error);
+        api["error"]({
+          message: "Error",
+          description: error?.response?.data?.detail || "Something went wrong!",
+        });
       }
     }
   };
@@ -100,6 +110,7 @@ const WaitingLeads = () => {
 
   return (
     <Wrapper>
+      {contextHolder}
       <Header>
         <Title>Kutilayotgan Leadlar</Title>
       </Header>

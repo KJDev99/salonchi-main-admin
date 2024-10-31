@@ -507,8 +507,18 @@ const Leads = () => {
               />
             )}
             <ModalActions>
-              <ModalButton onClick={() => setModalOpen(false)}>Yoq</ModalButton>
-              <ModalButton onClick={confirmStatusChange}>Ha</ModalButton>
+              <ModalButton
+                style={{ backgroundColor: "red" }}
+                onClick={() => setModalOpen(false)}
+              >
+                Yoq
+              </ModalButton>
+              <ModalButton
+                style={{ backgroundColor: "green" }}
+                onClick={confirmStatusChange}
+              >
+                O&apos;zgartirish
+              </ModalButton>
             </ModalActions>
           </ModalContent>
         </Modal>

@@ -46,7 +46,12 @@ button {
 .ant-menu-vertical .ant-menu-item:after {
   border: none;
 }
-
+.ant-select-dropdown-placement-bottomLeft {
+  width: 400px !important;
+}
+.sc-iqkjcl .ant-select-show-search {
+  margin-bottom: 0px !important;
+}
 .ant-menu-light .ant-menu-item-active,
 .ant-menu-light .ant-menu-item:hover,
 .ant-menu-light .ant-menu-submenu-active,

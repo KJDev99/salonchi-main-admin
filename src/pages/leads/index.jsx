@@ -268,11 +268,14 @@ const Leads = () => {
             },
           }
         );
+        console.log("nimadir");
+        window.location.reload();
         setLeads((prevLeads) =>
           prevLeads.map((lead) =>
             lead.id === selectedLead.id ? { ...lead, status: newStatus } : lead
           )
         );
+
         setModalOpen(false);
       } catch (error) {
         console.error("Error updating lead status:", error);

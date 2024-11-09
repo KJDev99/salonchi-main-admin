@@ -2,10 +2,11 @@ import { useState } from "react";
 import { DATE_FORMAT } from "@/constants/format";
 import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 import {
+  deleteOrderWaiting,
   getOrdersWaiting,
   updateOrderWaiting,
 } from "@/shared/modules/orders-waiting";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { Button, Space, Tag, notification, Modal } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ import {
   SyncOutlined,
   ExclamationCircleOutlined,
   EyeFilled,
+  DeleteFilled,
 } from "@ant-design/icons";
 import { ROUTER } from "@/constants/router";
 // import { LiaMoneyBillWaveAltSolid } from 'react-icons/lia';
@@ -26,6 +28,7 @@ export const useList = () => {
   const [api, contextHolder] = notification.useNotification();
   const { search } = useLocation();
   const initial_params = new URLSearchParams(search);
+  const queryClient = useQueryClient();
   const [params, setParams] = useState({
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
     limit: initial_params.has("limit")
@@ -76,6 +79,38 @@ export const useList = () => {
       }
     },
   });
+  const deleteMutate = useMutation((data) => deleteOrderWaiting(data), {
+    onSuccess: () => {
+      api["success"]({
+        message: "Success",
+        description: "Buyurtma muvoffaqiyatli o`chirildi",
+      });
+      queryClient.invalidateQueries([REACT_QUERY_KEYS.GET_ORDER_WAITING]);
+    },
+    onError: (err) => {
+      api["error"]({
+        message: "Error",
+        description:
+          err?.response?.data?.detail || "Nimadur xatolik yuz berdi!",
+      });
+    },
+  });
+  const handleDelete = (id) => {
+    confirm({
+      title: "Buyurtmani o`chirmoqchimisiz?",
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        deleteMutate.mutate(id);
+      },
+      okText: "Ha",
+      cancelText: "Bekor qilish",
+
+      // onCancel() {
+      //   console.log("Cancel");
+      // },
+    });
+    // deleteMutate.mutate(id);
+  };
 
   const handleMutate = (id) => {
     confirm({
@@ -183,6 +218,17 @@ export const useList = () => {
           <Button type="primary" onClick={() => handleMutate(row.id)}>
             Buyurtmani olish
           </Button>
+          <Space>
+            <Button
+              type="primary"
+              className="delete-btn"
+              style={{ color: "red", borderColor: "red" }}
+              ghost
+              onClick={() => handleDelete(row.id)}
+            >
+              <DeleteFilled />
+            </Button>
+          </Space>
         </Space>
       ),
     },

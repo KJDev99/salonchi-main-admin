@@ -14,3 +14,6 @@ export const archive = (data) =>
       status: data?.status,
     },
   });
+export const deleteOrderWaiting = (id) => {
+  return request.delete(`admin/order/${id}/delete`);
+};

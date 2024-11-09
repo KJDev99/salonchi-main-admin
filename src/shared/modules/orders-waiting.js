@@ -11,3 +11,5 @@ export const getOrdersWaiting = (params) =>
 
 export const updateOrderWaiting = (id) =>
   request.post(`admin/order/${id}/update/waiting?status=NEW`);
+export const deleteOrderWaiting = (id) =>
+  request.delete(`admin/order/${id}/delete`);

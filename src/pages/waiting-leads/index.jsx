@@ -15,7 +15,9 @@ import {
 import { Titles } from "../leads/style";
 import { PaginationTen } from "@/components/paginationten";
 import { useLocation, useNavigate } from "react-router-dom";
-import { notification } from "antd";
+import { Button, notification, Space } from "antd";
+import { request } from "@/shared/api/request";
+import { DeleteFilled } from "@ant-design/icons";
 
 const WaitingLeads = () => {
   const [leads, setLeads] = useState([]);
@@ -32,6 +34,8 @@ const WaitingLeads = () => {
       ? Number(initial_params.get("limit"))
       : 20,
   });
+  const [deleteModal, setDeleteModal] = useState(false);
+  console.log(deleteModal);
   useEffect(() => {
     const fetchLeads = async () => {
       try {
@@ -105,7 +109,20 @@ const WaitingLeads = () => {
       }
     }
   };
-
+  const handleDelete = async (id) => {
+    console.log(id);
+    try {
+      const res = await request.delete(`/lead/${id}/delete`);
+      if (res.status === 204) {
+        window.location.reload();
+        setDeleteModal(false);
+      } else {
+        console.log(res);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -148,6 +165,20 @@ const WaitingLeads = () => {
                       Qabul qilish
                     </StatusEditButton>
                   )}
+                  <Space>
+                    <Button
+                      type="primary"
+                      className="delete-btn"
+                      style={{ color: "red", borderColor: "red" }}
+                      ghost
+                      onClick={() => {
+                        setSelectedLead(lead);
+                        setDeleteModal(true);
+                      }}
+                    >
+                      <DeleteFilled />
+                    </Button>
+                  </Space>
                 </TableCell>
                 {/* <TableCell>
                   <MessageIcon />
@@ -179,6 +210,29 @@ const WaitingLeads = () => {
                 onClick={confirmStatusChange}
               >
                 Qabul qilish
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
+      {deleteModal && (
+        <Modal>
+          <ModalContent>
+            <p>Siz ushbu leadni o&apos;chirmoqchimisiz?</p>
+            <ModalActions>
+              <ModalButton
+                style={{ backgroundColor: "red" }}
+                onClick={() => setDeleteModal(false)}
+              >
+                Yo&apos;q
+              </ModalButton>
+              <ModalButton
+                style={{ backgroundColor: "green" }}
+                onClick={() => {
+                  handleDelete(selectedLead.id);
+                }}
+              >
+                O&apos;chirish
               </ModalButton>
             </ModalActions>
           </ModalContent>

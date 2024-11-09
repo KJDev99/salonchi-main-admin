@@ -1,5 +1,5 @@
 import { request } from "@/shared/api/request";
-import { DragSortTable } from "@ant-design/pro-components";
+// import { DragSortTable } from "@ant-design/pro-components";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -66,16 +66,17 @@ const CategoryOrders = () => {
   };
 
   return (
-    <DragSortTable
-      headerTitle="Kategoriyalarni ketma-ketligini o'rgartirish"
-      columns={columns}
-      rowKey="key"
-      search={false}
-      pagination={false}
-      dataSource={dataSource}
-      dragSortKey="sort"
-      onDragSortEnd={handleDragSortEnd}
-    />
+    <h1>sdalom</h1>
+    // <DragSortTable
+    //   headerTitle="Kategoriyalarni ketma-ketligini o'rgartirish"
+    //   columns={columns}
+    //   rowKey="key"
+    //   search={false}
+    //   pagination={false}
+    //   dataSource={dataSource}
+    //   dragSortKey="sort"
+    //   onDragSortEnd={handleDragSortEnd}
+    // />
   );
 };
 export default CategoryOrders;

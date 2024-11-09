@@ -1,22 +1,31 @@
 import { DATE_FORMAT } from "@/constants/format";
-import { archive } from "@/shared/modules/archive";
+import { archive, deleteOrderWaiting } from "@/shared/modules/archive";
 import { Text } from "@/styles/global";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { getStatus, tagStatus } from "@/utils/status";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Space, Tag } from "antd";
+import { Button, Modal, notification, Space, Tag } from "antd";
 import { STATUS } from "@/constants/status";
-import { EyeFilled, SyncOutlined } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  ExclamationCircleOutlined,
+  EyeFilled,
+  SyncOutlined,
+} from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTER } from "@/constants/router";
+// import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 
 export const useList = () => {
   const form = useForm();
   const navigate = useNavigate();
   const { search } = useLocation();
   const initial_params = new URLSearchParams(search);
+  const [api, contextHolder] = notification.useNotification();
+  const { confirm } = Modal;
+  const queryClient = useQueryClient();
   const [params, setParams] = useState({
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
     limit: initial_params.has("limit")
@@ -59,7 +68,38 @@ export const useList = () => {
       }
     },
   });
+  const deleteMutate = useMutation((data) => deleteOrderWaiting(data), {
+    onSuccess: () => {
+      api["success"]({
+        message: "Success",
+        description: "Buyurtma muvoffaqiyatli o`chirildi",
+      });
+      queryClient.invalidateQueries(["get-archive"]);
+    },
+    onError: (err) => {
+      api["error"]({
+        message: "Error",
+        description:
+          err?.response?.data?.detail || "Nimadur xatolik yuz berdi!",
+      });
+    },
+  });
+  const handleDelete = (id) => {
+    confirm({
+      title: "Buyurtmani o`chirmoqchimisiz?",
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        deleteMutate.mutate(id);
+      },
+      okText: "Ha",
+      cancelText: "Bekor qilish",
 
+      // onCancel() {
+      //   console.log("Cancel");
+      // },
+    });
+    // deleteMutate.mutate(id);
+  };
   const columns = [
     {
       title: "T/r",
@@ -118,6 +158,19 @@ export const useList = () => {
           >
             <EyeFilled />
           </Button>
+          <Space>
+            <Button
+              type="primary"
+              className="delete-btn"
+              style={{ color: "red", borderColor: "red" }}
+              ghost
+              onClick={() => {
+                handleDelete(row.id);
+              }}
+            >
+              <DeleteFilled />
+            </Button>
+          </Space>
         </Space>
       ),
     },
@@ -137,5 +190,6 @@ export const useList = () => {
     params,
     setParams,
     count: archives.count,
+    contextHolder,
   };
 };

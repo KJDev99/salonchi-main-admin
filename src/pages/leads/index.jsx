@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Wrapper, Header, Title, Input } from "@/styles/global"; // Keep these as needed
+import { Wrapper, Header, Input } from "@/styles/global"; // Keep these as needed
 import {
   Table,
   TableRow,
@@ -19,7 +19,7 @@ import MessageIcon from "@/assets/message";
 // import ViewIcon from "@/assets/view";
 import { Button, Space, Select as SelectAntd, notification } from "antd";
 import { ROUTER } from "@/constants/router";
-import { EyeFilled, PlusCircleFilled } from "@ant-design/icons";
+import { DeleteFilled, EyeFilled, PlusCircleFilled } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { request } from "@/shared/api/request";
 import { PaginationTen } from "@/components/paginationten";
@@ -69,6 +69,7 @@ const Leads = () => {
   const [userName, setUserName] = useState("");
   const [userPhone, setUserPhone] = useState("+998");
   const [productWithLead, setProductWithLead] = useState([]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const fetchProducts = async (product) => {
     try {
       const response = await request.get(
@@ -361,7 +362,6 @@ const Leads = () => {
     setModalOpenMsg(false);
     setSelectedOption("0");
   };
-
   const today = new Date().toLocaleDateString(); // Bugungi sana
 
   const sortedLeads = [...filteredLeads].sort((a, b) => {
@@ -373,7 +373,19 @@ const Leads = () => {
     if (bDate === today) return 1;
     return 0;
   });
-
+  const handleDelete = async (id) => {
+    console.log(id);
+    try {
+      const res = await request.delete(`/lead/${id}/delete`);
+      if (res.status === 204) {
+        window.location.reload();
+      } else {
+        console.log(res);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <Wrapper>
       <Header>
@@ -467,6 +479,7 @@ const Leads = () => {
               <TableCell as="th">Xolati</TableCell>
               <TableCell as="th">Ko`rish</TableCell>
               <TableCell as="th">Xabar</TableCell>
+              <TableCell as="th">O&apos;chirish</TableCell>
             </tr>
           </thead>
           <tbody>
@@ -525,6 +538,22 @@ const Leads = () => {
                   <TableCell onClick={() => openMessageModal(lead.id)}>
                     <MessageIcon />
                   </TableCell>
+                  <TableCell>
+                    <Space>
+                      <Button
+                        type="primary"
+                        className="delete-btn"
+                        style={{ color: "red", borderColor: "red" }}
+                        ghost
+                        onClick={() => {
+                          setSelectedLead(lead);
+                          setDeleteModalOpen(true);
+                        }}
+                      >
+                        <DeleteFilled />
+                      </Button>
+                    </Space>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -535,6 +564,29 @@ const Leads = () => {
         </Table>
       )}
       <PaginationTen total={count} params={params} setParams={setParams} />
+      {deleteModalOpen && (
+        <Modal>
+          <ModalContent>
+            <p>Siz ushbu leadni o&apos;chirmoqchimisiz?</p>
+            <ModalActions>
+              <ModalButton
+                style={{ backgroundColor: "red" }}
+                onClick={() => setDeleteModalOpen(false)}
+              >
+                Yo&apos;q
+              </ModalButton>
+              <ModalButton
+                style={{ backgroundColor: "green" }}
+                onClick={() => {
+                  handleDelete(selectedLead.id);
+                }}
+              >
+                O&apos;chirish
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
       {modalOpen && (
         <Modal>
           <ModalContent>

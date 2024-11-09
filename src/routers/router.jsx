@@ -12,6 +12,7 @@ const Staff = lazy(async () => await import("@/pages/staff"));
 const StaffCrud = lazy(async () => await import("@/pages/staff/crud"));
 const Roles = lazy(async () => await import("@/pages/roles"));
 const Categories = lazy(async () => await import("@/pages/categories"));
+const CategoryOrders = lazy(async () => await import("@/pages/category-order"));
 const SubCategories = lazy(async () => await import("@/pages/subcategories"));
 const Orders = lazy(async () => await import("@/pages/orders"));
 const OrderDetail = lazy(async () => await import("@/pages/orders/detail"));
@@ -96,6 +97,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTER.CATEGORIES,
         element: <Categories />,
+      },
+      {
+        path: ROUTER.CATEGORIES_ORDERS,
+        element: <CategoryOrders />,
       },
       {
         path: ROUTER.CATEGORIES + ROUTER.CREATE,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Wrapper, Header, Title, Input } from "@/styles/global"; // Keep these as needed
+import { Wrapper, Header, Input } from "@/styles/global"; // Keep these as needed
 import {
   Table,
   TableRow,

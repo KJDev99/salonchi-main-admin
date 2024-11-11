@@ -20,10 +20,27 @@ export const Wrapper = styled("div")`
 
 export const Header = styled("div")`
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: space-between;
+  /* flex-direction: ; */
+  gap: 0.5rem;
   margin: 0 0 32px;
   width: 100%;
+  .header-top {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-top-left {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+  }
+  .header-top-right {
+    display: flex;
+    gap: 10px;
+  }
   &.expenses-header {
     margin: 0 0 12px;
   }

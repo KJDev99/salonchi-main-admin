@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Wrapper, Header, Input } from "@/styles/global"; // Keep these as needed
+import { Wrapper, Header, Input, Title } from "@/styles/global"; // Keep these as needed
 import {
   Table,
   TableRow,
@@ -15,7 +15,7 @@ import {
   Titles,
   Textarea,
 } from "./style"; // Ensure paths are correct
-import MessageIcon from "@/assets/message";
+// import MessageIcon from "@/assets/message";
 // import ViewIcon from "@/assets/view";
 import { Button, Space, Select as SelectAntd, notification } from "antd";
 import { ROUTER } from "@/constants/router";
@@ -184,22 +184,8 @@ const Leads = () => {
 
     const fetchSmsShablon = async () => {
       try {
-        const userDataString = localStorage.getItem("userInfo");
-        let userData;
-        if (userDataString) {
-          try {
-            userData = JSON.parse(userDataString);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
-        }
-        const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/admin/sms",
-          {
-            headers: {
-              Authorization: `Bearer ${userData.access}`,
-            },
-          }
+        const response = await request.get(
+          "https://api.salonchi.uz/api/v1/admin/sms"
         );
         setSmsShablon(response.data);
       } catch (error) {
@@ -390,24 +376,43 @@ const Leads = () => {
     <Wrapper>
       <Header>
         {contextHolder}
-        {/* <Title>{getStatusMessage(titles)}</Title> */}
+        <div className="header-top">
+          <div className="header-top-left">
+            <Title>{getStatusMessage(titles)}</Title>
+            <SelectAntd
+              // width="100%"
+              style={{ width: "200px", marginBottom: "10px", alignSelf: "end" }}
+              showSearch
+              placeholder="Mahsulot tanlang"
+              optionFilterProp="label"
+              onChange={handleProductChange}
+              onSearch={onSearch}
+              options={[
+                { value: "", label: "Barchasi" },
+                ...productWithLead.map((product) => ({
+                  value: product.product_id,
+                  label: product.product__name_uz,
+                })),
+              ]}
+            />
+          </div>
+          <div className="header-top-right">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/5/51/IMessage_logo.svg"
+              width={40}
+              alt="message-icon"
+            />
+            <div style={{ display: "flex", width: "50px", height: "40px" }}>
+              <ButtonElement
+                onClick={() => setModalOpenCreate(true)}
+                style={{ padding: "5px 10px" }}
+              >
+                <PlusCircleFilled />
+              </ButtonElement>
+            </div>
+          </div>
+        </div>
         <div style={{ display: "flex", gap: "5px" }}>
-          <SelectAntd
-            // width="100%"
-            style={{ width: "200px", marginBottom: "10px", alignSelf: "end" }}
-            showSearch
-            placeholder="Mahsulot tanlang"
-            optionFilterProp="label"
-            onChange={handleProductChange}
-            onSearch={onSearch}
-            options={[
-              { value: "", label: "Barchasi" },
-              ...productWithLead.map((product) => ({
-                value: product.product_id,
-                label: product.product__name_uz,
-              })),
-            ]}
-          />
           <StatusFilterButton
             isActive={selectedStatus === "ALL"}
             status="ALL"
@@ -450,14 +455,6 @@ const Leads = () => {
           >
             Qayta aloqa <p>{counts ? counts.recall : ""}</p>
           </StatusFilterButton>
-          <div style={{ display: "flex", width: "50px" }}>
-            <ButtonElement
-              onClick={() => setModalOpenCreate(true)}
-              style={{ padding: "5px 10px" }}
-            >
-              <PlusCircleFilled />
-            </ButtonElement>
-          </div>
         </div>{" "}
       </Header>
       {filteredLeads.length == 0 && !loading ? (
@@ -536,7 +533,11 @@ const Leads = () => {
                     </Space>
                   </TableCell>
                   <TableCell onClick={() => openMessageModal(lead.id)}>
-                    <MessageIcon />
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/5/51/IMessage_logo.svg"
+                      width={30}
+                      alt="message-icon"
+                    />
                   </TableCell>
                   <TableCell>
                     <Space>

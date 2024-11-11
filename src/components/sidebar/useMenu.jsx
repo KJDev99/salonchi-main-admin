@@ -137,6 +137,7 @@ export const useMenu = () => {
 
   const warehouseItems = [
     getItem("Kategoriyalar", "admin/categories", <IconCategory />),
+    getItem("Kategoriyalar o'rni", "admin/category-order", <IconCategory />),
     getItem("Maxsulotlar", "admin/products", <IconInventory />),
     getItem(
       "Qabul qilingan buyurtmalar",

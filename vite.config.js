@@ -24,7 +24,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ["react", "react-dom"],
+      external: ["@ant-design/pro-components", "react", "react-dom"],
       plugins: [
         nodeResolve({ extensions: [".js", ".jsx", ".ts", ".tsx"] }),
         commonjs(),

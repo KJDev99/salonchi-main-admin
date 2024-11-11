@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Container, Select, TextArea, Button } from "./style";
+import { request } from "@/shared/api/request";
 
 const Sms = () => {
   const [smsText, setSmsText] = useState<string>("");
@@ -8,24 +8,9 @@ const Sms = () => {
 
   useEffect(() => {
     const fetchSmsTemplate = async () => {
-      const userDataString = localStorage.getItem("userInfo");
-      let userData;
-      if (userDataString) {
-        try {
-          userData = JSON.parse(userDataString);
-        } catch (error) {
-          console.error("Error parsing JSON:", error);
-        }
-      }
-
       try {
-        const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/admin/sms",
-          {
-            headers: {
-              Authorization: `Bearer ${userData?.access}`,
-            },
-          }
+        const response = await request.get(
+          "https://api.salonchi.uz/api/v1/admin/sms"
         );
         if (response.data && response.data.length > 0) {
           setSmsText(response.data[0].text);

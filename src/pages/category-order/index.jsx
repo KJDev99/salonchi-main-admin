@@ -1,5 +1,5 @@
 import { request } from "@/shared/api/request";
-// import { DragSortTable } from "@ant-design/pro-components";
+import { DragSortTable } from "@ant-design/pro-components";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -49,34 +49,38 @@ const CategoryOrders = () => {
         afterIndex === dataSource.length - 2
           ? dataSource.length - 2
           : afterIndex - 1
-      ]
+      ]?.key
     );
     setDataSource(newDataSource);
-    // const response = await request.post(
-    //   "admin/category/" + dataSource[beforeIndex]?.key + "/ordering",
-    //   {
-    //     above_category: dataSource[afterIndex - 1]?.key,
-    //   }
-    // );
-    // if (response.status === 200) {
-    //   message.success("O'zgartirildi");
-    // } else {
-    //   message.error("Xatolik");
-    // }
+    const response = await request.post(
+      "admin/category/" + dataSource[beforeIndex]?.key + "/ordering",
+      {
+        above_category:
+          dataSource[
+            afterIndex === dataSource.length - 2
+              ? dataSource.length - 2
+              : afterIndex - 1
+          ]?.key,
+      }
+    );
+    if (response.status === 200) {
+      message.success("O'zgartirildi");
+    } else {
+      message.error("Xatolik");
+    }
   };
 
   return (
-    <h1>sdalom</h1>
-    // <DragSortTable
-    //   headerTitle="Kategoriyalarni ketma-ketligini o'rgartirish"
-    //   columns={columns}
-    //   rowKey="key"
-    //   search={false}
-    //   pagination={false}
-    //   dataSource={dataSource}
-    //   dragSortKey="sort"
-    //   onDragSortEnd={handleDragSortEnd}
-    // />
+    <DragSortTable
+      headerTitle="Kategoriyalarni ketma-ketligini o'rgartirish"
+      columns={columns}
+      rowKey="key"
+      search={false}
+      pagination={false}
+      dataSource={dataSource}
+      dragSortKey="sort"
+      onDragSortEnd={handleDragSortEnd}
+    />
   );
 };
 export default CategoryOrders;

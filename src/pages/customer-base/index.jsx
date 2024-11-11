@@ -98,7 +98,7 @@ const Customerbase = () => {
           }
         }
         const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/lead/waiting",
+          "https://api.salonchi.uz/api/v1/lead",
           {
             headers: {
               Authorization: `Bearer ${userData?.access}`,

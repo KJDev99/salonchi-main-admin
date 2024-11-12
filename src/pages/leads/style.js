@@ -37,6 +37,11 @@ export const TableCell = styled.td`
   text-align: center;
   cursor: pointer;
 
+  img {
+    margin-right: 2px;
+    margin-left: 2px;
+  }
+
   &:first-child {
     width: 50px;
     text-align: center;

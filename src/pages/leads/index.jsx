@@ -532,12 +532,22 @@ const Leads = () => {
                       </Button>
                     </Space>
                   </TableCell>
-                  <TableCell onClick={() => openMessageModal(lead.id)}>
+                  <TableCell>
                     <img
+                      onClick={() => openMessageModal(lead.id)}
                       src="https://upload.wikimedia.org/wikipedia/commons/5/51/IMessage_logo.svg"
-                      width={30}
+                      width={22}
                       alt="message-icon"
                     />
+                    <a
+                      href={`https://t.me/${lead.phone.replace(/[-\s]/g, "")}`}
+                    >
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Telegram_2019_Logo.svg/2048px-Telegram_2019_Logo.svg.png"
+                        width={22}
+                        alt="message-icon"
+                      />
+                    </a>
                   </TableCell>
                   <TableCell>
                     <Space>

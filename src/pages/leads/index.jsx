@@ -37,13 +37,14 @@ const Leads = () => {
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("ALL");
   const [modalOpen, setModalOpen] = useState(false);
+  const [timeEdit, setTimeEdit] = useState(false);
   const [modalOpenCreate, setModalOpenCreate] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [newStatus, setNewStatus] = useState("");
   const [titles, setTitles] = useState("ALL");
-  const [modalOpenMsg, setModalOpenMsg] = useState(false); // Controls message modal
-  const [text, setText] = useState(""); // State for text in textarea
-  const [selectedLeadId, setSelectedLeadId] = useState(null); // Stores selected lead ID
+  const [modalOpenMsg, setModalOpenMsg] = useState(false);
+  const [text, setText] = useState("");
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [smsShablon, setSmsShablon] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
   const [comment, setComment] = useState(null);
@@ -225,8 +226,14 @@ const Leads = () => {
   const handleStatusChange = (lead, newStatus) => {
     setSelectedLead(lead);
     setNewStatus(newStatus);
-    setModalOpen(true); // Open the modal for confirmation
+    setModalOpen(true);
   };
+  const handleTimeChange = (lead) => {
+    setSelectedLead(lead);
+    // setIsReCallOpen(newTime);
+    setTimeEdit(true);
+  };
+
   const handleProductChange = async (product) => {
     setSelectedProductId(product);
 
@@ -255,7 +262,6 @@ const Leads = () => {
             },
           }
         );
-        console.log("nimadir");
         window.location.reload();
         setLeads((prevLeads) =>
           prevLeads.map((lead) =>
@@ -264,6 +270,29 @@ const Leads = () => {
         );
 
         setModalOpen(false);
+      } catch (error) {
+        console.error("Error updating lead status:", error);
+      }
+    } else if (selectedLead && isReCallOpen) {
+      try {
+        const userData = JSON.parse(localStorage.getItem("userInfo"));
+        await axios.put(
+          `https://api.salonchi.uz/api/v1/lead/${selectedLead.id}/status`,
+          { status: "RECALL", comment: comment, schedule: isReCallOpen },
+          {
+            headers: {
+              Authorization: `Bearer ${userData?.access}`,
+            },
+          }
+        );
+        window.location.reload();
+        setLeads((prevLeads) =>
+          prevLeads.map((lead) =>
+            lead.id === selectedLead.id ? { ...lead, status: newStatus } : lead
+          )
+        );
+
+        setTimeEdit(false);
       } catch (error) {
         console.error("Error updating lead status:", error);
       }
@@ -288,7 +317,8 @@ const Leads = () => {
   };
 
   const openMessageModal = (leadId) => {
-    setSelectedLeadId(leadId);
+    const idsToSend = leadId ? [leadId] : sortedLeads.map((lead) => lead.id);
+    setSelectedLeadId(idsToSend);
     setModalOpenMsg(true);
   };
 
@@ -297,7 +327,7 @@ const Leads = () => {
       const userData = JSON.parse(localStorage.getItem("userInfo"));
 
       const payload = {
-        leads: [selectedLeadId],
+        leads: [...selectedLeadId],
         all_lead: false,
         text,
       };
@@ -354,7 +384,6 @@ const Leads = () => {
     const aDate = new Date(a.schedule).toLocaleDateString();
     const bDate = new Date(b.schedule).toLocaleDateString();
 
-    // Bugungi sanani oldinga chiqarish
     if (aDate === today) return -1;
     if (bDate === today) return 1;
     return 0;
@@ -398,6 +427,7 @@ const Leads = () => {
           </div>
           <div className="header-top-right">
             <img
+              onClick={() => openMessageModal()}
               src="https://upload.wikimedia.org/wikipedia/commons/5/51/IMessage_logo.svg"
               width={40}
               alt="message-icon"
@@ -495,6 +525,7 @@ const Leads = () => {
                   </TableCell>
                   {selectedStatus == "RECALL" ? (
                     <TableCell
+                      onClick={() => handleTimeChange(lead)}
                       className={
                         new Date(lead.schedule).toLocaleDateString() === today
                           ? "today-row"
@@ -593,6 +624,40 @@ const Leads = () => {
                 }}
               >
                 O&apos;chirish
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
+      {timeEdit && (
+        <Modal>
+          <ModalContent>
+            <p>Siz aloqa vaqtini o`zgartirmoqchimisiz?</p>
+            <Textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="O'zgartirish sababini kiriting..."
+              required={true}
+            />
+            <input
+              type="date"
+              name=""
+              id=""
+              onChange={(e) => setIsReCallOpen(e.target.value)}
+              required={true}
+            />
+            <ModalActions>
+              <ModalButton
+                style={{ backgroundColor: "red" }}
+                onClick={() => setTimeEdit(false)}
+              >
+                Yoq
+              </ModalButton>
+              <ModalButton
+                style={{ backgroundColor: "green" }}
+                onClick={confirmStatusChange}
+              >
+                O&apos;zgartirish
               </ModalButton>
             </ModalActions>
           </ModalContent>

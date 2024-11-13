@@ -7,7 +7,7 @@ import { queryClient } from "./config/react-query";
 import "antd/dist/reset.css";
 import "./index.css";
 import { Spinner } from "./components/spinner";
-import "react-quill/dist/quill.snow.css";
+import "App.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>

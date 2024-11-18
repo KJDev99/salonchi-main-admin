@@ -57,8 +57,8 @@ const LeadWaiting = lazy(async () => await import("@/pages/leads/detail"));
 const Slider = lazy(async () => await import("@/pages/slider"));
 const CreateBanner = lazy(async () => await import("@/pages/slider/crud"));
 
-const Box = lazy(async () => await import("@/pages/box"));
-const CreateBox = lazy(async () => await import("@/pages/box/create"));
+// const Box = lazy(async () => await import("@/pages/box"));
+// const CreateBox = lazy(async () => await import("@/pages/box/create"));
 
 const Customerbase = lazy(async () => await import("@/pages/customer-base"));
 
@@ -211,18 +211,18 @@ export const router = createBrowserRouter([
         path: `${ROUTER.SLIDER}/` + ROUTER.EDIT + "/:id",
         element: <CreateBanner />,
       },
-      {
-        path: ROUTER.BOX,
-        element: <Box />,
-      },
-      {
-        path: `${ROUTER.BOX}/` + ROUTER.CREATE,
-        element: <CreateBox />,
-      },
-      {
-        path: `${ROUTER.BOX}/` + ROUTER.EDIT + "/:id",
-        element: <CreateBox />,
-      },
+      // {
+      //   path: ROUTER.BOX,
+      //   element: <Box />,
+      // },
+      // {
+      //   path: `${ROUTER.BOX}/` + ROUTER.CREATE,
+      //   element: <CreateBox />,
+      // },
+      // {
+      //   path: `${ROUTER.BOX}/` + ROUTER.EDIT + "/:id",
+      //   element: <CreateBox />,
+      // },
       {
         path: `${ROUTER.LEADS}/`,
         element: <Leads />,

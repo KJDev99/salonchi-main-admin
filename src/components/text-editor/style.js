@@ -10,7 +10,6 @@ export const Reactquill = styled(ReactQuill)`
   }
 
   .ql-container {
-    
     border-bottom-left-radius: 0.5em;
     border-bottom-right-radius: 0.5em;
     background: #fefcfc;
@@ -27,5 +26,5 @@ export const Reactquill = styled(ReactQuill)`
   }
   .ql-editor {
     min-height: 18em;
-  } 
+  }
 `;

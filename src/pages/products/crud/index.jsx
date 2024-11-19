@@ -111,7 +111,6 @@ const CreateProducts = () => {
     getCategoryList();
     if (id) {
       getSubCategoryList(category);
-      console.log(subCategoryList, "categoryyy");
     } else {
       getSubCategoryList(1);
     }
@@ -908,7 +907,6 @@ const CreateProducts = () => {
               name={id ? "Yangilash" : "Maxsulot yaratish"}
               className="category-btn"
               onClick={() => handleSubmit()}
-              // type="submit"
             />
           </Footer>
         </form>

@@ -285,637 +285,638 @@ const CreateProducts = () => {
   ];
 
   return (
-    <Wrapper>
-      {contextHolder}
-      <Header>
-        <Title>{id ? "Maxsulotni yangilash" : "Maxsulot yaratish"} </Title>
-        <Button
-          name="Orqaga"
-          onClick={() => navigate("/admin/products")}
-          className="go-back-btn"
-        />
-      </Header>
-      {id && detailLoading ? (
-        <Spinner />
-      ) : (
-        <form>
-          <Row gutter={[16, 16]}>
-            <Col span={24}>
-              <div className={styles.imageContainer}>
-                {images.length > 0 &&
-                  images.map((image, index) => (
-                    <div className={styles.imageItem} key={index}>
-                      <p
-                        className={styles.delete}
-                        // style={{ backgroundColor: "white" }}
-                      >
-                        <DeleteFilled
-                          color="red"
-                          background="red"
-                          onClick={() =>
-                            setImages(images.filter((i) => i !== image))
-                          }
-                        />
-                      </p>
-                      <img
-                        key={image}
-                        className={styles.categoryLogo}
-                        src={image}
-                        alt="productImage"
-                        width={80}
-                        height={80}
-                      />
-                    </div>
-                  ))}
-                <>
-                  <label
-                    htmlFor="categoryLogo"
-                    className={styles.imageUploading}
-                  >
-                    <CloudUploadOutlined />
-                    <div
-                      style={{
-                        marginTop: 8,
-                        fontSize: "12px",
-                      }}
-                    >
-                      Rasm yuklang
-                    </div>
-                  </label>
-                  <input
-                    type="file"
-                    name="categoryLogo"
-                    id="categoryLogo"
-                    style={{ display: "none" }}
-                    onChange={(e) => getFileUrl(e, 0)}
-                  />
-                </>
-              </div>
-              {videoLink ? (
-                <VideoWrapper style={{ marginTop: "5px" }}>
-                  <video
-                    src={videoLink}
-                    width="400px"
-                    height="250px"
-                    controls
-                  ></video>
-                  <CloseOutlined
-                    onClick={() => {
-                      // setUrl(null);
-                      setVideoLink(null);
-                    }}
-                    className="icon"
-                  />
-                </VideoWrapper>
-              ) : (
-                <>
-                  <label
-                    style={{ marginTop: "10px" }}
-                    htmlFor="videoLink"
-                    className={styles.imageUploading}
-                  >
-                    <CloudUploadOutlined />
-                    <div
-                      style={{
-                        marginTop: 8,
-                        fontSize: "12px",
-                      }}
-                    >
-                      Video yuklang
-                    </div>
-                  </label>
-                  <input
-                    type="file"
-                    name="videoLink"
-                    id="videoLink"
-                    style={{ display: "none" }}
-                    onChange={(e) => getFileUrl(e, true)}
-                  />
-                </>
-              )}
-              {/* <UploadVideo setVideoFile={setVideoFile} videoFile={videoFile} /> */}
-              {/* <Upload fileList={fileList} setFileList={setFileList} /> */}
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                value={name_uz}
-                onChange={(e) => setNameUz(e.target.value)}
-                // control={form.control}
-                name="name_uz"
-                label="Mahsulot nomi (O’zbek tili)"
-                placeholder="Mahsulot nomi (O’zbek tili)"
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                value={name_ru}
-                onChange={(e) => setNameRu(e.target.value)}
-                // control={form.control}
-                name="name_ru"
-                label="Mahsulot nomi (Rus tili)"
-                placeholder="Mahsulot nomi (Rus tili)"
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                // control={form.control}
-                name="price"
-                label="Sotilish narxi"
-                placeholder="Sotilish narxi"
-                type="number"
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                // control={form.control}
-                value={oldPrice}
-                onChange={(e) => setOldPrice(e.target.value)}
-                name="old_price"
-                label="Eski narxi"
-                placeholder="Eski narxi"
-                type="number"
-              />
-            </Col>
-          </Row>
-          <Row style={{ marginTop: 12 }} gutter={[16, 16]}>
-            <Col span={24} lg={12}>
-              <Label>Description - tasnif (O’zbek tili)</Label>
-              <Input
-                value={description_uz}
-                onChange={(e) => setDescriptionUz(e)}
-                placeholder="Description - tasnif (O’zbek tili)"
-                theme="snow"
-                rows={5}
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Label>Description - tasnif (Rus tili)</Label>
-              <Input
-                value={description_ru}
-                onChange={(e) => setDescriptionRu(e)}
-                placeholder="Description - tasnif (Rus tili)"
-                theme="snow"
-                rows={5}
-              />
-            </Col>
-            {id ? (
-              <>
-                <Col span={24} lg={12}>
-                  <AntdSelect
-                    style={{ width: "100%" }}
-                    // control={form.control}
-                    onChange={(e) => setCategory(e)}
-                    value={category}
-                    name="category"
-                    label="Kategoriyalar"
-                    placeholder="Kategoriyalar"
-                    options={categoryList.map((item) => ({
-                      label: item.name_uz,
-                      value: item.id,
-                    }))}
-                  />
-                </Col>
-                <Col span={24} lg={12}>
-                  <AntdSelect
-                    style={{ width: "100%" }}
-                    onChange={(e) => setSelectedCategory(e)}
-                    name="subCategory"
-                    label="SubCategoriyalar"
-                    placeholder="SubCategoriyalar"
-                    value={selectedCategory}
-                    // value={selectedCategory}
-                    options={
-                      subCategoryList && subCategoryList.length > 0
-                        ? subCategoryList.map((item) => ({
-                            label: item.name_uz,
-                            value: item.id,
-                          }))
-                        : []
-                    }
-                  />
-                </Col>
-              </>
-            ) : (
-              <>
-                <Col span={24} lg={12}>
-                  <AntdSelect
-                    style={{ width: "100%" }}
-                    // control={form.control}
-                    onChange={(e) => setCategory(e)}
-                    name="category"
-                    label="Kategoriyalar"
-                    placeholder="Kategoriyalar"
-                    options={categoryList.map((item) => ({
-                      label: item.name_uz,
-                      value: item.id,
-                    }))}
-                  />
-                </Col>
-                <Col span={24} lg={12}>
-                  <AntdSelect
-                    style={{ width: "100%" }}
-                    onChange={(e) => setSelectedCategory(e)}
-                    name="subCategory"
-                    label="SubCategoriyalar"
-                    placeholder="SubCategoriyalar"
-                    // value={selectedCategory}
-                    options={
-                      subCategoryList && subCategoryList.length > 0
-                        ? subCategoryList.map((item) => ({
-                            label: item.name_uz,
-                            value: item.id,
-                          }))
-                        : []
-                    }
-                  />
-                </Col>
-              </>
-            )}
-          </Row>
-          <Row gutter={[16, 16]} style={{ marginTop: 12 }}>
-            <Col span={48} lg={24}>
-              <List>
-                {attributes.map((item, index) => {
-                  return (
-                    <ListItem
-                      style={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 6,
-                        marginBottom: 12,
-                      }}
-                      key={index}
-                    >
-                      <Row gutter={[16, 16]}>
-                        <Col span={24} lg={12}>
-                          <Label>Attribute nomi uz</Label>
-                          <Input
-                            placeholder="Attribut nomi uz"
-                            value={item?.name_uz}
-                            onChange={(e) => {
-                              attributes[index].name_uz = e.target.value;
-                              setAttributes([...attributes]);
-                            }}
-                          />
-                        </Col>
-                        <Col span={24} lg={12}>
-                          <Label>Attribute nomi ru</Label>
-                          <Input
-                            label="Attribut nomi"
-                            placeholder="Attribut nomi ru"
-                            value={item?.name_ru}
-                            onChange={(e) => {
-                              attributes[index].name_ru = e.target.value;
-                              setAttributes([...attributes]);
-                            }}
-                          />
-                        </Col>
-                      </Row>
-                      {/* <Input
-                        control={form.control}
-                        value={item?.name_ru}
-                        onChange={(e) => {
-                          const newItem = { ...item, name_ru: e.target.value };
-                          attributes[index] = newItem;
-                        }}
-                        name={`attributes.${index}.name_ru`}
-                        placeholder="Attribut nomi ru"
-                        label="Attribut nomi ru"
-                      /> */}
-                      {/* <Input
-                        value={item?.name_ru}
-                        onChange={(e) => {
-                          attributes[index].name_ru = e.target.value;
-                          setAttributes([...attributes]);
-                        }}
-                        control={form.control}
-                        name={`attributes.${index}.name_uz`}
-                        placeholder="Attribut nomi uz"
-                        label="Attribut nomi uz"
-                      /> */}
-                      <Col style={{ padding: 0 }} span={24} lg={12}>
-                        <Label>Attribute turi</Label>
-                        <AntdSelect
-                          defaultValue={item?.type}
-                          style={{ width: "100%", margin: "10px 0" }}
-                          options={types}
-                          onChange={(value) => {
-                            attributes[index].type = value;
-                            setAttributes([...attributes]);
-                          }}
-                        />
-                        {item.type === "TEXT" && (
-                          <AntdSelect
-                            mode="tags"
-                            style={{ width: "100%", marginBottom: 10 }}
-                            defaultValue={item?.values}
-                            onChange={(value) => {
-                              if (item.type === "TEXT") {
-                                const valuee = [];
-                                value.map((v) => {
-                                  valuee.push({
-                                    value: v,
-                                    title: v,
-                                  });
-                                });
-                                attributes[index].values = [...valuee];
-                                setAttributes([...attributes]);
-                              }
-                              // const arr = [...item.values, value];
-                              // attributes[index].values = [...arr];
-                              // setAttributes([...attributes]);
-                            }}
-                            options={[]}
-                          />
-                        )}
-                        {imagesAtt.length > 0 && item.type === "IMAGE" && (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              gap: 10,
-                            }}
-                          >
-                            {imagesAtt.map((value, i) => {
-                              return (
-                                <div
-                                  onClick={() => {
-                                    setImagesAtt(
-                                      imagesAtt.filter(
-                                        (v) => v.url !== value.url
-                                      )
-                                    );
-                                    attributes[index].values = [
-                                      ...attributes[index].values.filter(
-                                        (v) => v.value !== value.url
-                                      ),
-                                    ];
-                                    console.log(attributes[index].values);
-                                    console.log(value);
-                                    setAttributes([...attributes]);
-                                  }}
-                                  key={i}
-                                  className={`${styles.attributeImages} ${styles.imageItem}`}
-                                >
-                                  <p style={{ margin: 0 }}>{value.label}</p>
-                                  <p className={styles.delete}>
-                                    <DeleteFilled />
-                                  </p>
-                                  <img
-                                    src={value.url}
-                                    alt="image"
-                                    style={{ width: 100, height: 100 }}
-                                  />
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                        {item.type === "IMAGE" && (
-                          <div>
-                            <Input
-                              placeholder="Enter color name"
-                              value={imageLabel}
-                              onChange={(e) => {
-                                setImageLabel(e.target.value);
-                              }}
-                            />
-                          </div>
-                        )}
-                        {imageLabel.length > 1 &&
-                          item.type === "IMAGE" &&
-                          images.map((v, i) => {
-                            const arr = imagesAtt.filter(
-                              (value) => value.url === v
-                            );
+    // <Wrapper>
+    //   {contextHolder}
+    //   <Header>
+    //     <Title>{id ? "Maxsulotni yangilash" : "Maxsulot yaratish"} </Title>
+    //     <Button
+    //       name="Orqaga"
+    //       onClick={() => navigate("/admin/products")}
+    //       className="go-back-btn"
+    //     />
+    //   </Header>
+    //   {id && detailLoading ? (
+    //     <Spinner />
+    //   ) : (
+    //     <form>
+    //       <Row gutter={[16, 16]}>
+    //         <Col span={24}>
+    //           <div className={styles.imageContainer}>
+    //             {images.length > 0 &&
+    //               images.map((image, index) => (
+    //                 <div className={styles.imageItem} key={index}>
+    //                   <p
+    //                     className={styles.delete}
+    //                     // style={{ backgroundColor: "white" }}
+    //                   >
+    //                     <DeleteFilled
+    //                       color="red"
+    //                       background="red"
+    //                       onClick={() =>
+    //                         setImages(images.filter((i) => i !== image))
+    //                       }
+    //                     />
+    //                   </p>
+    //                   <img
+    //                     key={image}
+    //                     className={styles.categoryLogo}
+    //                     src={image}
+    //                     alt="productImage"
+    //                     width={80}
+    //                     height={80}
+    //                   />
+    //                 </div>
+    //               ))}
+    //             <>
+    //               <label
+    //                 htmlFor="categoryLogo"
+    //                 className={styles.imageUploading}
+    //               >
+    //                 <CloudUploadOutlined />
+    //                 <div
+    //                   style={{
+    //                     marginTop: 8,
+    //                     fontSize: "12px",
+    //                   }}
+    //                 >
+    //                   Rasm yuklang
+    //                 </div>
+    //               </label>
+    //               <input
+    //                 type="file"
+    //                 name="categoryLogo"
+    //                 id="categoryLogo"
+    //                 style={{ display: "none" }}
+    //                 onChange={(e) => getFileUrl(e, 0)}
+    //               />
+    //             </>
+    //           </div>
+    //           {videoLink ? (
+    //             <VideoWrapper style={{ marginTop: "5px" }}>
+    //               <video
+    //                 src={videoLink}
+    //                 width="400px"
+    //                 height="250px"
+    //                 controls
+    //               ></video>
+    //               <CloseOutlined
+    //                 onClick={() => {
+    //                   // setUrl(null);
+    //                   setVideoLink(null);
+    //                 }}
+    //                 className="icon"
+    //               />
+    //             </VideoWrapper>
+    //           ) : (
+    //             <>
+    //               <label
+    //                 style={{ marginTop: "10px" }}
+    //                 htmlFor="videoLink"
+    //                 className={styles.imageUploading}
+    //               >
+    //                 <CloudUploadOutlined />
+    //                 <div
+    //                   style={{
+    //                     marginTop: 8,
+    //                     fontSize: "12px",
+    //                   }}
+    //                 >
+    //                   Video yuklang
+    //                 </div>
+    //               </label>
+    //               <input
+    //                 type="file"
+    //                 name="videoLink"
+    //                 id="videoLink"
+    //                 style={{ display: "none" }}
+    //                 onChange={(e) => getFileUrl(e, true)}
+    //               />
+    //             </>
+    //           )}
+    //           {/* <UploadVideo setVideoFile={setVideoFile} videoFile={videoFile} /> */}
+    //           {/* <Upload fileList={fileList} setFileList={setFileList} /> */}
+    //         </Col>
+    //         <Col span={24} lg={12}>
+    //           <Input
+    //             value={name_uz}
+    //             onChange={(e) => setNameUz(e.target.value)}
+    //             // control={form.control}
+    //             name="name_uz"
+    //             label="Mahsulot nomi (O’zbek tili)"
+    //             placeholder="Mahsulot nomi (O’zbek tili)"
+    //           />
+    //         </Col>
+    //         <Col span={24} lg={12}>
+    //           <Input
+    //             value={name_ru}
+    //             onChange={(e) => setNameRu(e.target.value)}
+    //             // control={form.control}
+    //             name="name_ru"
+    //             label="Mahsulot nomi (Rus tili)"
+    //             placeholder="Mahsulot nomi (Rus tili)"
+    //           />
+    //         </Col>
+    //         <Col span={24} lg={12}>
+    //           <Input
+    //             value={price}
+    //             onChange={(e) => setPrice(e.target.value)}
+    //             // control={form.control}
+    //             name="price"
+    //             label="Sotilish narxi"
+    //             placeholder="Sotilish narxi"
+    //             type="number"
+    //           />
+    //         </Col>
+    //         <Col span={24} lg={12}>
+    //           <Input
+    //             // control={form.control}
+    //             value={oldPrice}
+    //             onChange={(e) => setOldPrice(e.target.value)}
+    //             name="old_price"
+    //             label="Eski narxi"
+    //             placeholder="Eski narxi"
+    //             type="number"
+    //           />
+    //         </Col>
+    //       </Row>
+    //       <Row style={{ marginTop: 12 }} gutter={[16, 16]}>
+    //         <Col span={24} lg={12}>
+    //           <Label>Description - tasnif (O’zbek tili)</Label>
+    //           <Reactquill
+    //             value={description_uz}
+    //             onChange={(e) => setDescriptionUz(e)}
+    //             placeholder="Description - tasnif (O’zbek tili)"
+    //             theme="snow"
+    //             rows={5}
+    //           />
+    //         </Col>
+    //         <Col span={24} lg={12}>
+    //           <Label>Description - tasnif (Rus tili)</Label>
+    //           <Reactquill
+    //             value={description_ru}
+    //             onChange={(e) => setDescriptionRu(e)}
+    //             placeholder="Description - tasnif (Rus tili)"
+    //             theme="snow"
+    //             rows={5}
+    //           />
+    //         </Col>
+    //         {id ? (
+    //           <>
+    //             <Col span={24} lg={12}>
+    //               <AntdSelect
+    //                 style={{ width: "100%" }}
+    //                 // control={form.control}
+    //                 onChange={(e) => setCategory(e)}
+    //                 value={category}
+    //                 name="category"
+    //                 label="Kategoriyalar"
+    //                 placeholder="Kategoriyalar"
+    //                 options={categoryList.map((item) => ({
+    //                   label: item.name_uz,
+    //                   value: item.id,
+    //                 }))}
+    //               />
+    //             </Col>
+    //             <Col span={24} lg={12}>
+    //               <AntdSelect
+    //                 style={{ width: "100%" }}
+    //                 onChange={(e) => setSelectedCategory(e)}
+    //                 name="subCategory"
+    //                 label="SubCategoriyalar"
+    //                 placeholder="SubCategoriyalar"
+    //                 value={selectedCategory}
+    //                 // value={selectedCategory}
+    //                 options={
+    //                   subCategoryList && subCategoryList.length > 0
+    //                     ? subCategoryList.map((item) => ({
+    //                         label: item.name_uz,
+    //                         value: item.id,
+    //                       }))
+    //                     : []
+    //                 }
+    //               />
+    //             </Col>
+    //           </>
+    //         ) : (
+    //           <>
+    //             <Col span={24} lg={12}>
+    //               <AntdSelect
+    //                 style={{ width: "100%" }}
+    //                 // control={form.control}
+    //                 onChange={(e) => setCategory(e)}
+    //                 name="category"
+    //                 label="Kategoriyalar"
+    //                 placeholder="Kategoriyalar"
+    //                 options={categoryList.map((item) => ({
+    //                   label: item.name_uz,
+    //                   value: item.id,
+    //                 }))}
+    //               />
+    //             </Col>
+    //             <Col span={24} lg={12}>
+    //               <AntdSelect
+    //                 style={{ width: "100%" }}
+    //                 onChange={(e) => setSelectedCategory(e)}
+    //                 name="subCategory"
+    //                 label="SubCategoriyalar"
+    //                 placeholder="SubCategoriyalar"
+    //                 // value={selectedCategory}
+    //                 options={
+    //                   subCategoryList && subCategoryList.length > 0
+    //                     ? subCategoryList.map((item) => ({
+    //                         label: item.name_uz,
+    //                         value: item.id,
+    //                       }))
+    //                     : []
+    //                 }
+    //               />
+    //             </Col>
+    //           </>
+    //         )}
+    //       </Row>
+    //       <Row gutter={[16, 16]} style={{ marginTop: 12 }}>
+    //         <Col span={48} lg={24}>
+    //           <List>
+    //             {attributes.map((item, index) => {
+    //               return (
+    //                 <ListItem
+    //                   style={{
+    //                     width: "100%",
+    //                     display: "flex",
+    //                     flexDirection: "column",
+    //                     gap: 6,
+    //                     marginBottom: 12,
+    //                   }}
+    //                   key={index}
+    //                 >
+    //                   <Row gutter={[16, 16]}>
+    //                     <Col span={24} lg={12}>
+    //                       <Label>Attribute nomi uz</Label>
+    //                       <Input
+    //                         placeholder="Attribut nomi uz"
+    //                         value={item?.name_uz}
+    //                         onChange={(e) => {
+    //                           attributes[index].name_uz = e.target.value;
+    //                           setAttributes([...attributes]);
+    //                         }}
+    //                       />
+    //                     </Col>
+    //                     <Col span={24} lg={12}>
+    //                       <Label>Attribute nomi ru</Label>
+    //                       <Input
+    //                         label="Attribut nomi"
+    //                         placeholder="Attribut nomi ru"
+    //                         value={item?.name_ru}
+    //                         onChange={(e) => {
+    //                           attributes[index].name_ru = e.target.value;
+    //                           setAttributes([...attributes]);
+    //                         }}
+    //                       />
+    //                     </Col>
+    //                   </Row>
+    //                   {/* <Input
+    //                     control={form.control}
+    //                     value={item?.name_ru}
+    //                     onChange={(e) => {
+    //                       const newItem = { ...item, name_ru: e.target.value };
+    //                       attributes[index] = newItem;
+    //                     }}
+    //                     name={`attributes.${index}.name_ru`}
+    //                     placeholder="Attribut nomi ru"
+    //                     label="Attribut nomi ru"
+    //                   /> */}
+    //                   {/* <Input
+    //                     value={item?.name_ru}
+    //                     onChange={(e) => {
+    //                       attributes[index].name_ru = e.target.value;
+    //                       setAttributes([...attributes]);
+    //                     }}
+    //                     control={form.control}
+    //                     name={`attributes.${index}.name_uz`}
+    //                     placeholder="Attribut nomi uz"
+    //                     label="Attribut nomi uz"
+    //                   /> */}
+    //                   <Col style={{ padding: 0 }} span={24} lg={12}>
+    //                     <Label>Attribute turi</Label>
+    //                     <AntdSelect
+    //                       defaultValue={item?.type}
+    //                       style={{ width: "100%", margin: "10px 0" }}
+    //                       options={types}
+    //                       onChange={(value) => {
+    //                         attributes[index].type = value;
+    //                         setAttributes([...attributes]);
+    //                       }}
+    //                     />
+    //                     {item.type === "TEXT" && (
+    //                       <AntdSelect
+    //                         mode="tags"
+    //                         style={{ width: "100%", marginBottom: 10 }}
+    //                         defaultValue={item?.values}
+    //                         onChange={(value) => {
+    //                           if (item.type === "TEXT") {
+    //                             const valuee = [];
+    //                             value.map((v) => {
+    //                               valuee.push({
+    //                                 value: v,
+    //                                 title: v,
+    //                               });
+    //                             });
+    //                             attributes[index].values = [...valuee];
+    //                             setAttributes([...attributes]);
+    //                           }
+    //                           // const arr = [...item.values, value];
+    //                           // attributes[index].values = [...arr];
+    //                           // setAttributes([...attributes]);
+    //                         }}
+    //                         options={[]}
+    //                       />
+    //                     )}
+    //                     {imagesAtt.length > 0 && item.type === "IMAGE" && (
+    //                       <div
+    //                         style={{
+    //                           display: "flex",
+    //                           flexDirection: "row",
+    //                           gap: 10,
+    //                         }}
+    //                       >
+    //                         {imagesAtt.map((value, i) => {
+    //                           return (
+    //                             <div
+    //                               onClick={() => {
+    //                                 setImagesAtt(
+    //                                   imagesAtt.filter(
+    //                                     (v) => v.url !== value.url
+    //                                   )
+    //                                 );
+    //                                 attributes[index].values = [
+    //                                   ...attributes[index].values.filter(
+    //                                     (v) => v.value !== value.url
+    //                                   ),
+    //                                 ];
+    //                                 console.log(attributes[index].values);
+    //                                 console.log(value);
+    //                                 setAttributes([...attributes]);
+    //                               }}
+    //                               key={i}
+    //                               className={`${styles.attributeImages} ${styles.imageItem}`}
+    //                             >
+    //                               <p style={{ margin: 0 }}>{value.label}</p>
+    //                               <p className={styles.delete}>
+    //                                 <DeleteFilled />
+    //                               </p>
+    //                               <img
+    //                                 src={value.url}
+    //                                 alt="image"
+    //                                 style={{ width: 100, height: 100 }}
+    //                               />
+    //                             </div>
+    //                           );
+    //                         })}
+    //                       </div>
+    //                     )}
+    //                     {item.type === "IMAGE" && (
+    //                       <div>
+    //                         <Input
+    //                           placeholder="Enter color name"
+    //                           value={imageLabel}
+    //                           onChange={(e) => {
+    //                             setImageLabel(e.target.value);
+    //                           }}
+    //                         />
+    //                       </div>
+    //                     )}
+    //                     {imageLabel.length > 1 &&
+    //                       item.type === "IMAGE" &&
+    //                       images.map((v, i) => {
+    //                         const arr = imagesAtt.filter(
+    //                           (value) => value.url === v
+    //                         );
 
-                            if (arr.length !== 0) {
-                              return null;
-                            }
-                            return (
-                              <img
-                                key={i}
-                                src={v}
-                                alt="image"
-                                style={{ width: 100, height: 100 }}
-                                onClick={() => {
-                                  setImagesAtt([
-                                    ...imagesAtt,
-                                    { url: v, label: imageLabel },
-                                  ]);
-                                  setImageLabel("");
-                                  const arr = [
-                                    ...attributes[index].values,
-                                    { value: v, title: imageLabel },
-                                  ];
-                                  attributes[index].values = [...arr];
-                                  setAttributes([...attributes]);
-                                }}
-                              />
-                            );
-                          })}
+    //                         if (arr.length !== 0) {
+    //                           return null;
+    //                         }
+    //                         return (
+    //                           <img
+    //                             key={i}
+    //                             src={v}
+    //                             alt="image"
+    //                             style={{ width: 100, height: 100 }}
+    //                             onClick={() => {
+    //                               setImagesAtt([
+    //                                 ...imagesAtt,
+    //                                 { url: v, label: imageLabel },
+    //                               ]);
+    //                               setImageLabel("");
+    //                               const arr = [
+    //                                 ...attributes[index].values,
+    //                                 { value: v, title: imageLabel },
+    //                               ];
+    //                               attributes[index].values = [...arr];
+    //                               setAttributes([...attributes]);
+    //                             }}
+    //                           />
+    //                         );
+    //                       })}
 
-                        {/* {item.type === "COLOR" && (
-                          <div>
-                            <Input
-                              placeholder="Enter color name"
-                              value={colorLabel}
-                              onChange={(e) => {
-                                setColorLabel(e.target.value);
-                              }}
-                            />
-                            <div style={{ display: "flex", gap: 10 }}>
-                              <Input
-                                placeholder="Enter color name"
-                                type="color"
-                                // value={colorCode}
-                                onChange={(e) => {
-                                  console.log(colorCode, "colorCode");
-                                  console.log();
-                                  setColorCode(e.target.value);
-                                  // console.log({
-                                  //   colorLabel,
-                                  //   value: e.target.value,
-                                  // });
-                                  // setColorLabel(e.target.value);
-                                }}
-                              />
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  const arr = [
-                                    ...colorsAtt,
-                                    {
-                                      label: colorLabel,
-                                      value: colorCode,
-                                    },
-                                  ];
-                                  // setColors([...colors, colorLabel]);
-                                  setColorLabel("");
-                                  setColorCode("#000000");
-                                  setColorsAtt([...arr]);
-                                  attributes[index].values = [...arr];
-                                }}
-                              >
-                                Add
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {colorsAtt.length > 0 && item.type === "COLOR" && (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              gap: 10,
-                            }}
-                          >
-                            {colorsAtt.map((value, i) => {
-                              return (
-                                <div
-                                  onClick={() => {
-                                    setColorsAtt(
-                                      colorsAtt.filter((v) => v !== value)
-                                    );
-                                  }}
-                                  key={i}
-                                >
-                                  <p>{value.label}</p>
-                                  <div
-                                    style={{
-                                      backgroundColor: value.value,
-                                      height: 20,
-                                      width: 20,
-                                      borderRadius: 10,
-                                    }}
-                                  ></div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )} */}
-                        {/* <CreateSelect
-                        control={form.control}
-                        name={`attributes.${index}.name_uz`}
-                        placeholder="Attribut qiymati"
-                        options={[]}
-                      /> */}
-                        <AntdButton
-                          icon={<DeleteFilled />}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: "50%",
-                          }}
-                          className="delete-btn"
-                          danger
-                          onClick={() => {
-                            attributes.splice(index, 1);
-                            setAttributes([...attributes]);
-                          }}
-                        />
-                      </Col>
-                    </ListItem>
-                  );
-                })}
-                <AntdButton
-                  icon={<FaPlus />}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "50%",
-                  }}
-                  onClick={() => {
-                    setAttributes([
-                      ...attributes,
-                      {
-                        name_uz: "",
-                        name_ru: "",
-                        type: "TEXT",
-                        values: [],
-                      },
-                    ]);
-                  }}
-                />
-              </List>
-            </Col>
-          </Row>
-          {is_stock && (
-            <Row>
-              <Col span={24}>
-                <h4
-                  style={{
-                    color: "#212121",
-                    fontFamily: "Rubik",
-                    fontSize: "18px",
-                    fontWeight: 400,
-                    margin: "30px 0 20px 0",
-                  }}
-                >
-                  Mahsulot joylanadigan bo’lim
-                </h4>
-              </Col>
-              <Col span={24} md={6} lg={6}>
-                <Checkbox
-                  label={"Tavsiya etilganlar"}
-                  checked={isRecommend}
-                  onClick={() => setIsRecommend(!isRecommend)}
-                >
-                  Tavsiya etilganlar
-                </Checkbox>
-              </Col>
-              <Col span={24} md={6} lg={6}>
-                <Checkbox
-                  label={"Yangiliklar"}
-                  checked={isNew}
-                  onClick={() => setIsNew(!isNew)}
-                >
-                  Yangiliklar
-                </Checkbox>
-              </Col>
-              <Col span={24} md={6} lg={6}>
-                <Checkbox
-                  label={"Arzon narxlar"}
-                  checked={isCheap}
-                  onClick={() => setIsCheap(!isCheap)}
-                >
-                  Arzon narxlar
-                </Checkbox>
-              </Col>
-              {/* <Col span={24} md={6} lg={6}>
-          <CheckboxCustom
-            control={form.control}
-            name="is_new"
-            label="Yangiliklar"
-          />
-        </Col>
-        <Col span={24} md={6} lg={6}>
-          <CheckboxCustom
-            control={form.control}
-            name="is_cheap"
-            label="Arzon narxlar"
-          />
-        </Col> */}
-            </Row>
-          )}
-          <Footer>
-            <Button
-              name={id ? "Yangilash" : "Maxsulot yaratish"}
-              className="category-btn"
-              onClick={() => handleSubmit()}
-              // type="submit"
-            />
-          </Footer>
-        </form>
-      )}
+    //                     {/* {item.type === "COLOR" && (
+    //                       <div>
+    //                         <Input
+    //                           placeholder="Enter color name"
+    //                           value={colorLabel}
+    //                           onChange={(e) => {
+    //                             setColorLabel(e.target.value);
+    //                           }}
+    //                         />
+    //                         <div style={{ display: "flex", gap: 10 }}>
+    //                           <Input
+    //                             placeholder="Enter color name"
+    //                             type="color"
+    //                             // value={colorCode}
+    //                             onChange={(e) => {
+    //                               console.log(colorCode, "colorCode");
+    //                               console.log();
+    //                               setColorCode(e.target.value);
+    //                               // console.log({
+    //                               //   colorLabel,
+    //                               //   value: e.target.value,
+    //                               // });
+    //                               // setColorLabel(e.target.value);
+    //                             }}
+    //                           />
+    //                           <button
+    //                             onClick={(e) => {
+    //                               e.preventDefault();
+    //                               const arr = [
+    //                                 ...colorsAtt,
+    //                                 {
+    //                                   label: colorLabel,
+    //                                   value: colorCode,
+    //                                 },
+    //                               ];
+    //                               // setColors([...colors, colorLabel]);
+    //                               setColorLabel("");
+    //                               setColorCode("#000000");
+    //                               setColorsAtt([...arr]);
+    //                               attributes[index].values = [...arr];
+    //                             }}
+    //                           >
+    //                             Add
+    //                           </button>
+    //                         </div>
+    //                       </div>
+    //                     )}
+    //                     {colorsAtt.length > 0 && item.type === "COLOR" && (
+    //                       <div
+    //                         style={{
+    //                           display: "flex",
+    //                           flexDirection: "row",
+    //                           gap: 10,
+    //                         }}
+    //                       >
+    //                         {colorsAtt.map((value, i) => {
+    //                           return (
+    //                             <div
+    //                               onClick={() => {
+    //                                 setColorsAtt(
+    //                                   colorsAtt.filter((v) => v !== value)
+    //                                 );
+    //                               }}
+    //                               key={i}
+    //                             >
+    //                               <p>{value.label}</p>
+    //                               <div
+    //                                 style={{
+    //                                   backgroundColor: value.value,
+    //                                   height: 20,
+    //                                   width: 20,
+    //                                   borderRadius: 10,
+    //                                 }}
+    //                               ></div>
+    //                             </div>
+    //                           );
+    //                         })}
+    //                       </div>
+    //                     )} */}
+    //                     {/* <CreateSelect
+    //                     control={form.control}
+    //                     name={`attributes.${index}.name_uz`}
+    //                     placeholder="Attribut qiymati"
+    //                     options={[]}
+    //                   /> */}
+    //                     <AntdButton
+    //                       icon={<DeleteFilled />}
+    //                       style={{
+    //                         display: "flex",
+    //                         alignItems: "center",
+    //                         justifyContent: "center",
+    //                         borderRadius: "50%",
+    //                       }}
+    //                       className="delete-btn"
+    //                       danger
+    //                       onClick={() => {
+    //                         attributes.splice(index, 1);
+    //                         setAttributes([...attributes]);
+    //                       }}
+    //                     />
+    //                   </Col>
+    //                 </ListItem>
+    //               );
+    //             })}
+    //             <AntdButton
+    //               icon={<FaPlus />}
+    //               style={{
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 justifyContent: "center",
+    //                 borderRadius: "50%",
+    //               }}
+    //               onClick={() => {
+    //                 setAttributes([
+    //                   ...attributes,
+    //                   {
+    //                     name_uz: "",
+    //                     name_ru: "",
+    //                     type: "TEXT",
+    //                     values: [],
+    //                   },
+    //                 ]);
+    //               }}
+    //             />
+    //           </List>
+    //         </Col>
+    //       </Row>
+    //       {is_stock && (
+    //         <Row>
+    //           <Col span={24}>
+    //             <h4
+    //               style={{
+    //                 color: "#212121",
+    //                 fontFamily: "Rubik",
+    //                 fontSize: "18px",
+    //                 fontWeight: 400,
+    //                 margin: "30px 0 20px 0",
+    //               }}
+    //             >
+    //               Mahsulot joylanadigan bo’lim
+    //             </h4>
+    //           </Col>
+    //           <Col span={24} md={6} lg={6}>
+    //             <Checkbox
+    //               label={"Tavsiya etilganlar"}
+    //               checked={isRecommend}
+    //               onClick={() => setIsRecommend(!isRecommend)}
+    //             >
+    //               Tavsiya etilganlar
+    //             </Checkbox>
+    //           </Col>
+    //           <Col span={24} md={6} lg={6}>
+    //             <Checkbox
+    //               label={"Yangiliklar"}
+    //               checked={isNew}
+    //               onClick={() => setIsNew(!isNew)}
+    //             >
+    //               Yangiliklar
+    //             </Checkbox>
+    //           </Col>
+    //           <Col span={24} md={6} lg={6}>
+    //             <Checkbox
+    //               label={"Arzon narxlar"}
+    //               checked={isCheap}
+    //               onClick={() => setIsCheap(!isCheap)}
+    //             >
+    //               Arzon narxlar
+    //             </Checkbox>
+    //           </Col>
+    //           {/* <Col span={24} md={6} lg={6}>
+    //       <CheckboxCustom
+    //         control={form.control}
+    //         name="is_new"
+    //         label="Yangiliklar"
+    //       />
+    //     </Col>
+    //     <Col span={24} md={6} lg={6}>
+    //       <CheckboxCustom
+    //         control={form.control}
+    //         name="is_cheap"
+    //         label="Arzon narxlar"
+    //       />
+    //     </Col> */}
+    //         </Row>
+    //       )}
+    //       <Footer>
+    //         <Button
+    //           name={id ? "Yangilash" : "Maxsulot yaratish"}
+    //           className="category-btn"
+    //           onClick={() => handleSubmit()}
+    //           // type="submit"
+    //         />
+    //       </Footer>
+    //     </form>
+    //   )}
 
-      {isLoading && <Spinner />}
-    </Wrapper>
+    //   {isLoading && <Spinner />}
+    // </Wrapper>
+    <div></div>
   );
 };
 

@@ -8,12 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getCategorySelect,
   getCategorySelectProduct,
-  getColorsSelect,
+  // getColorsSelect,
 } from "@/shared/modules/category";
 // import dayjs from "dayjs";
 import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 import { notification } from "antd";
-import { boxList } from "@/shared/modules/box";
 import { getUser } from "@/utils/user";
 
 export const useConfirm = () => {
@@ -57,33 +56,17 @@ export const useConfirm = () => {
         };
       }),
   });
-  const { data: colorList = [] } = useQuery({
-    queryKey: ["get-colors-list"],
-    queryFn: () => getColorsSelect(),
-    select: (res) =>
-      res?.data?.map((v) => {
-        return {
-          value: v?.id,
-          label: v?.name,
-        };
-      }),
-  });
-
-  useQuery({
-    queryKey: ["get-box-list"],
-    queryFn: () => boxList({ page: 1, limit: 10 }),
-    select: (res) => {
-      return res?.data?.results?.map((v) => {
-        return {
-          value: v?.id,
-          label: String(v?.price),
-          emoji: v?.photo,
-          selected: false,
-        };
-      });
-    },
-    onSuccess: (data) => setBoxes(data),
-  });
+  // const { data: colorList = [] } = useQuery({
+  //   queryKey: ["get-colors-list"],
+  //   queryFn: () => getColorsSelect(),
+  //   select: (res) =>
+  //     res?.data?.map((v) => {
+  //       return {
+  //         value: v?.id,
+  //         label: v?.name,
+  //       };
+  //     }),
+  // });
 
   const handleValue = (id) => {
     if (boxes.filter((t) => t.value != id)) {
@@ -165,7 +148,7 @@ export const useConfirm = () => {
     setFileList,
     isLoading,
     categoryList,
-    colorList,
+    // colorList,
     handleValue,
     contextHolder,
     setVideoFile,

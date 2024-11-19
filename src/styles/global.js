@@ -22,7 +22,7 @@ export const Header = styled("div")`
   display: flex;
   /* align-items: center; */
   justify-content: space-between;
-  /* flex-direction: ; */
+  flex-direction: column;
   gap: 0.5rem;
   margin: 0 0 32px;
   width: 100%;

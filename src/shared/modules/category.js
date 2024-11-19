@@ -23,7 +23,7 @@ export const getCategorySelect = () =>
   request(ENDPOINTS.ADMIN_CATEGORY_SELECT_LIST);
 export const getCategorySelectProduct = () =>
   request(ENDPOINTS.ADMIN_CATEGORY_SELECT_LIST + `?product=true`);
-export const getColorsSelect = () => request(ENDPOINTS.ADMIN_COLOR_LIST);
+// export const getColorsSelect = () => request(ENDPOINTS.ADMIN_COLOR_LIST);
 export const deleteCategory = (id) =>
   request.delete(`admin/category/${id}/delete`);
 

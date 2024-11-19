@@ -33,7 +33,6 @@ export const ENDPOINTS = {
   ADMIN_BANNER_LIST: "admin/banner/list",
   ADMIN_BANNER_CREATE: "admin/banner/create",
   ADMIN_WORKER_LIST: "admin/worker/statistics",
-  ADMIN_BOX_LIST: "admin/box/list",
   ADMIN_BOX_CREATE: "admin/box/create",
   CUSTOMER_LIST: "admin/customer/list",
   EXPENSES: "admin/expense/list",

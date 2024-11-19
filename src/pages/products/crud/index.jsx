@@ -441,7 +441,7 @@ const CreateProducts = () => {
           <Row style={{ marginTop: 12 }} gutter={[16, 16]}>
             <Col span={24} lg={12}>
               <Label>Description - tasnif (O’zbek tili)</Label>
-              <Reactquill
+              <Input
                 value={description_uz}
                 onChange={(e) => setDescriptionUz(e)}
                 placeholder="Description - tasnif (O’zbek tili)"
@@ -451,7 +451,7 @@ const CreateProducts = () => {
             </Col>
             <Col span={24} lg={12}>
               <Label>Description - tasnif (Rus tili)</Label>
-              <Reactquill
+              <Input
                 value={description_ru}
                 onChange={(e) => setDescriptionRu(e)}
                 placeholder="Description - tasnif (Rus tili)"

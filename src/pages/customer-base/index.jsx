@@ -6,7 +6,9 @@ import { FilterBtn } from "./style";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
+import { Pagination as AntdPagination } from "antd";
 import MessageIcon from "@/assets/message";
+
 import {
   Modal,
   ModalActions,
@@ -26,6 +28,8 @@ const Customerbase = () => {
   const [text, setText] = useState(""); // State for text in textarea
   const [smsShablon, setSmsShablon] = useState(null);
   const [selectedOption, setSelectedOption] = useState("");
+  const [paramsList, setParamsList] = useState({ page: 1, limit: 20 });
+  const [leadCount, setLeadCount] = useState(0);
 
   const TableContainer = styled.div`
     width: 100%;
@@ -62,83 +66,70 @@ const Customerbase = () => {
     border-bottom: 1px solid #ddd;
   `;
 
+  const PaginationMain = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+    width: 100%;
+  `;
+
+  const fetchLeads = async () => {
+    try {
+      const userDataString = localStorage.getItem("userInfo");
+      let userData;
+      if (userDataString) {
+        try {
+          userData = JSON.parse(userDataString);
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+      }
+      const response = await axios.get(
+        `https://api.salonchi.uz/api/v1/lead?page=${paramsList.page}&limit=20`,
+        {
+          headers: {
+            Authorization: `Bearer ${userData.access}`,
+          },
+        }
+      );
+      setLeadCount(response.data.count);
+      setNewData(response.data.results);
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchLeads = async () => {
-      try {
-        const userDataString = localStorage.getItem("userInfo");
-        let userData;
-        if (userDataString) {
-          try {
-            userData = JSON.parse(userDataString);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
-        }
-        const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/lead",
-          {
-            headers: {
-              Authorization: `Bearer ${userData.access}`,
-            },
-          }
-        );
-        setNewData(response.data.results);
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-      }
-
-      try {
-        const userDataString = localStorage.getItem("userInfo");
-        let userData;
-        if (userDataString) {
-          try {
-            userData = JSON.parse(userDataString);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
-        }
-        const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/lead",
-          {
-            headers: {
-              Authorization: `Bearer ${userData?.access}`,
-            },
-          }
-        );
-        setNewData(response.data.results, ...newData);
-      } catch (error) {
-        console.error("Error fetching leads:", error);
-      }
-    };
-
     fetchLeads();
+    console.log("test");
+  }, [paramsList]);
 
-    const fetchSmsShablon = async () => {
-      try {
-        const userDataString = localStorage.getItem("userInfo");
-        let userData;
-        if (userDataString) {
-          try {
-            userData = JSON.parse(userDataString);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
-          }
+  const fetchSmsShablon = async () => {
+    try {
+      const userDataString = localStorage.getItem("userInfo");
+      let userData;
+      if (userDataString) {
+        try {
+          userData = JSON.parse(userDataString);
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
         }
-        const response = await axios.get(
-          "https://api.salonchi.uz/api/v1/admin/sms",
-          {
-            headers: {
-              Authorization: `Bearer ${userData.access}`,
-            },
-          }
-        );
-        setSmsShablon(response.data);
-        console.log(response.data, "sms shablon");
-      } catch (error) {
-        console.error("Error fetching sms shablon:", error);
       }
-    };
-
+      const response = await axios.get(
+        "https://api.salonchi.uz/api/v1/admin/sms",
+        {
+          headers: {
+            Authorization: `Bearer ${userData.access}`,
+          },
+        }
+      );
+      setSmsShablon(response.data);
+      console.log(response.data, "sms shablon");
+    } catch (error) {
+      console.error("Error fetching sms shablon:", error);
+    }
+  };
+  useEffect(() => {
     fetchSmsShablon();
   }, []);
 
@@ -210,30 +201,51 @@ const Customerbase = () => {
         </FilterBtn>
       </Header>
       {filteredData ? (
-        <TableContainer>
-          <Table>
-            <thead>
-              <tr>
-                <TableHeader>T/r</TableHeader>
-                <TableHeader>Ism va familiyasi</TableHeader>
-                <TableHeader>Telefon raqami</TableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {newData.map((item, index) => (
-                <TableRow key={index}>
-                  <TableData>{index + 1}</TableData>
-                  <TableData>{item.name}</TableData>
-                  <TableData>{item.phone}</TableData>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </TableContainer>
+        <>
+          <TableContainer>
+            <Table>
+              <thead>
+                <tr>
+                  <TableHeader>T/r</TableHeader>
+                  <TableHeader>Ism va familiyasi</TableHeader>
+                  <TableHeader>Telefon raqami</TableHeader>
+                </tr>
+              </thead>
+              <tbody>
+                {newData.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableData>
+                      {(paramsList.page - 1) * 20 + index + 1}
+                    </TableData>
+                    <TableData>{item.name}</TableData>
+                    <TableData>{item.phone}</TableData>
+                  </TableRow>
+                ))}
+              </tbody>
+            </Table>
+          </TableContainer>
+          <PaginationMain>
+            <AntdPagination
+              defaultCurrent={paramsList.page}
+              current={paramsList.page}
+              total={leadCount}
+              pageSize={paramsList.limit}
+              onChange={(page) =>
+                setParamsList({
+                  ...paramsList,
+                  page,
+                })
+              }
+              showSizeChanger={false}
+            />
+          </PaginationMain>
+        </>
       ) : (
-        <CustomTable columns={columns} data={data} loading={isLoading} />
+        <div>
+          <CustomTable columns={columns} data={data} loading={isLoading} />
+          <Pagination params={params} setParams={setParams} total={count} />
+        </div>
       )}
-      <Pagination params={params} setParams={setParams} total={count} />
 
       {modalOpenMsg && (
         <Modal>

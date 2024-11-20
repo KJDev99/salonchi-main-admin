@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-export const List = styled('ul')`
+export const List = styled("ul")`
   .product-list {
     li {
       width: 100%;
@@ -21,7 +21,7 @@ export const List = styled('ul')`
     }
   }
 `;
-export const ListItem = styled('li')`
+export const ListItem = styled("li")`
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -50,6 +50,35 @@ export const ListItem = styled('li')`
       text-align: right;
     }
   }
+  .comments-section {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-width: 60%;
+  }
+
+  .comment-item {
+    padding: 5px 10px 15px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    position: relative;
+  }
+
+  .comment-text {
+    font-size: 14px;
+    color: #333;
+    margin: 0 0 5px 0;
+  }
+
+  .comment-time {
+    font-size: 11px;
+    color: #777;
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+  }
+
   .badge {
     background-color: ${(props) => props?.getstatus?.backgroundColor};
     padding: 6px;
@@ -62,4 +91,4 @@ export const ListItem = styled('li')`
   }
 `;
 
-export const StatusWrapper = styled('div')``;
+export const StatusWrapper = styled("div")``;

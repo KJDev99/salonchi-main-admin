@@ -128,7 +128,7 @@ const Leads = () => {
           phone: userPhone,
         }
       );
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         setModalOpenCreate(false);
         setSelectedProductId(null);
         setUserPhone("+998");

@@ -105,14 +105,6 @@ const LeadWaiting = () => {
             <span>{dayjs(data?.created).format(DATE_FORMAT)}</span>
           </ListItem>
 
-          {(data?.status == "REJECTED" || data?.status == "RECALL") && (
-            <ListItem>
-              <span>Izoh</span>
-              <span className="comment">
-                {data?.comment === "" ? "Izohlar yo'q" : data?.comment}
-              </span>
-            </ListItem>
-          )}
           {data?.product && (
             <ListItem className="product-list-item">
               <span>
@@ -144,6 +136,34 @@ const LeadWaiting = () => {
               </li>
             </Fragment>
           </ol>
+          {(data?.status == "REJECTED" || data?.status == "RECALL") && (
+            <ListItem>
+              <span>Izoh</span>
+              <span className="comments-section">
+                {data?.admin_comments?.length === 0 ? (
+                  <p>Izohlar yo'q</p>
+                ) : (
+                  data?.admin_comments.map((comment) => (
+                    <div key={comment.id} className="comment-item">
+                      <p className="comment-text">{comment.text}</p>
+                      <span className="comment-time">
+                        {new Date(comment.created_at).toLocaleDateString(
+                          "uz-UZ",
+                          {
+                            hour: "numeric",
+                            minute: "numeric",
+                            day: "2-digit",
+                            month: "numeric",
+                            year: "numeric",
+                          }
+                        )}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </span>
+            </ListItem>
+          )}
         </List>
       )}
 

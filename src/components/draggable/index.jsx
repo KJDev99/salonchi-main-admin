@@ -1,5 +1,5 @@
 import { request } from "@/shared/api/request";
-import { DragSortTable } from "@ant-design/pro-components";
+import { DragSortTable } from "@ant-design/pro-components/es";
 import { message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -72,7 +72,7 @@ const CategoryOrders = () => {
 
   return (
     <DragSortTable
-      headerTitle="Kategoriyalarni ketma-ketligini o'rgartirish"
+      headerTitle="Kategoriyalarni ketma-ketligini o'zgartirish"
       columns={columns}
       rowKey="key"
       search={false}

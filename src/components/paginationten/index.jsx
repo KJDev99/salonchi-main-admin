@@ -26,7 +26,7 @@ export const PaginationTen = ({ total, params, setParams }) => {
         onChange={(e) =>
           setParams({
             page: e,
-            limit: 10,
+            limit: 20,
           })
         }
         showSizeChanger={false}

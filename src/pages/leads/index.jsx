@@ -55,9 +55,7 @@ const Leads = () => {
   const [counts, setCounts] = useState({});
   const [params, setParams] = useState({
     page: initial_params.has("page") ? Number(initial_params.get("page")) : 1,
-    limit: initial_params.has("limit")
-      ? Number(initial_params.get("limit"))
-      : 20,
+    limit: 20,
     status: initial_params.has("status") ? initial_params.get("status") : "ALL",
   });
   const navigate = useNavigate();
@@ -389,13 +387,10 @@ const Leads = () => {
     return 0;
   });
   const handleDelete = async (id) => {
-    console.log(id);
     try {
       const res = await request.delete(`/lead/${id}/delete`);
       if (res.status === 204) {
         window.location.reload();
-      } else {
-        console.log(res);
       }
     } catch (err) {
       console.log(err);

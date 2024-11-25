@@ -133,7 +133,15 @@ export const useList = () => {
       title: "Photo",
       dataIndex: "media",
       key: "media",
-      render: (media) => <Image src={media} alt="media" width={80} />,
+      render: (media) => (
+        <Image
+          src={media}
+          alt="media"
+          width={80}
+          height={80}
+          style={{ objectFit: "cover" }}
+        />
+      ),
     },
     {
       title: "Category",
@@ -263,7 +271,6 @@ export const useList = () => {
       ),
     },
   ];
-
 
   return {
     data: products.data,

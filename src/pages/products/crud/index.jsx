@@ -36,6 +36,7 @@ import { useEffect, useState } from "react";
 // import UploadVideo from "@/components/upload_video";
 import { VideoWrapper } from "@/components/upload_video/style";
 import { Reactquill } from "@/components/text-editor/style";
+import CombinationTable from "../CombinationTable";
 const CreateProducts = () => {
   const navigate = useNavigate();
   const user = getUser();
@@ -65,6 +66,10 @@ const CreateProducts = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [subCategoryList, setSubCategoryList] = useState();
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [variants, setVariants] = useState([]);
+  const onSave = (variantss) => {
+    setVariants(variantss);
+  };
   const {
     form,
     // fields,
@@ -79,6 +84,8 @@ const CreateProducts = () => {
     // videoFile,
   } = useConfirm();
   const [api, contextHolder] = notification.useNotification();
+  // startingg
+
   const getFileUrl = async (e, video) => {
     e.preventDefault();
     // console.log("e.target.files[0]", e.target.files[0]);
@@ -188,6 +195,9 @@ const CreateProducts = () => {
     // console.log(subCategoryList, "subCategoryList");
     const arr = [...images];
     if (videoLink) arr.push(videoLink);
+    const number = attributes.reduce((acc, attr) => {
+      return acc * attr.values.length;
+    }, 1);
     const data = {
       medias: [...arr],
       name_uz,
@@ -201,6 +211,7 @@ const CreateProducts = () => {
       is_new: isNew,
       is_cheap: isCheap,
       category: selectedCategory,
+      variants,
     };
     if (
       name_uz === "" ||
@@ -212,13 +223,15 @@ const CreateProducts = () => {
       images.length === 0 ||
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
-      attributes.some((item) => item.name_uz.length === 0)
+      attributes.some((item) => item.name_uz.length === 0) ||
+      variants.length < number
     ) {
       api["error"]({
         message: "Error",
         description: "Buyurtma ma'lumotlari to'liq kiritilmadi",
       });
     } else {
+      console.log(data);
       if (id) {
         const res = await request.put(`admin/product/${id}/update`, data);
         if (res.status === 200) {
@@ -844,6 +857,9 @@ const CreateProducts = () => {
               </List>
             </Col>
           </Row>
+          {/* here */}
+          <CombinationTable onSave={onSave} attributes={attributes} />
+          {/* finish */}
           {is_stock && (
             <Row>
               <Col span={24}>

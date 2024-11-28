@@ -11,6 +11,7 @@ import { getStatus } from "@/utils/status";
 import { Fragment } from "react";
 import { CustomTextArea } from "@/components/textarea";
 import axios from "axios";
+import RecordsTable from "./RecordsTable";
 
 const LeadWaiting = () => {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const LeadWaiting = () => {
               <span>Izoh</span>
               <span className="comments-section">
                 {data?.admin_comments?.length === 0 ? (
-                  <p>Izohlar yo'q</p>
+                  <p>Izohlar yo&apos;q</p>
                 ) : (
                   data?.admin_comments.map((comment) => (
                     <div key={comment.id} className="comment-item">
@@ -166,7 +167,7 @@ const LeadWaiting = () => {
           )}
         </List>
       )}
-
+      <RecordsTable />
       {open && (
         <Modal
           title="Buyurtmani rad etish"

@@ -6,6 +6,7 @@ import { ReactComponent as IconInventory } from "@/assets/inventory.svg";
 // import { ReactComponent as SillerIcon } from "@/assets/siller.svg";
 import {
   FolderOutlined,
+  PhoneFilled,
   PhoneOutlined,
   SettingFilled,
   TeamOutlined,
@@ -78,7 +79,7 @@ export const useMenu = () => {
     getItem("Statistikalar", "admin/statistics", <IconInventory />),
     getItem("Maxsulotlar", "admin/products", <IconInventory />),
     getItem("Hodimlar", "admin/staff", <IconUser />),
-    getItem("Qo'ng'iroqlar", "admin/records", <IconUser />),
+    getItem("Qo'ng'iroqlar", "admin/records", <PhoneFilled />),
 
     // getItem("Sotuvchi Adminlar", "admin/seller-admins", <SillerIcon />),
     getItem("Mijozlar bazasi", "admin/customer-base", <SettingFilled />),

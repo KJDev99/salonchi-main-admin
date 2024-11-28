@@ -78,6 +78,8 @@ export const useMenu = () => {
     getItem("Statistikalar", "admin/statistics", <IconInventory />),
     getItem("Maxsulotlar", "admin/products", <IconInventory />),
     getItem("Hodimlar", "admin/staff", <IconUser />),
+    getItem("Qo'ng'iroqlar", "admin/records", <IconUser />),
+
     // getItem("Sotuvchi Adminlar", "admin/seller-admins", <SillerIcon />),
     getItem("Mijozlar bazasi", "admin/customer-base", <SettingFilled />),
     getItem("Harajatlar", "admin/expenses", <IconInventory />),

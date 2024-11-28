@@ -7,6 +7,7 @@ export const ENDPOINTS = {
   ADMIN_PRODUCT_DELETE: "admin/product/delete/",
   ADMIN_PRODUCT_UPDATE: "admin/product/update/",
   ADMIN_ROLE_LIST: "admin/role/list",
+  // ADMIN_ROLE_RECORDS: "admin/role/list",
   ADMIN_ROLE_CREATE: "admin/role/create",
   ADMIN_ROLE_UPDATE: "admin/role/update/",
   ADMIN_ROLE_DELETE: "admin/role/delete/",

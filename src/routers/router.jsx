@@ -69,6 +69,7 @@ const WholesaleCustomers = lazy(
 );
 
 const SellerAdmins = lazy(async () => await import("@/pages/seller-admins"));
+const Records = lazy(async () => await import("@/pages/records"));
 const SellerView = lazy(async () => await import("@/pages/seller-view"));
 
 const Ikpu = lazy(async () => await import("@/pages/ikpu"));
@@ -179,6 +180,7 @@ export const router = createBrowserRouter([
         path: ROUTER.STATISTICS,
         element: <Statistics />,
       },
+      { path: ROUTER.RECORDS, element: <Records /> },
       {
         path: ROUTER.STAFF,
         element: <Staff />,

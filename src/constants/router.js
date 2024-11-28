@@ -11,6 +11,7 @@ export const ROUTER = {
   ACCEPTED_ORDERS: "accepted-orders",
   ONTHEWAY_ORDERS: "on-the-way-orders",
   STATISTICS: "statistics",
+  RECORDS: "records",
   STAFF: "staff/",
   ROLES: "roles",
   CREATE: "create",

@@ -49,6 +49,7 @@ export const useList = () => {
     queryKey: [REACT_QUERY_KEYS.GET_PRODUCT_LIST, params],
     queryFn: () => getProducts(params),
     select: (res) => {
+      console.log(res);
       return {
         count: res?.data?.count,
         data: res?.data?.results?.map(({ ...rest }, i) => ({

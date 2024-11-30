@@ -574,6 +574,13 @@ const Leads = () => {
                         alt="message-icon"
                       />
                     </a>
+                    <a href={`tel:${lead.phone.replace(/[-\s]/g, "")}`}>
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Phone_Shiny_Icon.svg"
+                        width={22}
+                        alt="message-icon"
+                      />
+                    </a>
                   </TableCell>
                   <TableCell>
                     <Space>

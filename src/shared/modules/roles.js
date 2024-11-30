@@ -6,7 +6,7 @@ export const getRoles = (params) =>
 export const getRecords = (params) =>
   request("/pbx/record/list" + `?page=${params.page}`);
 export const getLeadRecords = (params, id) =>
-  request("/pbx/record/user/" + 1 + "/list");
+  request("/pbx/record/user/" + id + "/list?isLead=true");
 export const createEmployee = (data) =>
   request.post(ENDPOINTS.ADMIN_ROLE_CREATE, data);
 

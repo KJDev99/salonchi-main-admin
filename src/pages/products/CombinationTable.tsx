@@ -22,6 +22,8 @@ interface Variant {
     [key: string]: string;
   };
   price: number;
+  old_price?: number;
+  body_price?: number;
   count: number;
 }
 
@@ -37,7 +39,10 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
   const [combinations, setCombinations] = useState<CombinationItem[][]>([]);
   const [amounts, setAmounts] = useState<{ [key: string]: string }>({});
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
+  const [oldPrices, setOldPrices] = useState<{ [key: string]: string }>({});
+  const [bodyPrices, setBodyPrices] = useState<{ [key: string]: string }>({});
   const [variants, setVariants] = useState<Variant[]>([]);
+
   // Generate all possible combinations of attribute values
   const calculateCombinations = (): CombinationItem[][] => {
     if (!attributes || attributes.length === 0) return [];
@@ -58,24 +63,32 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
     return cartesian(attributes);
   };
 
-  // Sync combinations, amounts, and prices when attributes change
+  // Sync combinations, amounts, prices, and additional prices when attributes change
   useEffect(() => {
     const newCombinations = calculateCombinations();
     setCombinations(newCombinations);
 
-    // Initialize amounts and prices for new combinations
+    // Initialize amounts, prices, old_prices, and body_prices for new combinations
     const initialAmounts: { [key: string]: string } = {};
     const initialPrices: { [key: string]: string } = {};
+    const initialOldPrices: { [key: string]: string } = {};
+    const initialBodyPrices: { [key: string]: string } = {};
+
     newCombinations.forEach((combination) => {
       const key = combination.map((item) => item.value.title).join(" / ");
       initialAmounts[key] = amounts[key] || "";
       initialPrices[key] = prices[key] || "";
+      initialOldPrices[key] = oldPrices[key] || "";
+      initialBodyPrices[key] = bodyPrices[key] || "";
     });
+
     setAmounts(initialAmounts);
     setPrices(initialPrices);
+    setOldPrices(initialOldPrices);
+    setBodyPrices(initialBodyPrices);
   }, [attributes]);
 
-  // Automatically generate `variants` whenever amounts or prices change
+  // Automatically generate `variants` whenever amounts, prices, old_prices, or body_prices change
   useEffect(() => {
     const newVariants: Variant[] = combinations
       .map((combination) => {
@@ -90,6 +103,8 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
         return {
           attributes: attributesObject,
           price: prices[key] ? parseFloat(prices[key]) : 0,
+          old_price: oldPrices[key] ? parseFloat(oldPrices[key]) : undefined,
+          body_price: bodyPrices[key] ? parseFloat(bodyPrices[key]) : undefined,
           count: amounts[key] ? parseInt(amounts[key], 10) : 0,
         };
       })
@@ -99,18 +114,27 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
 
     // Pass to parent if onSave callback is provided
     if (onSave) onSave(newVariants);
-  }, [amounts, prices, combinations]);
+  }, [amounts, prices, oldPrices, bodyPrices, combinations]);
 
-  // Handle changes in amount and price inputs
+  // Handle changes in amount, price, old_price, and body_price inputs
   const handleInputChange = (
     combinationKey: string,
-    type: "amount" | "price",
+    type: "amount" | "price" | "old_price" | "body_price",
     value: string
   ) => {
-    if (type === "amount") {
-      setAmounts((prev) => ({ ...prev, [combinationKey]: value }));
-    } else if (type === "price") {
-      setPrices((prev) => ({ ...prev, [combinationKey]: value }));
+    switch (type) {
+      case "amount":
+        setAmounts((prev) => ({ ...prev, [combinationKey]: value }));
+        break;
+      case "price":
+        setPrices((prev) => ({ ...prev, [combinationKey]: value }));
+        break;
+      case "old_price":
+        setOldPrices((prev) => ({ ...prev, [combinationKey]: value }));
+        break;
+      case "body_price":
+        setBodyPrices((prev) => ({ ...prev, [combinationKey]: value }));
+        break;
     }
   };
 
@@ -123,7 +147,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
       amount: (
         <Input
           type="number"
-          placeholder="Amount"
+          placeholder="miqdor"
           value={amounts[key]}
           onChange={(e) => handleInputChange(key, "amount", e.target.value)}
         />
@@ -131,9 +155,25 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
       price: (
         <Input
           type="number"
-          placeholder="Price"
+          placeholder="Narxi"
           value={prices[key]}
           onChange={(e) => handleInputChange(key, "price", e.target.value)}
+        />
+      ),
+      old_price: (
+        <Input
+          type="number"
+          placeholder="eski narxi"
+          value={oldPrices[key]}
+          onChange={(e) => handleInputChange(key, "old_price", e.target.value)}
+        />
+      ),
+      body_price: (
+        <Input
+          type="number"
+          placeholder="Tan narxi"
+          value={bodyPrices[key]}
+          onChange={(e) => handleInputChange(key, "body_price", e.target.value)}
         />
       ),
     };
@@ -145,19 +185,26 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
       title: "Mahsulot turi",
       dataIndex: "combination",
       key: "combination",
-      align: "center",
     },
     {
       title: "Miqdor",
       dataIndex: "amount",
       key: "amount",
-      align: "center",
     },
     {
       title: "Narx",
       dataIndex: "price",
       key: "price",
-      align: "center",
+    },
+    {
+      title: "Eski Narx",
+      dataIndex: "old_price",
+      key: "old_price",
+    },
+    {
+      title: "Tan Narx",
+      dataIndex: "body_price",
+      key: "body_price",
     },
   ];
 

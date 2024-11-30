@@ -68,6 +68,7 @@ const CreateProducts = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [variants, setVariants] = useState([]);
   const onSave = (variantss) => {
+    // console.log(variantss);
     setVariants(variantss);
   };
   const {

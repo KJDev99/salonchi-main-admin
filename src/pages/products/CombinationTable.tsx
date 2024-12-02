@@ -12,15 +12,8 @@ interface Attribute {
   values: AttributeValue[];
 }
 
-interface CombinationItem {
-  name_uz: string;
-  value: AttributeValue;
-}
-
 interface Variant {
-  attributes: {
-    [key: string]: string;
-  };
+  attributes: { [key: string]: string }; // Key: Attribute name, Value: Attribute value
   price: number;
   old_price?: number;
   body_price?: number;
@@ -30,74 +23,93 @@ interface Variant {
 interface CombinationTableProps {
   attributes: Attribute[];
   onSave?: (variants: Variant[]) => void;
+  defaultVariant?: Variant[];
 }
 
 const CombinationTable: React.FC<CombinationTableProps> = ({
   attributes,
   onSave,
+  defaultVariant = [],
 }) => {
-  const [combinations, setCombinations] = useState<CombinationItem[][]>([]);
+  const [combinations, setCombinations] = useState<string[]>([]);
   const [amounts, setAmounts] = useState<{ [key: string]: string }>({});
   const [prices, setPrices] = useState<{ [key: string]: string }>({});
   const [oldPrices, setOldPrices] = useState<{ [key: string]: string }>({});
   const [bodyPrices, setBodyPrices] = useState<{ [key: string]: string }>({});
   const [variants, setVariants] = useState<Variant[]>([]);
 
-  // Generate all possible combinations of attribute values
-  const calculateCombinations = (): CombinationItem[][] => {
+  // Generate combinations
+  const calculateCombinations = (): string[] => {
     if (!attributes || attributes.length === 0) return [];
 
-    const cartesian = (arr: Attribute[]): CombinationItem[][] => {
-      return arr.reduce(
+    const cartesian = (arr: Attribute[]): string[] => {
+      const results = arr.reduce(
         (acc, curr) =>
           acc.flatMap((accItem) =>
-            curr.values.map((value) => [
-              ...accItem,
-              { name_uz: curr.name_uz, value },
-            ])
+            curr.values.map((value) => [...accItem, value.title])
           ),
-        [[]] as CombinationItem[][]
+        [[]] as string[][]
       );
+
+      return results.map((combination) => combination.join(" / "));
     };
 
     return cartesian(attributes);
   };
 
-  // Sync combinations, amounts, prices, and additional prices when attributes change
+  // Initialize or update combinations and default values
   useEffect(() => {
     const newCombinations = calculateCombinations();
     setCombinations(newCombinations);
 
-    // Initialize amounts, prices, old_prices, and body_prices for new combinations
+    // Create initial state objects
     const initialAmounts: { [key: string]: string } = {};
     const initialPrices: { [key: string]: string } = {};
     const initialOldPrices: { [key: string]: string } = {};
     const initialBodyPrices: { [key: string]: string } = {};
 
-    newCombinations.forEach((combination) => {
-      const key = combination.map((item) => item.value.title).join(" / ");
-      initialAmounts[key] = amounts[key] || "";
-      initialPrices[key] = prices[key] || "";
-      initialOldPrices[key] = oldPrices[key] || "";
-      initialBodyPrices[key] = bodyPrices[key] || "";
+    // Process defaultVariant if provided
+    if (defaultVariant && defaultVariant.length > 0) {
+      defaultVariant.forEach((variant) => {
+        // Create a key by joining attribute values
+        const key = Object.values(variant.attributes)
+          .map((value) => value.toString())
+          .join(" / ");
+
+        // Populate initial values for this variant
+        if (newCombinations.includes(key)) {
+          initialAmounts[key] = variant.count.toString();
+          initialPrices[key] = variant.price.toString();
+          initialOldPrices[key] = variant.old_price?.toString() || "";
+          initialBodyPrices[key] = variant.body_price?.toString() || "";
+        }
+      });
+    }
+
+    // Update state with initial or existing values
+    newCombinations.forEach((key) => {
+      if (!initialAmounts[key]) initialAmounts[key] = amounts[key] || "";
+      if (!initialPrices[key]) initialPrices[key] = prices[key] || "";
+      if (!initialOldPrices[key]) initialOldPrices[key] = oldPrices[key] || "";
+      if (!initialBodyPrices[key])
+        initialBodyPrices[key] = bodyPrices[key] || "";
     });
 
+    // Set the states
     setAmounts(initialAmounts);
     setPrices(initialPrices);
     setOldPrices(initialOldPrices);
     setBodyPrices(initialBodyPrices);
-  }, [attributes]);
+  }, [attributes, defaultVariant]);
 
-  // Automatically generate `variants` whenever amounts, prices, old_prices, or body_prices change
+  // Generate variants whenever state changes
   useEffect(() => {
     const newVariants: Variant[] = combinations
-      .map((combination) => {
-        const key = combination.map((item) => item.value.title).join(" / ");
-
-        // Create attributes object with exact structure
+      .map((key) => {
+        const attributePairs = key.split(" / ");
         const attributesObject: { [key: string]: string } = {};
-        combination.forEach((item) => {
-          attributesObject[item.name_uz] = item.value.title;
+        attributes.forEach((attr, index) => {
+          attributesObject[attr.name_uz] = attributePairs[index];
         });
 
         return {
@@ -108,15 +120,16 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
           count: amounts[key] ? parseInt(amounts[key], 10) : 0,
         };
       })
-      .filter((variant) => variant.price > 0 || variant.count > 0); // Optional: filter out empty variants
+      .filter((variant) => variant.price > 0 || variant.count > 0);
 
     setVariants(newVariants);
 
-    // Pass to parent if onSave callback is provided
-    if (onSave) onSave(newVariants);
-  }, [amounts, prices, oldPrices, bodyPrices, combinations]);
+    if (onSave) {
+      onSave(newVariants);
+    }
+  }, [amounts, prices, oldPrices, bodyPrices, combinations, onSave]);
 
-  // Handle changes in amount, price, old_price, and body_price inputs
+  // Handle input changes
   const handleInputChange = (
     combinationKey: string,
     type: "amount" | "price" | "old_price" | "body_price",
@@ -139,47 +152,44 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
   };
 
   // Prepare data for the table
-  const dataSource = combinations.map((combination, index) => {
-    const key = combination.map((item) => item.value.title).join(" / ");
-    return {
-      key: index,
-      combination: key,
-      amount: (
-        <Input
-          type="number"
-          placeholder="miqdor"
-          value={amounts[key]}
-          onChange={(e) => handleInputChange(key, "amount", e.target.value)}
-        />
-      ),
-      price: (
-        <Input
-          type="number"
-          placeholder="Narxi"
-          value={prices[key]}
-          onChange={(e) => handleInputChange(key, "price", e.target.value)}
-        />
-      ),
-      old_price: (
-        <Input
-          type="number"
-          placeholder="eski narxi"
-          value={oldPrices[key]}
-          onChange={(e) => handleInputChange(key, "old_price", e.target.value)}
-        />
-      ),
-      body_price: (
-        <Input
-          type="number"
-          placeholder="Tan narxi"
-          value={bodyPrices[key]}
-          onChange={(e) => handleInputChange(key, "body_price", e.target.value)}
-        />
-      ),
-    };
-  });
+  const dataSource = combinations.map((key, index) => ({
+    key: index,
+    combination: key,
+    amount: (
+      <Input
+        type="number"
+        placeholder="Miqdor"
+        value={amounts[key]}
+        onChange={(e) => handleInputChange(key, "amount", e.target.value)}
+      />
+    ),
+    price: (
+      <Input
+        type="number"
+        placeholder="Narx"
+        value={prices[key]}
+        onChange={(e) => handleInputChange(key, "price", e.target.value)}
+      />
+    ),
+    old_price: (
+      <Input
+        type="number"
+        placeholder="Eski narx"
+        value={oldPrices[key]}
+        onChange={(e) => handleInputChange(key, "old_price", e.target.value)}
+      />
+    ),
+    body_price: (
+      <Input
+        type="number"
+        placeholder="Tan narx"
+        value={bodyPrices[key]}
+        onChange={(e) => handleInputChange(key, "body_price", e.target.value)}
+      />
+    ),
+  }));
 
-  // Define table columns
+  // Table columns
   const columns = [
     {
       title: "Mahsulot turi",

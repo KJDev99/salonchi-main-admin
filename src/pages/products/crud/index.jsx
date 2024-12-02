@@ -32,7 +32,7 @@ import {
 // import UploadVideo from "@/components/upload_video";
 import { request } from "@/shared/api/request";
 import styles from "./product.module.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // import UploadVideo from "@/components/upload_video";
 import { VideoWrapper } from "@/components/upload_video/style";
 import { Reactquill } from "@/components/text-editor/style";
@@ -54,6 +54,8 @@ const CreateProducts = () => {
   const [name_ru, setNameRu] = useState("");
   const [price, setPrice] = useState();
   const [oldPrice, setOldPrice] = useState();
+  const [bodyPrice, setBodyPrice] = useState();
+  const [amount, setAmount] = useState();
   const [description_uz, setDescriptionUz] = useState("");
   const [description_ru, setDescriptionRu] = useState("");
   //   "is_recommend": true,
@@ -67,10 +69,8 @@ const CreateProducts = () => {
   const [subCategoryList, setSubCategoryList] = useState();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [variants, setVariants] = useState([]);
-  const onSave = (variantss) => {
-    // console.log(variantss);
-    setVariants(variantss);
-  };
+  // console.log(variants, "variants");
+
   const {
     form,
     // fields,
@@ -115,15 +115,100 @@ const CreateProducts = () => {
   };
   const { id, detailLoading } = useReset({ form, setFileList, setVideoFile });
 
-  useEffect(() => {
-    getCategoryList();
-    if (id) {
-      getSubCategoryList(category);
-    } else {
-      getSubCategoryList(1);
+  // useEffect(() => {
+  //   getCategoryList();
+  //   if (id) {
+  //     getSubCategoryList(category);
+  //   } else {
+  //     getSubCategoryList(1);
+  //   }
+  //   const getData = async () => {
+  //     console.log("aaaaaa");
+  //     if (id) {
+  //       const response = await request.get(`admin/product/${id}/detail`);
+  //       if (response.status === 200) {
+  //         const {
+  //           name_uz,
+  //           name_ru,
+  //           desc_uz,
+  //           desc_ru,
+  //           media,
+  //           attributes,
+  //           is_new,
+  //           is_recommend,
+  //           is_cheap,
+  //           price,
+  //           old_price,
+  //           body_price,
+  //           count,
+  //           category,
+  //           variants,
+  //         } = response.data;
+  //         setNameUz(name_uz);
+  //         setNameRu(name_ru);
+  //         setDescriptionUz(desc_uz);
+  //         setDescriptionRu(desc_ru);
+  //         setAttributes(attributes);
+  //         setIsCheap(is_cheap);
+  //         setIsNew(is_new);
+  //         setIsRecommend(is_recommend);
+  //         setPrice(price);
+  //         setOldPrice(old_price);
+  //         setBodyPrice(body_price);
+  //         setAmount(count);
+  //         setCategory(category.id);
+  //         getSubCategoryList(category.id);
+  //         setSelectedCategory(category.sub.id);
+  //         // setVariants(variants);
+
+  //         const arr = [];
+  //         media.forEach((item) => {
+  //           if (item.file_type === "video") {
+  //             setVideoLink(item.file);
+  //           } else {
+  //             arr.push(item.file);
+  //           }
+  //         });
+
+  //         setImages(arr);
+  //         const attr = [];
+  //         attributes.forEach((item) => {
+  //           if (item.type === "IMAGE") {
+  //             const arr = item.values.map((v) => {
+  //               return {
+  //                 url: v.value,
+  //                 label: v.title,
+  //               };
+  //             });
+  //             setImagesAtt([...arr]);
+  //           }
+  //           attr.push({
+  //             type: item.type,
+  //             name_uz: item.name_uz,
+  //             name_ru: item.name_ru,
+  //             values: [...item.values],
+  //           });
+  //         });
+  //         setAttributes(attr);
+  //       }
+  //     }
+  //   };
+  //   getData();
+  // }, [id]);
+  const onSave = useCallback((variantss) => {
+    if (variantss.length > 0) {
+      setVariants((prevVariants) => {
+        // Compare stringified versions to prevent unnecessary updates
+        return JSON.stringify(prevVariants) !== JSON.stringify(variantss)
+          ? variantss
+          : prevVariants;
+      });
     }
-    const getData = async () => {
-      if (id) {
+  }, []);
+  const getData = useCallback(async () => {
+    console.log("aaaaaa");
+    if (id) {
+      try {
         const response = await request.get(`admin/product/${id}/detail`);
         if (response.status === 200) {
           const {
@@ -138,8 +223,13 @@ const CreateProducts = () => {
             is_cheap,
             price,
             old_price,
+            body_price,
+            count,
             category,
+            variants,
           } = response.data;
+
+          // State updates
           setNameUz(name_uz);
           setNameRu(name_ru);
           setDescriptionUz(desc_uz);
@@ -150,9 +240,13 @@ const CreateProducts = () => {
           setIsRecommend(is_recommend);
           setPrice(price);
           setOldPrice(old_price);
+          setBodyPrice(body_price);
+          setAmount(count);
           setCategory(category.id);
           getSubCategoryList(category.id);
           setSelectedCategory(category.sub.id);
+
+          // Media handling
           const arr = [];
           media.forEach((item) => {
             if (item.file_type === "video") {
@@ -161,18 +255,17 @@ const CreateProducts = () => {
               arr.push(item.file);
             }
           });
-
           setImages(arr);
+
+          // Attributes handling
           const attr = [];
           attributes.forEach((item) => {
             if (item.type === "IMAGE") {
-              const arr = item.values.map((v) => {
-                return {
-                  url: v.value,
-                  label: v.title,
-                };
-              });
-              setImagesAtt([...arr]);
+              const imgArr = item.values.map((v) => ({
+                url: v.value,
+                label: v.title,
+              }));
+              setImagesAtt([...imgArr]);
             }
             attr.push({
               type: item.type,
@@ -182,11 +275,35 @@ const CreateProducts = () => {
             });
           });
           setAttributes(attr);
+
+          // Variants handling
+          const formattedVariants = variants.map((variant) => ({
+            attributes: variant.attributes,
+            price: variant.price,
+            old_price: variant.old_price,
+            body_price: variant.body_price,
+            count: variant.count,
+          }));
+
+          onSave(formattedVariants);
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    };
+    }
+  }, [id, onSave]);
+
+  useEffect(() => {
+    getCategoryList();
+
+    if (id) {
+      getSubCategoryList(category);
+    } else {
+      getSubCategoryList(1);
+    }
+
     getData();
-  }, [id]);
+  }, [id, getData, category]);
   useEffect(() => {
     getSubCategoryList(category);
   }, [category]);
@@ -205,8 +322,10 @@ const CreateProducts = () => {
       name_ru,
       desc_uz: description_uz,
       desc_ru: description_ru,
-      price,
-      old_price: oldPrice,
+      price: +price || 0,
+      old_price: +oldPrice || 0,
+      body_price: +bodyPrice || 0,
+      count: +amount || 0,
       attributes,
       is_recommend: isRecommend,
       is_new: isNew,
@@ -219,22 +338,27 @@ const CreateProducts = () => {
       name_ru === "" ||
       description_uz === "" ||
       description_ru === "" ||
-      price === "" ||
       selectedCategory === "" ||
       images.length === 0 ||
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
       attributes.some((item) => item.name_uz.length === 0) ||
-      variants.length < number
+      (variants.length < number && attributes.length > 0) ||
+      (attributes.length === 0 && !oldPrice) ||
+      (attributes.length === 0 && !bodyPrice) ||
+      (attributes.length === 0 && !amount) ||
+      (attributes.length === 0 && !price)
     ) {
       api["error"]({
         message: "Error",
         description: "Buyurtma ma'lumotlari to'liq kiritilmadi",
       });
-    } else {
       console.log(data);
+    } else {
+      console.log("sent");
       if (id) {
         const res = await request.put(`admin/product/${id}/update`, data);
+        console.log(res, "ress");
         if (res.status === 200) {
           api["success"]({
             message: "Success",
@@ -251,6 +375,8 @@ const CreateProducts = () => {
           setDescriptionRu("");
           setPrice("");
           setOldPrice("");
+          setAmount("");
+          setBodyPrice("");
           setIsRecommend(false);
           setIsNew(false);
           setIsCheap(false);
@@ -427,28 +553,6 @@ const CreateProducts = () => {
                 name="name_ru"
                 label="Mahsulot nomi (Rus tili)"
                 placeholder="Mahsulot nomi (Rus tili)"
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                // control={form.control}
-                name="price"
-                label="Sotilish narxi"
-                placeholder="Sotilish narxi"
-                type="number"
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                // control={form.control}
-                value={oldPrice}
-                onChange={(e) => setOldPrice(e.target.value)}
-                name="old_price"
-                label="Eski narxi"
-                placeholder="Eski narxi"
-                type="number"
               />
             </Col>
           </Row>
@@ -666,8 +770,7 @@ const CreateProducts = () => {
                                         (v) => v.value !== value.url
                                       ),
                                     ];
-                                    console.log(attributes[index].values);
-                                    console.log(value);
+
                                     setAttributes([...attributes]);
                                   }}
                                   key={i}
@@ -835,31 +938,97 @@ const CreateProducts = () => {
                     </ListItem>
                   );
                 })}
-                <AntdButton
-                  icon={<FaPlus />}
+                <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "50%",
+                    gap: 10,
                   }}
-                  onClick={() => {
-                    setAttributes([
-                      ...attributes,
-                      {
-                        name_uz: "",
-                        name_ru: "",
-                        type: "TEXT",
-                        values: [],
-                      },
-                    ]);
-                  }}
-                />
+                >
+                  <AntdButton
+                    icon={<FaPlus />}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                    }}
+                    onClick={() => {
+                      setAttributes([
+                        ...attributes,
+                        {
+                          name_uz: "",
+                          name_ru: "",
+                          type: "TEXT",
+                          values: [],
+                        },
+                      ]);
+                    }}
+                  />
+                  <Label>Attribut qo’shish</Label>
+                </div>
               </List>
             </Col>
           </Row>
           {/* here */}
-          <CombinationTable onSave={onSave} attributes={attributes} />
+          {attributes.length > 0 && (
+            <CombinationTable
+              defaultVariant={variants}
+              // isEditing={id ? true : false}
+              onSave={onSave}
+              attributes={attributes}
+            />
+          )}
+          <Row gutter={[16, 8]} style={{ marginTop: 12 }}>
+            <Col span={24} lg={12}>
+              <Input
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                // control={form.control}
+                disabled={attributes.length > 0}
+                name="price"
+                label="Sotilish narxi"
+                placeholder="Sotilish narxi"
+                type="number"
+              />
+            </Col>
+            <Col span={24} lg={12}>
+              <Input
+                // control={form.control}
+                value={oldPrice}
+                disabled={attributes.length > 0}
+                onChange={(e) => setOldPrice(e.target.value)}
+                name="old_price"
+                label="Eski narxi"
+                placeholder="Eski narxi"
+                type="number"
+              />
+            </Col>
+            <Col span={24} lg={12}>
+              <Input
+                value={bodyPrice}
+                onChange={(e) => setBodyPrice(e.target.value)}
+                // control={form.control}
+                disabled={attributes.length > 0}
+                name="price"
+                label="Tan narxi"
+                placeholder="Tan narxi"
+                type="number"
+              />
+            </Col>
+            <Col span={24} lg={12}>
+              <Input
+                // control={form.control}
+                value={amount}
+                disabled={attributes.length > 0}
+                onChange={(e) => setAmount(e.target.value)}
+                name="old_price"
+                label="Miqdori"
+                placeholder="Miqdori"
+                type="number"
+              />
+            </Col>
+          </Row>
           {/* finish */}
           {is_stock && (
             <Row>

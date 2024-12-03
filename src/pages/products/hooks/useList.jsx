@@ -272,7 +272,7 @@ export const useList = () => {
       ),
     },
   ];
-
+  console.log(products.data);
   return {
     data: products.data,
     count: products.count,

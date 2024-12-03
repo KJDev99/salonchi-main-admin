@@ -59,6 +59,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
 
   // Initialize or update combinations and default values
   useEffect(() => {
+    console.log("CombinationTable", defaultVariant);
     const newCombinations = calculateCombinations();
     setCombinations(newCombinations);
 
@@ -100,7 +101,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
     setPrices(initialPrices);
     setOldPrices(initialOldPrices);
     setBodyPrices(initialBodyPrices);
-  }, [attributes, defaultVariant]);
+  }, [attributes]);
 
   // Generate variants whenever state changes
   useEffect(() => {

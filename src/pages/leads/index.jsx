@@ -22,9 +22,9 @@ import { ROUTER } from "@/constants/router";
 import { DeleteFilled, EyeFilled, PlusCircleFilled } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { request } from "@/shared/api/request";
-import { PaginationTen } from "@/components/paginationten";
 import { LoaderWrapper } from "@/components/spinner/style";
 import { ButtonElement } from "@/components/button/style";
+import { Pagination } from "@/components/pagination";
 
 // import { Pagination } from "@/components/pagination";
 // import { Pagination } from "@/components/pagination";
@@ -604,10 +604,10 @@ const Leads = () => {
               <LoaderWrapper />
             )}
           </tbody>
-          {/* <Pagination total={count} params={params} setParams={setParams} /> */}
         </Table>
       )}
-      <PaginationTen total={count} params={params} setParams={setParams} />
+      <Pagination total={count} params={params} setParams={setParams} />
+      {/* <PaginationTen total={count} params={params} setParams={setParams} /> */}
       {deleteModalOpen && (
         <Modal>
           <ModalContent>

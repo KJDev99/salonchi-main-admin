@@ -144,7 +144,16 @@ export const useList = () => {
     },
     {
       title: "Telefon raqami",
-      dataIndex: "phone",
+      render: (row) => (
+        <a href={`tel:${row.phone}`}>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Phone_Shiny_Icon.svg"
+            width={22}
+            alt="message-icon"
+          />
+          {row?.phone}
+        </a>
+      ),
       key: "phone",
     },
     {

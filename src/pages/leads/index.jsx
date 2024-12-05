@@ -98,9 +98,7 @@ const Leads = () => {
     fetchProducts("");
     fetchProductsWithLead();
   }, []);
-  useEffect(() => {
-    // fetchProducts(selectedProductId, selectedStatus);
-  }, [selectedStatus]);
+
   const onChange = (value) => {
     setSelectedProductId(value);
   };
@@ -144,6 +142,13 @@ const Leads = () => {
       });
     }
   };
+
+  useEffect(() => {
+    let sessionPageData = sessionStorage.getItem("sessionPageData");
+    if (sessionPageData) {
+      setParams({ ...params, page: sessionPageData });
+    }
+  }, [params.page]);
   useEffect(() => {
     const fetchLeads = async () => {
       try {
@@ -396,6 +401,20 @@ const Leads = () => {
       console.log(err);
     }
   };
+  useEffect(() => {
+    sessionStorage.setItem("sessionPage", params.page);
+    let sessionStatus = sessionStorage.getItem("setSelectedStatus");
+    let sessionPageData = sessionStorage.getItem("sessionPageData");
+    if (sessionStatus) {
+      setParams({ ...params, page: sessionPageData });
+      setSelectedStatus(sessionStatus);
+      setTimeout(() => {
+        sessionStorage.removeItem("sessionPageData");
+      }, 100);
+    }
+    sessionStorage.removeItem("setSelectedStatus");
+  }, [params.page]);
+
   return (
     <Wrapper>
       <Header>
@@ -607,7 +626,7 @@ const Leads = () => {
         </Table>
       )}
       <Pagination total={count} params={params} setParams={setParams} />
-      {/* <PaginationTen total={count} params={params} setParams={setParams} /> */}
+
       {deleteModalOpen && (
         <Modal>
           <ModalContent>

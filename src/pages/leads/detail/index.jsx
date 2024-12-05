@@ -49,12 +49,19 @@ const LeadWaiting = () => {
 
         setData(response.data);
         console.log(response.data, "text/plain");
+        sessionStorage.setItem("setSelectedStatus", response.data.status);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
     };
+
+    let sessionPage = sessionStorage.getItem("sessionPage");
+    if (sessionPage) {
+      sessionStorage.setItem("sessionPageData", sessionPage);
+      sessionStorage.removeItem("sessionPage");
+    }
 
     fetchData();
   }, [id]);

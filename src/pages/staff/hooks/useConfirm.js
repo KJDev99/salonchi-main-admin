@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 import { formSchema } from "../crud/form.schema";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createEmployee, updateEmployee, updateForEmployee } from "@/shared/modules/roles";
+import {
+  createEmployee,
+  updateEmployee,
+  updateForEmployee,
+} from "@/shared/modules/roles";
 import { useNavigate, useParams } from "react-router-dom";
 import { notification } from "antd";
 
@@ -17,24 +21,27 @@ export const useConfirm = () => {
   });
   const [value, setValue] = useState("Ishchi");
 
-  const { mutate, isLoading } = useMutation((data) =>  id ? updateEmployee(id,data): createEmployee(data), {
-    onSuccess: () => {
-      api["success"]({
-        message: "Success",
-        description: "Hodim muvaffaqiyatli yaratildi",
-      });
-      queryClient.invalidateQueries({ queryKey: ["get-role-list"] });
-      navigate("/admin/staff");
-    },
-    onError: (err) => {
-      console.log(err, "errr");
-      api["error"]({
-        message: "Error",
-        description:
-          err?.response?.data?.phone && err?.response?.data?.phone[0],
-      });
-    },
-  });
+  const { mutate, isLoading } = useMutation(
+    (data) => (id ? updateEmployee(id, data) : createEmployee(data)),
+    {
+      onSuccess: () => {
+        api["success"]({
+          message: "Success",
+          description: "Hodim muvaffaqiyatli yaratildi",
+        });
+        queryClient.invalidateQueries({ queryKey: ["get-role-list"] });
+        navigate("/admin/staff");
+      },
+      onError: (err) => {
+        console.log(err, "errr");
+        api["error"]({
+          message: "Error",
+          description:
+            err?.response?.data?.phone && err?.response?.data?.phone[0],
+        });
+      },
+    }
+  );
   useQuery({
     queryKey: ["get-upsete-staff-detail"],
     queryFn: () => updateForEmployee(id),
@@ -53,6 +60,7 @@ export const useConfirm = () => {
       phone: data?.phone.replaceAll(" ", ""),
       password: data.password,
       password2: data.password2,
+      pbx_code: data?.pbx_code,
       is_worker: value === "Ishchi" ? true : false,
       is_stock: value === "Omborchi" ? true : false,
     };

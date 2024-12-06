@@ -72,10 +72,19 @@ const StaffCrud = () => {
             </p>
             <Segmented options={roles} value={value} onChange={setValue} />
           </Col>
+          <Col span={24} lg={12}>
+            <Input
+              control={form.control}
+              name={"pbx_code"}
+              label="Operator pbx kod"
+              placeholder="Operator pbx kod"
+              type="number"
+            />
+          </Col>
         </Row>
         <Footer>
           <Button
-            name={id ?"Hodim taxrirlash": "Hodim yaratish"}
+            name={id ? "Hodim taxrirlash" : "Hodim yaratish"}
             className="category-btn"
             type="submit"
           />

@@ -136,10 +136,7 @@ export const useList = () => {
           >
             <DeleteOutlined />
           </Button>
-          <Button
-            className="edit-btn"
-            // onClick={() => handleEdit(record?.id)}
-          >
+          <Button className="edit-btn" onClick={() => handleEdit(record?.id)}>
             <EditOutlined />
           </Button>
         </ActionWrapper>

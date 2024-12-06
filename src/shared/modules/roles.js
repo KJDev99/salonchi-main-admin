@@ -15,9 +15,10 @@ export const deleteEmployee = (id) =>
 
 export const updateForEmployee = (id) => request(`admin/role/detail/${id}`);
 
-export const updateEmployee = (id, data) =>
+export const updateEmployee = (id, data) => {
   request.patch(`admin/role/update/${id}`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+};

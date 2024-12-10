@@ -340,6 +340,8 @@ const CreateProducts = () => {
       description_ru === "" ||
       selectedCategory === "" ||
       images.length === 0 ||
+      price === 0 ||
+      oldPrice === 0 ||
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
       attributes.some((item) => item.name_uz.length === 0) ||
@@ -985,7 +987,6 @@ const CreateProducts = () => {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 // control={form.control}
-                disabled={attributes.length > 0}
                 name="price"
                 label="Sotilish narxi"
                 placeholder="Sotilish narxi"
@@ -996,7 +997,6 @@ const CreateProducts = () => {
               <Input
                 // control={form.control}
                 value={oldPrice}
-                disabled={attributes.length > 0}
                 onChange={(e) => setOldPrice(e.target.value)}
                 name="old_price"
                 label="Eski narxi"

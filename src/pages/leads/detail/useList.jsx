@@ -127,7 +127,10 @@ export const useList = () => {
       title: "Aloqa vaqti",
       key: "row",
       render: (row) => (
-        <Text style={{ textAlign: "center" }}> {row?.dialog_duration} min</Text>
+        <Text style={{ textAlign: "center" }}>
+          {" "}
+          {row?.dialog_duration} sekund
+        </Text>
       ),
     },
     // {

@@ -346,7 +346,6 @@ const CreateProducts = () => {
       attributes.some((item) => item.name_ru.length === 0) ||
       attributes.some((item) => item.name_uz.length === 0) ||
       (variants.length < number && attributes.length > 0) ||
-      (attributes.length === 0 && !oldPrice) ||
       (attributes.length === 0 && !bodyPrice) ||
       (attributes.length === 0 && !amount) ||
       (attributes.length === 0 && !price)

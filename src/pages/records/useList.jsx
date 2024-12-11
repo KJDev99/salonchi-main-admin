@@ -3,13 +3,26 @@ import { getRecords } from "@/shared/modules/roles";
 import { Text } from "@/styles/global";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactAudioPlayer from "react-audio-player";
 import { useLocation } from "react-router-dom";
 import image1 from "@/assets/111.png";
 import image2 from "@/assets/222.png";
 import { Image } from "antd";
+import { useForm } from "react-hook-form";
 export const useList = () => {
+  const form = useForm();
+
+  const dates = {
+    from_date:
+      form.watch("filter") == undefined
+        ? null
+        : dayjs(form.watch("filter")?.[0]).format("YYYY-MM-DD"),
+    to_date:
+      form.watch("filter") === undefined
+        ? null
+        : dayjs(form.watch("filter")?.[1]).format("YYYY-MM-DD"),
+  };
   const { search } = useLocation();
   const initial_params = new URLSearchParams(search);
   const [params, setParams] = useState({
@@ -18,6 +31,12 @@ export const useList = () => {
       ? Number(initial_params.get("limit"))
       : 10,
   });
+  useEffect(() => {
+    setParams({
+      page: 1,
+      limit: 10,
+    });
+  }, [form.watch("search")]);
   // nimadir
   const {
     data: records = {
@@ -26,8 +45,8 @@ export const useList = () => {
     },
     isLoading,
   } = useQuery({
-    queryKey: ["get-role-list", params],
-    queryFn: () => getRecords(params),
+    queryKey: ["get-role-list", params, dates, form.watch("search")],
+    queryFn: () => getRecords(params, dates, form.watch("search")),
     select: (res) => {
       return { data: res?.data?.results, count: res?.data?.count };
     },
@@ -69,11 +88,14 @@ export const useList = () => {
     {
       title: "T/r",
       key: "row",
-      render: (id, record, index) => (
-        <p style={{ textAlign: "center" }}>
-          {(params.page - 1) * params.limit + index + 1}
-        </p>
-      ),
+      render: (id, record, index) => {
+        console.log(params.limit);
+        return (
+          <p style={{ textAlign: "center" }}>
+            {(params.page - 1) * params.limit + index + 1}
+          </p>
+        );
+      },
     },
     {
       title: "Operator raqami",
@@ -159,5 +181,6 @@ export const useList = () => {
     count: records.count,
     params,
     setParams,
+    form,
   };
 };

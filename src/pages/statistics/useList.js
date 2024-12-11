@@ -54,8 +54,6 @@ export const useList = () => {
     },
   });
 
-  console.log(piechart, "piechart");
-
   const {
     data: graph = {
       data: [],

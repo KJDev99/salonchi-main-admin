@@ -16,6 +16,11 @@ export const Wrapper = styled("div")`
       color: #fff !important;
     }
   }
+  .filter {
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+  }
 `;
 
 export const Header = styled("div")`

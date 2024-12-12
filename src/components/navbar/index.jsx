@@ -24,6 +24,7 @@ export const Navbar = () => {
     select: (res) => res?.data,
     enabled: worker,
   });
+
   return (
     <Wrapper>
       {/* {admin && (

@@ -86,30 +86,9 @@ export const useList = () => {
       key: "firstname",
     },
     {
-      title: "Ish haqqi (donasiga)",
-      key: "row",
-      render: (row) => (
-        <>
-          <NumberFormat
-            value={row?.detail?.salary === null ? 0 : row?.detail?.salary}
-          />{" "}
-          so`m
-        </>
-      ),
-    },
-    {
       title: "Lavozimi",
       key: "row",
       render: (row) => <Tag>{row.is_worker ? "ISHCHI" : "OMBORCHI"}</Tag>,
-    },
-    {
-      title: "Sotilganlar",
-      key: "row",
-      render: (row) => (
-        <Text className="accept-text">
-          {row?.detail?.orders_count?.sold} ta
-        </Text>
-      ),
     },
     {
       title: "Telefon raqami",
@@ -117,12 +96,29 @@ export const useList = () => {
       key: "phone",
     },
     {
-      title: "Bekor qilinganlar",
+      title: "Ish haqqi (donasiga)",
       key: "row",
       render: (row) => (
-        <Text className="cancelled-text">
-          {row?.detail?.orders_count?.cancelled} ta
-        </Text>
+        <>
+          <NumberFormat
+            value={row?.detail?.salary === null ? 0 : row?.detail?.salary}
+          />{" "}
+          so&apos;m
+        </>
+      ),
+    },
+    {
+      title: "Gaplashgan",
+      key: "row",
+      render: (row) => (
+        <Text className="accept-text">{row?.detail?.detail?.count} ta</Text>
+      ),
+    },
+    {
+      title: "Bonus",
+      key: "row",
+      render: (row) => (
+        <Text>{row?.detail?.detail?.total_salary} so&apos;m</Text>
       ),
     },
     {

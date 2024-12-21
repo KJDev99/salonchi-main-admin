@@ -341,7 +341,6 @@ const CreateProducts = () => {
       selectedCategory === "" ||
       images.length === 0 ||
       price === 0 ||
-      oldPrice === 0 ||
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
       attributes.some((item) => item.name_uz.length === 0) ||
@@ -354,9 +353,7 @@ const CreateProducts = () => {
         message: "Error",
         description: "Buyurtma ma'lumotlari to'liq kiritilmadi",
       });
-      console.log(data);
     } else {
-      console.log("sent");
       if (id) {
         const res = await request.put(`admin/product/${id}/update`, data);
         console.log(res, "ress");

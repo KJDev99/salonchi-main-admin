@@ -110,18 +110,37 @@ const AcceptedOrderDetail = () => {
                 <Fragment key={v.id}>
                   <li>
                     <span>{i + 1}. Maxsulot rasmi</span>
-                    {v?.details?.photo?.length > 0 ? (
-                      <Image
-                        src={
-                          v?.details?.attributes[0]?.value[0].value ||
-                          v?.details?.photo
-                        }
-                        alt="media"
-                        className="product-image"
-                      />
-                    ) : (
-                      <span>Rasm mavjud emas</span>
-                    )}
+                    <div>
+                      {v?.product?.photo?.length > 0 ? (
+                        <Image
+                          src={
+                            v?.details?.attributes[0]?.value[0].value.includes(
+                              "http"
+                            ) || v?.product?.photo
+                          }
+                          alt="media"
+                          className="product-image"
+                        />
+                      ) : (
+                        <span>Rasm mavjud emas</span>
+                      )}
+                      {v?.details?.attributes[0].type === "TEXT" ? (
+                        <p
+                          style={{
+                            marginTop: "10px",
+                            fontSize: "16px",
+                            textAlign: "center",
+                            backgroundColor: "#dfdfdf",
+                            borderRadius: "5px",
+                          }}
+                          className="comment"
+                        >
+                          {v?.details?.attributes[0]?.value[0].value}
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </li>
                   <li>
                     <span> Maxsulot nomi</span>

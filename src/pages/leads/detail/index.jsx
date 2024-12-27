@@ -123,16 +123,38 @@ const LeadWaiting = () => {
           <ol className="product-list">
             <Fragment>
               <li>
-                <span> Maxsulot rasmi</span>
-                {data?.product?.photo?.length > 0 ? (
-                  <Image
-                    src={data?.product?.photo}
-                    alt="media"
-                    className="product-image"
-                  />
-                ) : (
-                  <span>Rasm mavjud emas</span>
-                )}
+                <span>Maxsulot rasmi</span>
+                <div>
+                  {data?.product?.photo?.length > 0 ? (
+                    <Image
+                      src={
+                        data?.details?.attributes[0]?.value[0].value.includes(
+                          "http"
+                        ) || data?.product?.photo
+                      }
+                      alt="media"
+                      className="product-image"
+                    />
+                  ) : (
+                    <span>Rasm mavjud emas</span>
+                  )}
+                  {data?.details?.attributes[0].type === "TEXT" ? (
+                    <p
+                      style={{
+                        marginTop: "10px",
+                        fontSize: "16px",
+                        textAlign: "center",
+                        backgroundColor: "#dfdfdf",
+                        borderRadius: "5px",
+                      }}
+                      className="comment"
+                    >
+                      {data?.details?.attributes[0]?.value[0].value}
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </li>
               <li>
                 <span> Maxsulot nomi</span>

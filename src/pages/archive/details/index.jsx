@@ -90,6 +90,16 @@ const ArchiveOrderDetails = () => {
             )}
           </ListItem>
           <ListItem>
+            <span>Operator izohi</span>
+            <span className="comment">
+              {data?.admin_comments?.length > 0
+                ? data.admin_comments.map((e) => {
+                    return e.text;
+                  })
+                : "Izohlar yo'q"}
+            </span>
+          </ListItem>
+          <ListItem>
             <span>Jami</span> <span>{data?.amount} so`m</span>
           </ListItem>{" "}
           <ListItem>

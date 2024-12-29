@@ -125,7 +125,7 @@ const OrderOntheWayDetails = () => {
                       ) : (
                         <span>Rasm mavjud emas</span>
                       )}
-                      {v?.details?.attributes[0].type === "TEXT" ? (
+                      {v?.details?.attributes[0]?.type === "TEXT" ? (
                         <p
                           style={{
                             marginTop: "10px",

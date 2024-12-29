@@ -98,6 +98,16 @@ const OrderOntheWayDetails = () => {
               {data?.comment === "" ? "Izohlar yo'q" : data?.comment}
             </span>
           </ListItem>
+          <ListItem>
+            <span>Operator izohi</span>
+            <span className="comment">
+              {data?.admin_comments?.length > 0
+                ? data.admin_comments.map((e) => {
+                    return e.text;
+                  })
+                : "Izohlar yo'q"}
+            </span>
+          </ListItem>
           {data?.order_items?.length > 0 && (
             <ListItem className="product-list-item">
               <span>

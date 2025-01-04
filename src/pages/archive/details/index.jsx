@@ -127,7 +127,9 @@ const ArchiveOrderDetails = () => {
                           src={
                             v?.details?.attributes[0]?.value[0].value.includes(
                               "http"
-                            ) || v?.product?.photo
+                            )
+                              ? v?.details?.attributes[0]?.value[0].value
+                              : v?.product?.photo
                           }
                           alt="media"
                           className="product-image"
@@ -135,7 +137,28 @@ const ArchiveOrderDetails = () => {
                       ) : (
                         <span>Rasm mavjud emas</span>
                       )}
-                      {v?.details?.attributes[0]?.type === "TEXT" ? (
+                      {v?.details?.attributes.length > 0 &&
+                        v?.details?.attributes.map((e) => {
+                          if (e.type === "TEXT") {
+                            return (
+                              <p
+                                key={e.value.id}
+                                style={{
+                                  marginTop: "10px",
+                                  fontSize: "16px",
+                                  textAlign: "center",
+                                  backgroundColor: "#dfdfdf",
+                                  borderRadius: "5px",
+                                  padding: "5px",
+                                }}
+                                className="comment"
+                              >
+                                {e.name_uz}: {e.value[0].value}
+                              </p>
+                            );
+                          }
+                        })}
+                      {/* {v?.details?.attributes[0]?.type === "TEXT" ? (
                         <p
                           style={{
                             marginTop: "10px",
@@ -150,7 +173,7 @@ const ArchiveOrderDetails = () => {
                         </p>
                       ) : (
                         ""
-                      )}
+                      )} */}
                     </div>
                   </li>
                   <li>

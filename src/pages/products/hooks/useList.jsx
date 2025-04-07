@@ -19,6 +19,8 @@ import { useState } from "react";
 import { getUser } from "@/utils/user";
 import { Input } from "@/components/input";
 import { useForm } from "react-hook-form";
+import Switcher from "@/components/switcher/index";
+import { request } from "@/shared/api/request";
 
 const { confirm } = Modal;
 
@@ -49,7 +51,6 @@ export const useList = () => {
     queryKey: [REACT_QUERY_KEYS.GET_PRODUCT_LIST, params],
     queryFn: () => getProducts(params),
     select: (res) => {
-      console.log(res);
       return {
         count: res?.data?.count,
         data: res?.data?.results?.map(({ ...rest }, i) => ({
@@ -122,6 +123,15 @@ export const useList = () => {
     });
   };
 
+  const handleStatus = async (id, status) => {
+    try {
+      await request.patch(`admin/product/${id}/update`, { is_active: !status });
+      refetch();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const defaultColumns = [
     {
       title: "T/r",
@@ -144,12 +154,27 @@ export const useList = () => {
         />
       ),
     },
+    // {
+    //   title: "Category",
+    //   dataIndex: "category",
+    //   key: "category",
+    //   render: (category) => <p>{category?.name_uz}</p>,
+    // },
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      render: (category) => <p>{category?.name_uz}</p>,
+      title: "Mahsulot nomi",
+      dataIndex: "name_uz",
+      key: "name_uz",
+      render: (name_uz) => <p style={{ maxWidth: "200px" }}>{name_uz}</p>,
     },
+    {
+      title: "Billz",
+      dataIndex: "have_billz",
+      key: "have_billz",
+      render: (have_billz) => (
+        <p>{have_billz ? "Billz mavjud" : "Billz mavjud emas"}</p>
+      ),
+    },
+
     {
       title: "Price",
       dataIndex: "price",
@@ -164,23 +189,6 @@ export const useList = () => {
     //     <p>{sale_price === null ? 0 : sale_price} so`m</p>
     //   ),
     // },
-    {
-      title: "Action",
-      key: "action",
-      render: (row) => (
-        <ActionWrapper size="middle">
-          <Button
-            className="edit-btn"
-            onClick={() => navigate(`${ROUTER.EDIT}/${row.id}`)}
-          >
-            <EditOutlined />
-          </Button>
-          <Button className="delete-btn" onClick={() => handleDelete(row.id)}>
-            <DeleteOutlined />
-          </Button>
-        </ActionWrapper>
-      ),
-    },
     {
       title: "Referal link",
       dataIndex: "url",
@@ -202,6 +210,35 @@ export const useList = () => {
             </Button>
           }
         </p>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active",
+      key: "is_active",
+      render: (is_active, row) => (
+        <Switcher
+          isActive={row.is_active}
+          onChange={(value) => handleStatus(row.id, is_active)}
+          text="&nbsp;"
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (row) => (
+        <ActionWrapper size="middle">
+          <Button
+            className="edit-btn"
+            onClick={() => navigate(`${ROUTER.EDIT}/${row.id}`)}
+          >
+            <EditOutlined />
+          </Button>
+          <Button className="delete-btn" onClick={() => handleDelete(row.id)}>
+            <DeleteOutlined />
+          </Button>
+        </ActionWrapper>
       ),
     },
   ];
@@ -272,7 +309,6 @@ export const useList = () => {
       ),
     },
   ];
-  console.log(products.data);
   return {
     data: products.data,
     count: products.count,

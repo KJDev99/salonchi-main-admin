@@ -6,6 +6,9 @@ import { ROUTER } from "@/constants/router";
 import { Pagination } from "@/components/pagination";
 import { CustomCheckboxTable } from "@/components/checkbox-table";
 import { CustomTable } from "@/components/table";
+import { request } from "@/shared/api/request";
+import { notification } from "antd";
+import { toast } from "react-toastify";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -22,15 +25,33 @@ const Products = () => {
     selectedRowKeys,
     setSelectedRowKeys,
   } = useList();
+
+  const handleMerge = async () => {
+    try {
+      const res = await request.get("billz/integration");
+      if (res.status === 200) {
+        toast.success("Maxsulotlar birlashtirildi", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Wrapper>
         <Header>
-          <Title>Maxsulotlar</Title>
-          <Button
-            name="Maxsulot yaratish"
-            onClick={() => navigate(ROUTER.CREATE)}
-          />
+          <div>
+            <Title>Maxsulotlar</Title>
+            <Button
+              name="Maxsulot yaratish"
+              onClick={() => navigate(ROUTER.CREATE)}
+            />
+          </div>
+          <Button name="Birlashtirish" onClick={handleMerge} />
         </Header>
         {isSuperUser ? (
           <CustomCheckboxTable

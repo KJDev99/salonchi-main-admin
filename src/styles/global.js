@@ -25,9 +25,9 @@ export const Wrapper = styled("div")`
 
 export const Header = styled("div")`
   display: flex;
-  /* align-items: center; */
+  align-items: flex-end;
   justify-content: space-between;
-  flex-direction: column;
+  /* flex-direction: column; */
   gap: 0.5rem;
   margin: 0 0 32px;
   width: 100%;

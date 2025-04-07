@@ -5,6 +5,11 @@ import checker from "vite-plugin-checker";
 import jsconfigPaths from "vite-jsconfig-paths";
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      external: ['react-toastify/dist/ReactToastify.css'], // CSS faylni tashqi resurs sifatida belgilash
+    },
+  },
   server: {
     port: 3002,
     open: true,

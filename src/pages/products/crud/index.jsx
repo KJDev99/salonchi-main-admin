@@ -44,6 +44,7 @@ const CreateProducts = () => {
   const [images, setImages] = useState([]);
   const [videoLink, setVideoLink] = useState(null);
   const [attributes, setAttributes] = useState([]);
+  // console.log(attributes, "attributes");
 
   const [imageLabel, setImageLabel] = useState("");
   const [imagesAtt, setImagesAtt] = useState([]);
@@ -69,7 +70,8 @@ const CreateProducts = () => {
   const [subCategoryList, setSubCategoryList] = useState();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [variants, setVariants] = useState([]);
-  // console.log(variants, "variants");
+  const [active, setActive] = useState(0);
+  const [selectedImages, setSelectedImages] = useState([]);
 
   const {
     form,
@@ -114,87 +116,6 @@ const CreateProducts = () => {
     setSubCategoryList(response.data);
   };
   const { id, detailLoading } = useReset({ form, setFileList, setVideoFile });
-
-  // useEffect(() => {
-  //   getCategoryList();
-  //   if (id) {
-  //     getSubCategoryList(category);
-  //   } else {
-  //     getSubCategoryList(1);
-  //   }
-  //   const getData = async () => {
-  //     console.log("aaaaaa");
-  //     if (id) {
-  //       const response = await request.get(`admin/product/${id}/detail`);
-  //       if (response.status === 200) {
-  //         const {
-  //           name_uz,
-  //           name_ru,
-  //           desc_uz,
-  //           desc_ru,
-  //           media,
-  //           attributes,
-  //           is_new,
-  //           is_recommend,
-  //           is_cheap,
-  //           price,
-  //           old_price,
-  //           body_price,
-  //           count,
-  //           category,
-  //           variants,
-  //         } = response.data;
-  //         setNameUz(name_uz);
-  //         setNameRu(name_ru);
-  //         setDescriptionUz(desc_uz);
-  //         setDescriptionRu(desc_ru);
-  //         setAttributes(attributes);
-  //         setIsCheap(is_cheap);
-  //         setIsNew(is_new);
-  //         setIsRecommend(is_recommend);
-  //         setPrice(price);
-  //         setOldPrice(old_price);
-  //         setBodyPrice(body_price);
-  //         setAmount(count);
-  //         setCategory(category.id);
-  //         getSubCategoryList(category.id);
-  //         setSelectedCategory(category.sub.id);
-  //         // setVariants(variants);
-
-  //         const arr = [];
-  //         media.forEach((item) => {
-  //           if (item.file_type === "video") {
-  //             setVideoLink(item.file);
-  //           } else {
-  //             arr.push(item.file);
-  //           }
-  //         });
-
-  //         setImages(arr);
-  //         const attr = [];
-  //         attributes.forEach((item) => {
-  //           if (item.type === "IMAGE") {
-  //             const arr = item.values.map((v) => {
-  //               return {
-  //                 url: v.value,
-  //                 label: v.title,
-  //               };
-  //             });
-  //             setImagesAtt([...arr]);
-  //           }
-  //           attr.push({
-  //             type: item.type,
-  //             name_uz: item.name_uz,
-  //             name_ru: item.name_ru,
-  //             values: [...item.values],
-  //           });
-  //         });
-  //         setAttributes(attr);
-  //       }
-  //     }
-  //   };
-  //   getData();
-  // }, [id]);
   const onSave = useCallback((variantss) => {
     if (variantss.length > 0) {
       setVariants((prevVariants) => {
@@ -206,7 +127,6 @@ const CreateProducts = () => {
     }
   }, []);
   const getData = useCallback(async () => {
-    console.log("aaaaaa");
     if (id) {
       try {
         const response = await request.get(`admin/product/${id}/detail`);
@@ -268,6 +188,7 @@ const CreateProducts = () => {
               setImagesAtt([...imgArr]);
             }
             attr.push({
+              id: item.id,
               type: item.type,
               name_uz: item.name_uz,
               name_ru: item.name_ru,
@@ -295,22 +216,28 @@ const CreateProducts = () => {
 
   useEffect(() => {
     getCategoryList();
+    getData();
+  }, [id, getData]);
 
+  useEffect(() => {
     if (id) {
       getSubCategoryList(category);
     } else {
-      getSubCategoryList(1);
+      getSubCategoryList(category);
     }
+  }, [category, id]);
 
-    getData();
-  }, [id, getData, category]);
   useEffect(() => {
-    getSubCategoryList(category);
-  }, [category]);
+    if (id) {
+      // Agar id mavjud bo'lsa, category ni yangilash
+      const fetchCategory = async () => {
+        const response = await request.get(`admin/product/${id}/detail`);
+        setCategory(response.data.category.id);
+      };
+      fetchCategory();
+    }
+  }, [id]);
   const handleSubmit = async () => {
-    // console.log(categoryList, "categoryList");
-    // console.log(selectedCategory, "selectedCategory");
-    // console.log(subCategoryList, "subCategoryList");
     const arr = [...images];
     if (videoLink) arr.push(videoLink);
     const number = attributes.reduce((acc, attr) => {
@@ -326,7 +253,7 @@ const CreateProducts = () => {
       old_price: +oldPrice || 0,
       body_price: +bodyPrice || 0,
       count: +amount || 0,
-      attributes,
+      attributes: attributes,
       is_recommend: isRecommend,
       is_new: isNew,
       is_cheap: isCheap,
@@ -356,7 +283,6 @@ const CreateProducts = () => {
     } else {
       if (id) {
         const res = await request.put(`admin/product/${id}/update`, data);
-        console.log(res, "ress");
         if (res.status === 200) {
           api["success"]({
             message: "Success",
@@ -365,8 +291,6 @@ const CreateProducts = () => {
           setImages([]);
           setAttributes([]);
           setVideoLink(null);
-          // setFileList([]);
-          // setCategory(1);
           setNameUz("");
           setNameRu("");
           setDescriptionUz("");
@@ -392,8 +316,6 @@ const CreateProducts = () => {
           setImages([]);
           setAttributes([]);
           setVideoLink(null);
-          // setFileList([]);
-          // setCategory(1);
           setNameUz("");
           setNameRu("");
           setDescriptionUz("");
@@ -416,6 +338,7 @@ const CreateProducts = () => {
       }
     }
   };
+
   const types = [
     { label: "TEXT", value: "TEXT" },
     { label: "IMAGE", value: "IMAGE" },
@@ -442,10 +365,7 @@ const CreateProducts = () => {
                 {images.length > 0 &&
                   images.map((image, index) => (
                     <div className={styles.imageItem} key={index}>
-                      <p
-                        className={styles.delete}
-                        // style={{ backgroundColor: "white" }}
-                      >
+                      <p className={styles.delete}>
                         <DeleteFilled
                           color="red"
                           background="red"
@@ -498,7 +418,6 @@ const CreateProducts = () => {
                   ></video>
                   <CloseOutlined
                     onClick={() => {
-                      // setUrl(null);
                       setVideoLink(null);
                     }}
                     className="icon"
@@ -530,14 +449,12 @@ const CreateProducts = () => {
                   />
                 </>
               )}
-              {/* <UploadVideo setVideoFile={setVideoFile} videoFile={videoFile} /> */}
-              {/* <Upload fileList={fileList} setFileList={setFileList} /> */}
             </Col>
             <Col span={24} lg={12}>
               <Input
                 value={name_uz}
+                disabled
                 onChange={(e) => setNameUz(e.target.value)}
-                // control={form.control}
                 name="name_uz"
                 label="Mahsulot nomi (O’zbek tili)"
                 placeholder="Mahsulot nomi (O’zbek tili)"
@@ -547,7 +464,6 @@ const CreateProducts = () => {
               <Input
                 value={name_ru}
                 onChange={(e) => setNameRu(e.target.value)}
-                // control={form.control}
                 name="name_ru"
                 label="Mahsulot nomi (Rus tili)"
                 placeholder="Mahsulot nomi (Rus tili)"
@@ -562,7 +478,7 @@ const CreateProducts = () => {
                 onChange={(e) => setDescriptionUz(e)}
                 placeholder="Description - tasnif (O’zbek tili)"
                 theme="snow"
-                rows={5}
+                rows={1}
               />
             </Col>
             <Col span={24} lg={12}>
@@ -580,7 +496,6 @@ const CreateProducts = () => {
                 <Col span={24} lg={12}>
                   <AntdSelect
                     style={{ width: "100%" }}
-                    // control={form.control}
                     onChange={(e) => setCategory(e)}
                     value={category}
                     name="category"
@@ -600,7 +515,6 @@ const CreateProducts = () => {
                     label="SubCategoriyalar"
                     placeholder="SubCategoriyalar"
                     value={selectedCategory}
-                    // value={selectedCategory}
                     options={
                       subCategoryList && subCategoryList.length > 0
                         ? subCategoryList.map((item) => ({
@@ -617,7 +531,6 @@ const CreateProducts = () => {
                 <Col span={24} lg={12}>
                   <AntdSelect
                     style={{ width: "100%" }}
-                    // control={form.control}
                     onChange={(e) => setCategory(e)}
                     name="category"
                     label="Kategoriyalar"
@@ -635,7 +548,6 @@ const CreateProducts = () => {
                     name="subCategory"
                     label="SubCategoriyalar"
                     placeholder="SubCategoriyalar"
-                    // value={selectedCategory}
                     options={
                       subCategoryList && subCategoryList.length > 0
                         ? subCategoryList.map((item) => ({
@@ -668,6 +580,7 @@ const CreateProducts = () => {
                         <Col span={24} lg={12}>
                           <Label>Attribute nomi uz</Label>
                           <Input
+                            disabled
                             placeholder="Attribut nomi uz"
                             value={item?.name_uz}
                             onChange={(e) => {
@@ -689,28 +602,6 @@ const CreateProducts = () => {
                           />
                         </Col>
                       </Row>
-                      {/* <Input
-                        control={form.control}
-                        value={item?.name_ru}
-                        onChange={(e) => {
-                          const newItem = { ...item, name_ru: e.target.value };
-                          attributes[index] = newItem;
-                        }}
-                        name={`attributes.${index}.name_ru`}
-                        placeholder="Attribut nomi ru"
-                        label="Attribut nomi ru"
-                      /> */}
-                      {/* <Input
-                        value={item?.name_ru}
-                        onChange={(e) => {
-                          attributes[index].name_ru = e.target.value;
-                          setAttributes([...attributes]);
-                        }}
-                        control={form.control}
-                        name={`attributes.${index}.name_uz`}
-                        placeholder="Attribut nomi uz"
-                        label="Attribut nomi uz"
-                      /> */}
                       <Col style={{ padding: 0 }} span={24} lg={12}>
                         <Label>Attribute turi</Label>
                         <AntdSelect
@@ -723,83 +614,176 @@ const CreateProducts = () => {
                           }}
                         />
                         {item.type === "TEXT" && (
-                          <AntdSelect
-                            mode="tags"
-                            style={{ width: "100%", marginBottom: 10 }}
-                            defaultValue={item?.values}
-                            onChange={(value) => {
-                              if (item.type === "TEXT") {
-                                const valuee = [];
-                                value.map((v) => {
-                                  valuee.push({
-                                    value: v,
-                                    title: v,
-                                  });
-                                });
-                                attributes[index].values = [...valuee];
-                                setAttributes([...attributes]);
-                              }
-                              // const arr = [...item.values, value];
-                              // attributes[index].values = [...arr];
-                              // setAttributes([...attributes]);
-                            }}
-                            options={[]}
-                          />
-                        )}
-                        {imagesAtt.length > 0 && item.type === "IMAGE" && (
                           <div
                             style={{
                               display: "flex",
-                              flexDirection: "row",
-                              gap: 10,
+                              items: "center",
+                              gap: "10px",
                             }}
                           >
-                            {imagesAtt.map((value, i) => {
+                            {item.values.map((value) => {
                               return (
                                 <div
-                                  onClick={() => {
-                                    setImagesAtt(
-                                      imagesAtt.filter(
-                                        (v) => v.url !== value.url
-                                      )
-                                    );
-                                    attributes[index].values = [
-                                      ...attributes[index].values.filter(
-                                        (v) => v.value !== value.url
-                                      ),
-                                    ];
-
-                                    setAttributes([...attributes]);
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    padding: "5px 10px",
+                                    border: "1px solid #ccc",
+                                    borderRadius: "5px",
                                   }}
-                                  key={i}
-                                  className={`${styles.attributeImages} ${styles.imageItem}`}
                                 >
-                                  <p style={{ margin: 0 }}>{value.label}</p>
-                                  <p className={styles.delete}>
-                                    <DeleteFilled />
-                                  </p>
-                                  <img
-                                    src={value.url}
-                                    alt="image"
-                                    style={{ width: 100, height: 100 }}
-                                  />
+                                  {value.title}
                                 </div>
                               );
                             })}
                           </div>
+                          // <AntdSelect
+                          //   mode="tags"
+                          //   style={{ width: "100%", marginBottom: 10 }}
+                          //   defaultValue={item?.values}
+                          //   onChange={(value) => {
+                          //     if (item.type === "TEXT") {
+                          //       const valuee = [];
+                          //       value.map((v) => {
+                          //         valuee.push({
+                          //           value: v,
+                          //           title: v,
+                          //         });
+                          //       });
+                          //       attributes[index].values = [...valuee];
+                          //       setAttributes([...attributes]);
+                          //     }
+                          //   }}
+                          //   options={[]}
+                          // />
+                        )}
+                        {imagesAtt.length > 0 && item.type === "IMAGE" && (
+                          <>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: 10,
+                              }}
+                            >
+                              {imagesAtt.map((value, i) => {
+                                return (
+                                  <div
+                                    onClick={() => {
+                                      setImagesAtt(
+                                        imagesAtt.filter(
+                                          (v) => v.value !== value.value
+                                        )
+                                      );
+                                      attributes[index].values = [
+                                        ...attributes[index].values.filter(
+                                          (v) => v.value !== value.value
+                                        ),
+                                      ];
+
+                                      setAttributes([...attributes]);
+                                    }}
+                                    key={i}
+                                    className={`${styles.attributeImages} ${styles.imageItem}`}
+                                  >
+                                    <p style={{ margin: 0 }}>{value.label}</p>
+                                    <p className={styles.delete}>
+                                      <DeleteFilled />
+                                    </p>
+                                    <img
+                                      src={value.value}
+                                      alt="image"
+                                      style={{ width: 100, height: 100 }}
+                                    />
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </>
                         )}
                         {item.type === "IMAGE" && (
-                          <div>
-                            <Input
-                              placeholder="Enter color name"
-                              value={imageLabel}
-                              onChange={(e) => {
-                                setImageLabel(e.target.value);
-                              }}
-                            />
-                          </div>
+                          <>
+                            <div>
+                              {/* Tabs */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "10px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                {item?.values?.map((v, i) => {
+                                  return (
+                                    <div
+                                      key={i}
+                                      style={{
+                                        padding: "8px 15px",
+                                        borderRadius: "8px",
+                                        border: "1px solid #ccc",
+                                        cursor: "pointer",
+                                        backgroundColor:
+                                          active === i ? "#007bff" : "#fff",
+                                        color: active === i ? "#fff" : "#000",
+                                        fontWeight:
+                                          active === i ? "bold" : "normal",
+                                      }}
+                                      onClick={() => setActive(i)}
+                                    >
+                                      {v.title}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+
+                              {/* Active Tab Content */}
+                              <div
+                                style={{
+                                  padding: "10px",
+                                  borderRadius: "8px",
+                                }}
+                              >
+                                <div style={{ display: "flex", gap: "10px" }}>
+                                  {images.map((v, i) => {
+                                    return (
+                                      <img
+                                        key={i}
+                                        src={v}
+                                        alt="image"
+                                        style={{
+                                          width: 100,
+                                          height: 100,
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() => {
+                                          // Faol tabdagi qiymatni yangilash
+                                          const updatedValues = item.values.map(
+                                            (item, index) =>
+                                              index === active
+                                                ? { ...item, value: v }
+                                                : item
+                                          );
+                                          attributes[index].values = [
+                                            ...updatedValues,
+                                          ];
+                                          setAttributes([...attributes]);
+                                          setImagesAtt((prev) => [
+                                            ...prev,
+                                            { value: v },
+                                          ]);
+
+                                          setImageLabel("");
+                                          setActive(i); // Faol tabni o'zgartirish
+                                        }}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            </div>
+                          </>
                         )}
-                        {imageLabel.length > 1 &&
+
+                        {/* {imageLabel.length > 1 &&
                           item.type === "IMAGE" &&
                           images.map((v, i) => {
                             const arr = imagesAtt.filter(
@@ -830,93 +814,7 @@ const CreateProducts = () => {
                                 }}
                               />
                             );
-                          })}
-
-                        {/* {item.type === "COLOR" && (
-                          <div>
-                            <Input
-                              placeholder="Enter color name"
-                              value={colorLabel}
-                              onChange={(e) => {
-                                setColorLabel(e.target.value);
-                              }}
-                            />
-                            <div style={{ display: "flex", gap: 10 }}>
-                              <Input
-                                placeholder="Enter color name"
-                                type="color"
-                                // value={colorCode}
-                                onChange={(e) => {
-                                  console.log(colorCode, "colorCode");
-                                  console.log();
-                                  setColorCode(e.target.value);
-                                  // console.log({
-                                  //   colorLabel,
-                                  //   value: e.target.value,
-                                  // });
-                                  // setColorLabel(e.target.value);
-                                }}
-                              />
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  const arr = [
-                                    ...colorsAtt,
-                                    {
-                                      label: colorLabel,
-                                      value: colorCode,
-                                    },
-                                  ];
-                                  // setColors([...colors, colorLabel]);
-                                  setColorLabel("");
-                                  setColorCode("#000000");
-                                  setColorsAtt([...arr]);
-                                  attributes[index].values = [...arr];
-                                }}
-                              >
-                                Add
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {colorsAtt.length > 0 && item.type === "COLOR" && (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              gap: 10,
-                            }}
-                          >
-                            {colorsAtt.map((value, i) => {
-                              return (
-                                <div
-                                  onClick={() => {
-                                    setColorsAtt(
-                                      colorsAtt.filter((v) => v !== value)
-                                    );
-                                  }}
-                                  key={i}
-                                >
-                                  <p>{value.label}</p>
-                                  <div
-                                    style={{
-                                      backgroundColor: value.value,
-                                      height: 20,
-                                      width: 20,
-                                      borderRadius: 10,
-                                    }}
-                                  ></div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )} */}
-                        {/* <CreateSelect
-                        control={form.control}
-                        name={`attributes.${index}.name_uz`}
-                        placeholder="Attribut qiymati"
-                        options={[]}
-                      /> */}
+                          })} */}
                         <AntdButton
                           icon={<DeleteFilled />}
                           style={{
@@ -936,7 +834,7 @@ const CreateProducts = () => {
                     </ListItem>
                   );
                 })}
-                <div
+                {/* <div
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -964,19 +862,20 @@ const CreateProducts = () => {
                     }}
                   />
                   <Label>Attribut qo’shish</Label>
-                </div>
+                </div> */}
               </List>
             </Col>
           </Row>
-          {/* here */}
-          {attributes.length > 0 && (
-            <CombinationTable
-              defaultVariant={variants}
-              // isEditing={id ? true : false}
-              onSave={onSave}
-              attributes={attributes}
-            />
-          )}
+          {/* {attributes.length > 0 && (
+            <>
+              <CombinationTable
+                defaultVariant={variants}
+                isEditing={id ? true : false}
+                onSave={onSave}
+                attributes={attributes}
+              />
+            </>
+          )} */}
           <Row gutter={[16, 8]} style={{ marginTop: 12 }}>
             <Col span={24} lg={12}>
               <Input

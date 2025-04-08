@@ -45,10 +45,10 @@ const Products = () => {
           >
             <div>
               <Title>Maxsulotlar</Title>
-              <Button
+              {/* <Button
                 name="Maxsulot yaratish"
                 onClick={() => navigate(ROUTER.CREATE)}
-              />
+              /> */}
             </div>
             <Button name="Birlashtirish" onClick={handleMerge} />
           </div>

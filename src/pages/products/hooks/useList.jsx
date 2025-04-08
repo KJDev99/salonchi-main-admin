@@ -161,6 +161,14 @@ export const useList = () => {
       render: (name_uz) => <p style={{ maxWidth: "200px" }}>{name_uz}</p>,
     },
     {
+      title: "Billz",
+      dataIndex: "have_billz",
+      key: "have_billz",
+      render: (have_billz) => (
+        <p>{have_billz ? "Billz mavjud" : "Billz mavjud emas"}</p>
+      ),
+    },
+    {
       title: "Price",
       dataIndex: "price",
       key: "price",
@@ -311,7 +319,6 @@ export const useList = () => {
       ),
     },
   ];
-  console.log(products.data);
   return {
     data: products.data,
     count: products.count,

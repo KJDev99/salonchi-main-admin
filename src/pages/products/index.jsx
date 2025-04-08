@@ -36,15 +36,22 @@ const Products = () => {
     <>
       <Wrapper>
         <Header>
-          <div>
-            <Title>Maxsulotlar</Title>
-            <Button
-              name="Maxsulot yaratish"
-              onClick={() => navigate(ROUTER.CREATE)}
-            />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <Title>Maxsulotlar</Title>
+              <Button
+                name="Maxsulot yaratish"
+                onClick={() => navigate(ROUTER.CREATE)}
+              />
+            </div>
+            <Button name="Birlashtirish" onClick={handleMerge} />
           </div>
-
-          <Button name="Birlashtirish" onClick={handleMerge} />
         </Header>
         {isSuperUser ? (
           <CustomCheckboxTable

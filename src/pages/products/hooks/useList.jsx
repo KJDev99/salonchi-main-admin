@@ -165,7 +165,9 @@ export const useList = () => {
       dataIndex: "have_billz",
       key: "have_billz",
       render: (have_billz) => (
-        <p>{have_billz ? "Billz mavjud" : "Billz mavjud emas"}</p>
+        <p style={{ color: have_billz ? "green" : "red" }}>
+          {have_billz ? "Billz mavjud" : "Billz mavjud emas"}
+        </p>
       ),
     },
     {

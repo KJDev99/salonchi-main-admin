@@ -880,6 +880,7 @@ const CreateProducts = () => {
             <Col span={24} lg={12}>
               <Input
                 value={price}
+                disabled
                 onChange={(e) => setPrice(e.target.value)}
                 // control={form.control}
                 name="price"
@@ -891,6 +892,7 @@ const CreateProducts = () => {
             <Col span={24} lg={12}>
               <Input
                 // control={form.control}
+                disabled
                 value={oldPrice}
                 onChange={(e) => setOldPrice(e.target.value)}
                 name="old_price"
@@ -899,7 +901,7 @@ const CreateProducts = () => {
                 type="number"
               />
             </Col>
-            <Col span={24} lg={12}>
+            {/* <Col span={24} lg={12}>
               <Input
                 value={bodyPrice}
                 onChange={(e) => setBodyPrice(e.target.value)}
@@ -922,7 +924,7 @@ const CreateProducts = () => {
                 placeholder="Miqdori"
                 type="number"
               />
-            </Col>
+            </Col> */}
           </Row>
           {/* finish */}
           {is_stock && (

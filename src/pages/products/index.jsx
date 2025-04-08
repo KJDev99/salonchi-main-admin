@@ -7,6 +7,7 @@ import { Pagination } from "@/components/pagination";
 import { CustomCheckboxTable } from "@/components/checkbox-table";
 import { CustomTable } from "@/components/table";
 import { request } from "@/shared/api/request";
+import { toast } from "react-toastify";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -27,7 +28,17 @@ const Products = () => {
   const handleMerge = async () => {
     try {
       const res = await request.get("billz/integration/");
+      if (res.status === 200) {
+        toast.success("Maxsulotlar birlashtirildi", {
+          autoClose: 3000,
+          position: "top-right",
+        });
+      }
     } catch (error) {
+      toast.error("Xatolik yuz berdi", {
+        autoClose: 3000,
+        position: "top-right",
+      });
       console.log(error);
     }
   };

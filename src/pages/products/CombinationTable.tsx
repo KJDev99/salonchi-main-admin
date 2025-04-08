@@ -59,7 +59,6 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
 
   // Initialize or update combinations and default values
   useEffect(() => {
-    console.log("CombinationTable", defaultVariant);
     const newCombinations = calculateCombinations();
     setCombinations(newCombinations);
 
@@ -197,11 +196,11 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
       dataIndex: "combination",
       key: "combination",
     },
-    {
-      title: "Miqdor",
-      dataIndex: "amount",
-      key: "amount",
-    },
+    // {
+    //   title: "Miqdor",
+    //   dataIndex: "amount",
+    //   key: "amount",
+    // },
     {
       title: "Narx",
       dataIndex: "price",

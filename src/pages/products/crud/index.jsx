@@ -691,7 +691,7 @@ const CreateProducts = () => {
                                       <DeleteFilled />
                                     </p>
                                     <img
-                                      src={value.value}
+                                      src={value.url}
                                       alt="image"
                                       style={{ width: 100, height: 100 }}
                                     />

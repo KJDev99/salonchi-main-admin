@@ -267,14 +267,14 @@ const CreateProducts = () => {
       description_ru === "" ||
       selectedCategory === "" ||
       images.length === 0 ||
-      price === 0 ||
+      // price === 0 ||
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
       attributes.some((item) => item.name_uz.length === 0) ||
       (variants.length < number && attributes.length > 0) ||
-      (attributes.length === 0 && !bodyPrice) ||
-      (attributes.length === 0 && !amount) ||
-      (attributes.length === 0 && !price)
+      // (attributes.length === 0 && !bodyPrice) ||
+      // (attributes.length === 0 && !amount) ||
+      // (attributes.length === 0 && !price)
     ) {
       api["error"]({
         message: "Error",

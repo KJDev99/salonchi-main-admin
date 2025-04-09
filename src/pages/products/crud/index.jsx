@@ -892,7 +892,6 @@ const CreateProducts = () => {
             <Col span={24} lg={12}>
               <Input
                 // control={form.control}
-                disabled
                 value={oldPrice}
                 onChange={(e) => setOldPrice(e.target.value)}
                 name="old_price"

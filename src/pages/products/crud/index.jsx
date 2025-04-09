@@ -271,7 +271,7 @@ const CreateProducts = () => {
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
       attributes.some((item) => item.name_uz.length === 0) ||
-      (variants.length < number && attributes.length > 0) 
+      (variants.length < number && attributes.length > 0)
       // (attributes.length === 0 && !bodyPrice) ||
       // (attributes.length === 0 && !amount) ||
       // (attributes.length === 0 && !price)
@@ -754,14 +754,34 @@ const CreateProducts = () => {
                                           height: 100,
                                           cursor: "pointer",
                                         }}
+                                        // onClick={() => {
+                                        //   // Faol tabdagi qiymatni yangilash
+                                        //   const updatedValues = item.values.map(
+                                        //     (item, index) =>
+                                        //       index === active
+                                        //         ? { ...item, value: v }
+                                        //         : item
+                                        //   );
+                                        //   attributes[index].values = [
+                                        //     ...updatedValues,
+                                        //   ];
+                                        //   setAttributes([...attributes]);
+                                        //   setImagesAtt((prev) => [
+                                        //     ...prev,
+                                        //     { value: v },
+                                        //   ]);
+
+                                        //   setImageLabel("");
+                                        //   setActive(i); // Faol tabni o'zgartirish
+                                        // }}
                                         onClick={() => {
-                                          // Faol tabdagi qiymatni yangilash
                                           const updatedValues = item.values.map(
                                             (item, index) =>
-                                              index === active
+                                              index === i
                                                 ? { ...item, value: v }
                                                 : item
                                           );
+                                          console.log(updatedValues, "values");
                                           attributes[index].values = [
                                             ...updatedValues,
                                           ];
@@ -772,7 +792,7 @@ const CreateProducts = () => {
                                           ]);
 
                                           setImageLabel("");
-                                          setActive(i); // Faol tabni o'zgartirish
+                                          setActive(i); // endi bu faqat UI uchun ishlatiladi
                                         }}
                                       />
                                     );

@@ -50,8 +50,6 @@ const CreateCategory = () => {
     setFileList,
   });
 
-  console.log(categoryImageUz, "categoryImageUz");
-  console.log(categoryImageRu, "categoryImageRu");
 
   const createCategory = async () => {
     const data = {

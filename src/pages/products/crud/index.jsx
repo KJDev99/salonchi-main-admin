@@ -265,9 +265,8 @@ const CreateProducts = () => {
       name_ru === "" ||
       description_uz === "" ||
       description_ru === "" ||
-      selectedCategory === "" ||
-      categoryList.length === 0 ||
-      subCategoryList.length === 0 ||
+      category === null ||
+      selectedCategory === null ||
       images.length === 0 ||
       // price === 0 ||
       attributes.some((item) => item.values.length === 0) ||

@@ -50,6 +50,9 @@ const CreateCategory = () => {
     setFileList,
   });
 
+  console.log(categoryImageUz, "categoryImageUz");
+  console.log(categoryImageRu, "categoryImageRu");
+
   const createCategory = async () => {
     const data = {
       name_uz: form.getValues().name_uz,
@@ -59,6 +62,14 @@ const CreateCategory = () => {
       banner_ru: categoryImageRu,
       parent: null,
     };
+
+    if (!categoryImageUz) {
+      data.banner_uz_None = true;
+    }
+    if (!categoryImageRu) {
+      data.banner_ru_None = true;
+    }
+
     if (!categoryLogo || !data.name_ru || !data.name_uz === "") {
       api["error"]({
         message: "Error",
@@ -66,7 +77,6 @@ const CreateCategory = () => {
       });
       return;
     }
-    console.log(data.name_ru, data.name_uz);
     if (id) {
       const response = await request.put(`admin/category/${id}/update`, data, {
         headers: {

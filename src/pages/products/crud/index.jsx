@@ -266,6 +266,8 @@ const CreateProducts = () => {
       description_uz === "" ||
       description_ru === "" ||
       selectedCategory === "" ||
+      categoryList.length === 0 ||
+      subCategoryList.length === 0 ||
       images.length === 0 ||
       // price === 0 ||
       attributes.some((item) => item.values.length === 0) ||
@@ -453,7 +455,6 @@ const CreateProducts = () => {
             <Col span={24} lg={12}>
               <Input
                 value={name_uz}
-                disabled
                 onChange={(e) => setNameUz(e.target.value)}
                 name="name_uz"
                 label="Mahsulot nomi (O’zbek tili)"

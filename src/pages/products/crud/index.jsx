@@ -637,25 +637,6 @@ const CreateProducts = () => {
                               );
                             })}
                           </div>
-                          // <AntdSelect
-                          //   mode="tags"
-                          //   style={{ width: "100%", marginBottom: 10 }}
-                          //   defaultValue={item?.values}
-                          //   onChange={(value) => {
-                          //     if (item.type === "TEXT") {
-                          //       const valuee = [];
-                          //       value.map((v) => {
-                          //         valuee.push({
-                          //           value: v,
-                          //           title: v,
-                          //         });
-                          //       });
-                          //       attributes[index].values = [...valuee];
-                          //       setAttributes([...attributes]);
-                          //     }
-                          //   }}
-                          //   options={[]}
-                          // />
                         )}
                         {imagesAtt.length > 0 && item.type === "IMAGE" && (
                           <>
@@ -754,27 +735,29 @@ const CreateProducts = () => {
                                           height: 100,
                                           cursor: "pointer",
                                         }}
-                                        // onClick={() => {
-                                        //   // Faol tabdagi qiymatni yangilash
-                                        //   const updatedValues = item.values.map(
-                                        //     (item, index) =>
-                                        //       index === active
-                                        //         ? { ...item, value: v }
-                                        //         : item
-                                        //   );
-                                        //   attributes[index].values = [
-                                        //     ...updatedValues,
-                                        //   ];
-                                        //   setAttributes([...attributes]);
-                                        //   setImagesAtt((prev) => [
-                                        //     ...prev,
-                                        //     { value: v },
-                                        //   ]);
-
-                                        //   setImageLabel("");
-                                        //   setActive(i); // Faol tabni o'zgartirish
-                                        // }}
                                         onClick={() => {
+                                          const updatedValues = item.values.map(
+                                            (val, index) =>
+                                              index === active
+                                                ? { ...val, value: v }
+                                                : val
+                                          );
+
+                                          console.log(updatedValues, "values");
+
+                                          attributes[index].values = [
+                                            ...updatedValues,
+                                          ];
+                                          setAttributes([...attributes]);
+                                          setImagesAtt((prev) => [
+                                            ...prev,
+                                            { value: v },
+                                          ]);
+
+                                          setImageLabel("");
+                                        }}
+
+                                        /* onClick={() => {
                                           const updatedValues = item.values.map(
                                             (item, index) =>
                                               index === i
@@ -792,8 +775,8 @@ const CreateProducts = () => {
                                           ]);
 
                                           setImageLabel("");
-                                          setActive(i); // endi bu faqat UI uchun ishlatiladi
-                                        }}
+                                          setActive(i);
+                                        }} */
                                       />
                                     );
                                   })}

@@ -260,6 +260,10 @@ const CreateProducts = () => {
       category: selectedCategory,
       variants,
     };
+    console.log(data.variants);
+    console.log(data.attributes);
+    console.log(number);
+
     if (
       name_uz === "" ||
       name_ru === "" ||
@@ -268,14 +272,10 @@ const CreateProducts = () => {
       category === null ||
       selectedCategory === null ||
       images.length === 0 ||
-      // price === 0 ||
       attributes.some((item) => item.values.length === 0) ||
       attributes.some((item) => item.name_ru.length === 0) ||
-      attributes.some((item) => item.name_uz.length === 0) ||
-      (variants.length < number && attributes.length > 0)
-      // (attributes.length === 0 && !bodyPrice) ||
-      // (attributes.length === 0 && !amount) ||
-      // (attributes.length === 0 && !price)
+      attributes.some((item) => item.name_uz.length === 0)
+      // (variants.length < number && attributes.length > 0)
     ) {
       api["error"]({
         message: "Error",
@@ -624,6 +624,7 @@ const CreateProducts = () => {
                             {item.values.map((value) => {
                               return (
                                 <div
+                                  key={value.id}
                                   style={{
                                     display: "flex",
                                     alignItems: "center",

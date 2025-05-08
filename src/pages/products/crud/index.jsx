@@ -59,9 +59,6 @@ const CreateProducts = () => {
   const [amount, setAmount] = useState();
   const [description_uz, setDescriptionUz] = useState("");
   const [description_ru, setDescriptionRu] = useState("");
-  //   "is_recommend": true,
-  // "is_new": true,
-  // "is_cheap": true,
   const [isRecommend, setIsRecommend] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [isCheap, setIsCheap] = useState(false);
@@ -71,21 +68,9 @@ const CreateProducts = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [variants, setVariants] = useState([]);
   const [active, setActive] = useState(0);
-  const [selectedImages, setSelectedImages] = useState([]);
+  // const [selectedImages, setSelectedImages] = useState([]);
 
-  const {
-    form,
-    // fields,
-    // append,
-    // remove,
-    // confirm,
-    // fileList,
-    setFileList,
-    isLoading,
-    // categoryList,
-    setVideoFile,
-    // videoFile,
-  } = useConfirm();
+  const { form, setFileList, isLoading, setVideoFile } = useConfirm();
   const [api, contextHolder] = notification.useNotification();
   // startingg
 
@@ -229,7 +214,6 @@ const CreateProducts = () => {
 
   useEffect(() => {
     if (id) {
-      // Agar id mavjud bo'lsa, category ni yangilash
       const fetchCategory = async () => {
         const response = await request.get(`admin/product/${id}/detail`);
         setCategory(response.data.category.id);
@@ -621,19 +605,39 @@ const CreateProducts = () => {
                               gap: "10px",
                             }}
                           >
-                            {item.values.map((value) => {
+                            {item.values.map((value, valueIndex) => {
+                              console.log(value);
                               return (
-                                <div
-                                  key={value.id}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    padding: "5px 10px",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  {value.title}
+                                <div key={value.id}>
+                                  <div
+                                    key={value.id}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      padding: "5px 10px",
+                                      marginBottom: "5px",
+                                      border: "1px solid #ccc",
+                                      borderRadius: "5px",
+                                    }}
+                                  >
+                                    {value.title}
+                                  </div>
+                                  <Input
+                                    label="Attribut nomi"
+                                    placeholder="Attribut nomi ru"
+                                    defaultValue={value?.title_ru}
+                                    // onChange={(e) => {
+                                    //   attributes[index].values[index].title_ru =
+                                    //     e.target.value;
+                                    //   setAttributes([...attributes]);
+                                    // }}
+                                    onChange={(e) => {
+                                      attributes[index].values[
+                                        valueIndex
+                                      ].title_ru = e.target.value;
+                                      setAttributes([...attributes]);
+                                    }}
+                                  />
                                 </div>
                               );
                             })}
@@ -757,27 +761,6 @@ const CreateProducts = () => {
 
                                           setImageLabel("");
                                         }}
-
-                                        /* onClick={() => {
-                                          const updatedValues = item.values.map(
-                                            (item, index) =>
-                                              index === i
-                                                ? { ...item, value: v }
-                                                : item
-                                          );
-                                          console.log(updatedValues, "values");
-                                          attributes[index].values = [
-                                            ...updatedValues,
-                                          ];
-                                          setAttributes([...attributes]);
-                                          setImagesAtt((prev) => [
-                                            ...prev,
-                                            { value: v },
-                                          ]);
-
-                                          setImageLabel("");
-                                          setActive(i);
-                                        }} */
                                       />
                                     );
                                   })}
@@ -787,38 +770,6 @@ const CreateProducts = () => {
                           </>
                         )}
 
-                        {/* {imageLabel.length > 1 &&
-                          item.type === "IMAGE" &&
-                          images.map((v, i) => {
-                            const arr = imagesAtt.filter(
-                              (value) => value.url === v
-                            );
-
-                            if (arr.length !== 0) {
-                              return null;
-                            }
-                            return (
-                              <img
-                                key={i}
-                                src={v}
-                                alt="image"
-                                style={{ width: 100, height: 100 }}
-                                onClick={() => {
-                                  setImagesAtt([
-                                    ...imagesAtt,
-                                    { url: v, label: imageLabel },
-                                  ]);
-                                  setImageLabel("");
-                                  const arr = [
-                                    ...attributes[index].values,
-                                    { value: v, title: imageLabel },
-                                  ];
-                                  attributes[index].values = [...arr];
-                                  setAttributes([...attributes]);
-                                }}
-                              />
-                            );
-                          })} */}
                         <AntdButton
                           icon={<DeleteFilled />}
                           style={{
@@ -838,55 +789,14 @@ const CreateProducts = () => {
                     </ListItem>
                   );
                 })}
-                {/* <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <AntdButton
-                    icon={<FaPlus />}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: "50%",
-                    }}
-                    onClick={() => {
-                      setAttributes([
-                        ...attributes,
-                        {
-                          name_uz: "",
-                          name_ru: "",
-                          type: "TEXT",
-                          values: [],
-                        },
-                      ]);
-                    }}
-                  />
-                  <Label>Attribut qo’shish</Label>
-                </div> */}
               </List>
             </Col>
           </Row>
-          {/* {attributes.length > 0 && (
-            <>
-              <CombinationTable
-                defaultVariant={variants}
-                isEditing={id ? true : false}
-                onSave={onSave}
-                attributes={attributes}
-              />
-            </>
-          )} */}
           <Row gutter={[16, 8]} style={{ marginTop: 12 }}>
             <Col span={24} lg={12}>
               <Input
                 value={price}
-                // disabled
                 onChange={(e) => setPrice(e.target.value)}
-                // control={form.control}
                 name="price"
                 label="Sotilish narxi"
                 placeholder="Sotilish narxi"
@@ -895,7 +805,6 @@ const CreateProducts = () => {
             </Col>
             <Col span={24} lg={12}>
               <Input
-                // control={form.control}
                 value={oldPrice}
                 onChange={(e) => setOldPrice(e.target.value)}
                 name="old_price"
@@ -904,32 +813,8 @@ const CreateProducts = () => {
                 type="number"
               />
             </Col>
-            {/* <Col span={24} lg={12}>
-              <Input
-                value={bodyPrice}
-                onChange={(e) => setBodyPrice(e.target.value)}
-                // control={form.control}
-                disabled={attributes.length > 0}
-                name="price"
-                label="Tan narxi"
-                placeholder="Tan narxi"
-                type="number"
-              />
-            </Col>
-            <Col span={24} lg={12}>
-              <Input
-                // control={form.control}
-                value={amount}
-                disabled={attributes.length > 0}
-                onChange={(e) => setAmount(e.target.value)}
-                name="old_price"
-                label="Miqdori"
-                placeholder="Miqdori"
-                type="number"
-              />
-            </Col> */}
           </Row>
-          {/* finish */}
+
           {is_stock && (
             <Row>
               <Col span={24}>
@@ -972,20 +857,6 @@ const CreateProducts = () => {
                   Arzon narxlar
                 </Checkbox>
               </Col>
-              {/* <Col span={24} md={6} lg={6}>
-          <CheckboxCustom
-            control={form.control}
-            name="is_new"
-            label="Yangiliklar"
-          />
-        </Col>
-        <Col span={24} md={6} lg={6}>
-          <CheckboxCustom
-            control={form.control}
-            name="is_cheap"
-            label="Arzon narxlar"
-          />
-        </Col> */}
             </Row>
           )}
           <Footer>

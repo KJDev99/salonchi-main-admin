@@ -1,14 +1,14 @@
 import { Button } from "@/components/button";
 import { Footer, Header, Title, Wrapper } from "@/styles/global";
-import { useConfirm } from "../hooks/useConfirm";
 import {
-  Col,
-  Row,
   Button as AntdButton,
   Select as AntdSelect,
   Checkbox,
+  Col,
   notification,
+  Row,
 } from "antd";
+import { useConfirm } from "../hooks/useConfirm";
 // import Upload from "@/components/upload";
 // import { Input } from "@/components/input";
 // import { Select } from "@/components/select";
@@ -21,9 +21,8 @@ import { getUser } from "@/utils/user";
 // import { CreateSelect } from "@/components/create-select";
 // import { FormProvider, get, set } from "react-hook-form";
 import { List, ListItem } from "./style";
-import { FaPlus } from "react-icons/fa";
 // import { FormGroupProvider, Label, Input, Error } from "@/styles/global";
-import { Label, Input } from "@/styles/global";
+import { Input, Label } from "@/styles/global";
 import {
   CloseOutlined,
   CloudUploadOutlined,
@@ -31,12 +30,11 @@ import {
 } from "@ant-design/icons";
 // import UploadVideo from "@/components/upload_video";
 import { request } from "@/shared/api/request";
-import styles from "./product.module.css";
 import { useCallback, useEffect, useState } from "react";
+import styles from "./product.module.css";
 // import UploadVideo from "@/components/upload_video";
-import { VideoWrapper } from "@/components/upload_video/style";
 import { Reactquill } from "@/components/text-editor/style";
-import CombinationTable from "../CombinationTable";
+import { VideoWrapper } from "@/components/upload_video/style";
 const CreateProducts = () => {
   const navigate = useNavigate();
   const user = getUser();
@@ -329,6 +327,10 @@ const CreateProducts = () => {
     { label: "IMAGE", value: "IMAGE" },
   ];
 
+  function goBack() {
+    navigate(-1);
+  }
+
   return (
     <Wrapper>
       {contextHolder}
@@ -336,7 +338,8 @@ const CreateProducts = () => {
         <Title>{id ? "Maxsulotni yangilash" : "Maxsulot yaratish"} </Title>
         <Button
           name="Orqaga"
-          onClick={() => navigate("/admin/products")}
+          // onClick={() => navigate("/admin/products")}
+          onClick={goBack}
           className="go-back-btn"
         />
       </Header>

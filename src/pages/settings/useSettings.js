@@ -1,14 +1,14 @@
+import {
+  getUserName,
+  updatePassword,
+  updateUserName,
+} from "@/shared/modules/settings";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { notification } from "antd";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { schema, schema2 } from "./form.schema";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { notification } from "antd";
-import {
-  getUserName,
-  updateUserName,
-  updatePassword,
-} from "@/shared/modules/settings";
 
 export const useSettings = () => {
   const [api, contextHolder] = notification.useNotification();
@@ -43,7 +43,6 @@ export const useSettings = () => {
           message: "Success",
           description: "Muvaffaqiyatli yangilandi",
         });
-        console.log("success");
         window.location.reload();
       },
       onError: () => {

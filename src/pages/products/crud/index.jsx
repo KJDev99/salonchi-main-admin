@@ -164,7 +164,8 @@ const CreateProducts = () => {
           const attr = [];
           attributes.forEach((item) => {
             if (item.type === "IMAGE") {
-              const imgArr = item.values.map((v) => ({
+              const imgArr = item.values.map((v, i) => ({
+                key: i,
                 url: v.value,
                 label: v.title,
               }));
@@ -181,7 +182,8 @@ const CreateProducts = () => {
           setAttributes(attr);
 
           // Variants handling
-          const formattedVariants = variants.map((variant) => ({
+          const formattedVariants = variants.map((variant, i) => ({
+            key: i,
             attributes: variant.attributes,
             price: variant.price,
             old_price: variant.old_price,
@@ -488,7 +490,8 @@ const CreateProducts = () => {
                     name="category"
                     label="Kategoriyalar"
                     placeholder="Kategoriyalar"
-                    options={categoryList.map((item) => ({
+                    options={categoryList.map((item, index) => ({
+                      key: index,
                       label: item.name_uz,
                       value: item.id,
                     }))}
@@ -504,7 +507,8 @@ const CreateProducts = () => {
                     value={selectedCategory}
                     options={
                       subCategoryList && subCategoryList.length > 0
-                        ? subCategoryList.map((item) => ({
+                        ? subCategoryList.map((item, index) => ({
+                            key: index,
                             label: item.name_uz,
                             value: item.id,
                           }))
@@ -522,7 +526,8 @@ const CreateProducts = () => {
                     name="category"
                     label="Kategoriyalar"
                     placeholder="Kategoriyalar"
-                    options={categoryList.map((item) => ({
+                    options={categoryList.map((item, index) => ({
+                      key: index,
                       label: item.name_uz,
                       value: item.id,
                     }))}
@@ -537,7 +542,8 @@ const CreateProducts = () => {
                     placeholder="SubCategoriyalar"
                     options={
                       subCategoryList && subCategoryList.length > 0
-                        ? subCategoryList.map((item) => ({
+                        ? subCategoryList.map((item, index) => ({
+                            key: index,
                             label: item.name_uz,
                             value: item.id,
                           }))
@@ -569,6 +575,7 @@ const CreateProducts = () => {
                           <Input
                             disabled
                             placeholder="Attribut nomi uz"
+                            label="Attribut nomi uz"
                             value={item?.name_uz}
                             onChange={(e) => {
                               attributes[index].name_uz = e.target.value;
@@ -579,7 +586,7 @@ const CreateProducts = () => {
                         <Col span={24} lg={12}>
                           <Label>Attribute nomi ru</Label>
                           <Input
-                            label="Attribut nomi"
+                            label="Attribut nomi ru"
                             placeholder="Attribut nomi ru"
                             value={item?.name_ru}
                             onChange={(e) => {
@@ -609,7 +616,6 @@ const CreateProducts = () => {
                             }}
                           >
                             {item.values.map((value, valueIndex) => {
-                              console.log(value);
                               return (
                                 <div key={value.id}>
                                   <div
@@ -626,7 +632,7 @@ const CreateProducts = () => {
                                     {value.title}
                                   </div>
                                   <Input
-                                    label="Attribut nomi"
+                                    label="Attribut nomi ru"
                                     placeholder="Attribut nomi ru"
                                     defaultValue={value?.title_ru}
                                     // onChange={(e) => {
@@ -750,9 +756,6 @@ const CreateProducts = () => {
                                                 ? { ...val, value: v }
                                                 : val
                                           );
-
-                                          console.log(updatedValues, "values");
-
                                           attributes[index].values = [
                                             ...updatedValues,
                                           ];

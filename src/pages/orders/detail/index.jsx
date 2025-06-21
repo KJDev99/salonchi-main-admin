@@ -1,19 +1,18 @@
+import { ReactComponent as Nasiya } from "@/assets/nasiya.svg";
 import { Button } from "@/components/button";
-import { Header, Title, Wrapper } from "@/styles/global";
-import { useNavigate } from "react-router-dom";
-import { useDetail } from "./useDetail";
 import { Spinner } from "@/components/spinner";
-import { List, ListItem } from "./style";
+import { CustomTextArea } from "@/components/textarea";
+import { DATE_FORMAT } from "@/constants/format";
+import { Header, Title, Wrapper } from "@/styles/global";
+import { getStatus, tagStatus } from "@/utils/status";
 import { Image, Modal, Tag } from "antd";
 import dayjs from "dayjs";
-import { DATE_FORMAT } from "@/constants/format";
-import { getStatus, tagStatus } from "@/utils/status";
-import { ChangeStatus } from "./change-status";
-import { Fragment } from "react";
-import { CustomTextArea } from "@/components/textarea";
-import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
-import { ReactComponent as Nasiya } from "@/assets/nasiya.svg";
 import { BsCreditCard } from "react-icons/bs";
+import { LiaMoneyBillWaveAltSolid } from "react-icons/lia";
+import { useNavigate } from "react-router-dom";
+import { ChangeStatus } from "./change-status";
+import { List, ListItem } from "./style";
+import { useDetail } from "./useDetail";
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -107,7 +106,7 @@ const OrderDetail = () => {
           <ol className="product-list">
             {data?.order_items?.map((v, i) => {
               return (
-                <Fragment key={v.id}>
+                <div key={v.id}>
                   <li>
                     <span>{i + 1}. Maxsulot rasmi</span>
                     {v?.product?.photo?.length > 0 ? (
@@ -143,7 +142,7 @@ const OrderDetail = () => {
                     </span>
                     <span>{v?.details?.attributes?.[0]?.value?.label}</span>
                   </li>
-                </Fragment>
+                </div>
               );
             })}
           </ol>

@@ -1,15 +1,15 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import { formSchema } from "../crud/form.schema";
-import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
 import {
   createCategory,
   getCategorySelect,
   updateCategory,
 } from "@/shared/modules/category";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
+import { formSchema } from "../crud/form.schema";
 
 export const useConfirm = () => {
   const queryClient = useQueryClient();
@@ -24,8 +24,9 @@ export const useConfirm = () => {
     queryKey: ["parent"],
     queryFn: getCategorySelect,
     select: (res) =>
-      res?.data?.map((v) => {
+      res?.data?.map((v, i) => {
         return {
+          key: i,
           value: v?.id,
           label: v?.name_uz,
         };

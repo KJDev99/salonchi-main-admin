@@ -1,26 +1,26 @@
+import { Input } from "@/components/input";
+import Switcher from "@/components/switcher/index";
 import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
+import { ROUTER } from "@/constants/router";
+import { request } from "@/shared/api/request";
 import {
   bodyPrice,
   deleteProducts,
   getProducts,
 } from "@/shared/modules/products";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Image, Modal, notification } from "antd";
-import { ActionWrapper } from "../style";
+import { getUser } from "@/utils/user";
 import {
   CopyFilled,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
-import { ROUTER } from "@/constants/router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Button, Image, Modal, notification } from "antd";
 import { useState } from "react";
-import { getUser } from "@/utils/user";
-import { Input } from "@/components/input";
 import { useForm } from "react-hook-form";
-import Switcher from "@/components/switcher/index";
-import { request } from "@/shared/api/request";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ActionWrapper } from "../style";
 
 const { confirm } = Modal;
 
@@ -299,6 +299,7 @@ export const useList = () => {
           type="number"
           disabled={!selectedRowKeys.includes(row?.key)}
           placeholder="Tan narx"
+          label="Tan narx"
           onBlur={() => handleMutation(row?.id)}
         />
       ),

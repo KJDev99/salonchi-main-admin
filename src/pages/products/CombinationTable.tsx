@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Table, Input } from "antd";
+import { Input, Table } from "antd";
+import React, { useEffect, useState } from "react";
 
 // Type definitions
 interface AttributeValue {
@@ -158,6 +158,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
     amount: (
       <Input
         type="number"
+        label="Miqdor"
         placeholder="Miqdor"
         value={amounts[key]}
         onChange={(e) => handleInputChange(key, "amount", e.target.value)}
@@ -166,6 +167,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
     price: (
       <Input
         type="number"
+        label="Narx"
         placeholder="Narx"
         value={prices[key]}
         onChange={(e) => handleInputChange(key, "price", e.target.value)}
@@ -174,6 +176,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
     old_price: (
       <Input
         type="number"
+        label="Eski narx"
         placeholder="Eski narx"
         value={oldPrices[key]}
         onChange={(e) => handleInputChange(key, "old_price", e.target.value)}
@@ -183,6 +186,7 @@ const CombinationTable: React.FC<CombinationTableProps> = ({
       <Input
         type="number"
         placeholder="Tan narx"
+        label="Tan narx"
         value={bodyPrices[key]}
         onChange={(e) => handleInputChange(key, "body_price", e.target.value)}
       />

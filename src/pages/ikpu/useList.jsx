@@ -111,6 +111,7 @@ export const useList = () => {
           name={`mxik_${row?.id}`}
           type="number"
           placeholder="IKPU"
+          label="IKPU"
           onBlur={() => handleMutation(row?.id)}
         />
       ),
@@ -124,6 +125,7 @@ export const useList = () => {
           name={`package_code_${row?.id}`}
           type="number"
           placeholder="Qadoqlash kodi"
+          label="Qadoqlash kodi"
           onBlur={() => handleMutation(row?.id)}
         />
       ),
@@ -137,6 +139,7 @@ export const useList = () => {
           name={`vat_percent_${row?.id}`}
           type="number"
           placeholder="Birlik kodi"
+          label="Birlik kodi"
           onBlur={() => handleMutation(row?.id)}
         />
       ),

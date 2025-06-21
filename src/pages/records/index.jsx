@@ -1,9 +1,9 @@
+import { DoubleRangePicker } from "@/components/double-datepicker";
+import { Input } from "@/components/input";
+import { Pagination } from "@/components/pagination";
 import { CustomTable } from "@/components/table";
 import { Header, Title, Wrapper } from "@/styles/global";
 import { useList } from "./useList";
-import { Pagination } from "@/components/pagination";
-import { DoubleRangePicker } from "@/components/double-datepicker";
-import { Input } from "@/components/input";
 
 const Records = () => {
   const { form, records, columns, isLoading, count, params, setParams } =
@@ -19,6 +19,7 @@ const Records = () => {
               control={form.control}
               name="search"
               placeholder="Qidirish"
+              label="Qidirish"
             />
           </div>
           <div className="date">

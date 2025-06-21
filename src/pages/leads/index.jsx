@@ -1,30 +1,30 @@
-import { useEffect, useState } from "react";
+import { Header, Input, Title, Wrapper } from "@/styles/global"; // Keep these as needed
 import axios from "axios";
-import { Wrapper, Header, Input, Title } from "@/styles/global"; // Keep these as needed
+import { useEffect, useState } from "react";
 import {
-  Table,
-  TableRow,
-  TableCell,
   Badge,
-  Select,
   Modal,
-  ModalContent,
   ModalActions,
   ModalButton,
+  ModalContent,
+  Select,
   StatusFilterButton,
-  Titles,
+  Table,
+  TableCell,
+  TableRow,
   Textarea,
+  Titles,
 } from "./style"; // Ensure paths are correct
 // import MessageIcon from "@/assets/message";
 // import ViewIcon from "@/assets/view";
-import { Button, Space, Select as SelectAntd, notification } from "antd";
-import { ROUTER } from "@/constants/router";
-import { DeleteFilled, EyeFilled, PlusCircleFilled } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
-import { request } from "@/shared/api/request";
-import { LoaderWrapper } from "@/components/spinner/style";
 import { ButtonElement } from "@/components/button/style";
 import { Pagination } from "@/components/pagination";
+import { LoaderWrapper } from "@/components/spinner/style";
+import { ROUTER } from "@/constants/router";
+import { request } from "@/shared/api/request";
+import { DeleteFilled, EyeFilled, PlusCircleFilled } from "@ant-design/icons";
+import { Button, Select as SelectAntd, Space, notification } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 
 // import { Pagination } from "@/components/pagination";
 // import { Pagination } from "@/components/pagination";
@@ -432,7 +432,8 @@ const Leads = () => {
               onSearch={onSearch}
               options={[
                 { value: "", label: "Barchasi" },
-                ...productWithLead.map((product) => ({
+                ...productWithLead.map((product, index) => ({
+                  key: index,
                   value: product.product_id,
                   label: product.product__name_uz,
                 })),
@@ -733,6 +734,7 @@ const Leads = () => {
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               required={true}
+              label="Mijoz ismi"
               placeholder="Mijoz ismi..."
             />
             <Input
@@ -740,6 +742,7 @@ const Leads = () => {
               value={userPhone}
               onChange={(e) => handleUserPhone(e)}
               required={true}
+              label="Mijoz telefon raqami"
               placeholder="Mijoz telefon raqami..."
             />
             <SelectAntd
@@ -750,7 +753,8 @@ const Leads = () => {
               optionFilterProp="label"
               onChange={onChange}
               onSearch={onSearch}
-              options={products.map((product) => ({
+              options={products.map((product, index) => ({
+                key: index,
                 value: product.id,
                 label: product.name_uz,
               }))}

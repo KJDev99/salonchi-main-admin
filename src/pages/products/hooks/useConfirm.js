@@ -1,19 +1,15 @@
+import { getCategorySelectProduct } from "@/shared/modules/category";
+import { createProducts, updateProducts } from "@/shared/modules/products";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { formSchema, formSchemaAdd } from "../crud/form.schema";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProducts, updateProducts } from "@/shared/modules/products";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  getCategorySelect,
-  getCategorySelectProduct,
-  // getColorsSelect,
-} from "@/shared/modules/category";
+import { formSchema, formSchemaAdd } from "../crud/form.schema";
 // import dayjs from "dayjs";
 import { REACT_QUERY_KEYS } from "@/constants/react-query-keys";
-import { notification } from "antd";
 import { getUser } from "@/utils/user";
+import { notification } from "antd";
 
 export const useConfirm = () => {
   const user = getUser();
@@ -51,6 +47,7 @@ export const useConfirm = () => {
     select: (res) =>
       res?.data?.map((v) => {
         return {
+          key: v?.id,
           value: v?.id,
           label: v?.name_uz,
         };
